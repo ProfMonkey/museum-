@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#090807" />
+<title>万物博物馆 · 一个由所有人共同收藏的世界</title>
+<link rel="stylesheet" href="/static/style.css" />
+<link rel="stylesheet" href="/static/features.css" />
+<link rel="stylesheet" href="/static/memories.css" />
+</head>
+<body>
+<div class="app-shell">
+ <aside class="sidebar">
+  <button class="brand" data-action="navigate" data-view="discover" aria-label="回到探索大厅"><span class="brandmark">✳</span><span><strong>万物博物馆</strong><small>WONDER ATLAS · WORLD 03</small></span></button>
+  <div class="nav-cap">探索世界 <span>01 / 06</span></div>
+  <nav class="nav" aria-label="主导航">
+   <button class="active" data-action="navigate" data-view="discover"><span>⌁</span> 发现广场</button>
+   <button data-action="navigate" data-view="journey"><span>✧</span> 随机奇遇</button>
+   <button data-action="navigate" data-view="saved"><span>♡</span> 心动收藏</button>
+   <button data-action="navigate" data-view="museum"><span>▦</span> 我的博物馆</button>
+   <button data-action="navigate" data-view="memories"><span>♫</span> 回忆剧场</button>
+  </nav>
+  <div class="nav-cap space-top">互动消息</div>
+  <nav class="nav"><button data-action="navigate" data-view="notifications"><span>✉</span> 通知 <em id="navUnread"></em></button></nav>
+  <div class="side-spacer"></div>
+  <div class="sidebar-box"><div>✦ <span>THE OPEN COLLECTION</span></div><h3>宇宙很大，<br>值得收藏的更多。</h3><p>不只存储信息，更分享一次真实的发现。</p></div>
+  <div class="side-user" id="sideUser">未登录 · 游客漫游中</div>
+ </aside>
+ <div class="content-shell">
+  <header class="topbar">
+   <div class="top-left"><button class="mobile-logo" data-action="navigate" data-view="discover">✳</button><div class="breadcrumbs"><span>WONDER ATLAS</span><b id="pageCrumb">发现广场</b></div><span class="live-dot">ONLINE · 共享数据库</span></div>
+   <div class="top-right"><button id="loginTop" class="top-login" data-action="login">登录 / 注册</button><button class="cta" data-action="new">＋ 发布新发现</button></div>
+  </header>
+  <main id="main" tabindex="-1"><div class="loading">正在连接万物博物馆…</div></main>
+  <footer class="footer"><span>✳ 万物博物馆 · WONDER ATLAS</span><span>一个由发现与好奇心建成的世界 · V4.0</span></footer>
+ </div>
+</div>
+<div id="modal" class="modal-layer hidden" aria-live="polite"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="/static/app.js" defer></script>
+<script src="/static/features.js" defer></script>
+<script src="/static/monkeys.js" defer></script>
+<script src="/static/memories.js" defer></script>
+</body></html>
