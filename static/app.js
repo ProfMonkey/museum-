@@ -1,11 +1,12 @@
 /* Wonder Atlas V2 — one navigation, one publish flow, one shared exhibit dialog.
    Data lives in the server database; this file never fabricates community posts. */
 const S={user:null,view:'discover',q:'',cat:'全部',sort:'latest',following:false,page:1,items:[],mine:[],halls:[],saved:[],profile:null,room:null,detail:null,journey:null,authMode:'login',editorId:null,editingRoom:null};
+window.S = S;
 const $=s=>document.querySelector(s), E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const categories=['全部','科学','技术','艺术','生活','自然','故事','奇怪知识','游戏','其他'];
 const icons={'科学':'✺','技术':'⌘','艺术':'❋','生活':'☕','自然':'❀','故事':'✧','奇怪知识':'☄','游戏':'♞','其他':'✦'};
 const classes={'科学':'cat-science','技术':'cat-code','艺术':'cat-art','生活':'cat-life','自然':'cat-life','故事':'cat-art','奇怪知识':'cat-odd','游戏':'cat-code'};
-const titles={discover:'发现广场',museum:'我的博物馆',saved:'心动收藏',journey:'随机奇遇',notifications:'通知中心',profile:'馆长主页',memories:'回忆剧场'};
+const titles={discover:'发现广场',museum:'我的博物馆',saved:'心动收藏',journey:'随机奇遇',notifications:'通知中心',profile:'馆长主页',memories:'回忆剧场','world-museums':'世界名馆'};
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>e.classList.remove('show'),3000)}
 async function api(path,{method='GET',body,form}={}){
   const options={method,credentials:'same-origin',headers:{}};
@@ -27,10 +28,11 @@ function navMark(){document.querySelectorAll('[data-action="navigate"]').forEach
 async function init(){try{S.user=(await api('/me')).user;navMark();await render();if(S.user)refreshUnread()}catch(e){$('#main').innerHTML=empty('连接失败',e.message,'<button class="primary" data-action="reload">重新连接</button>')}}
 async function refreshUnread(){if(!S.user){$('#navUnread').textContent='';return}try{let n=await api('/notifications');$('#navUnread').textContent=n.unread||''}catch(e){}}
 async function navigate(view){if(view!=='memories'&&window.WonderMemories)WonderMemories.stop();S.view=view;S.page=1;navMark();await render();window.scrollTo({top:0,behavior:'smooth'})}
-async function render(){try{let h='';if(S.view==='discover')h=await discover();else if(S.view==='museum')h=await museum();else if(S.view==='saved')h=await saved();else if(S.view==='journey')h=await journey();else if(S.view==='notifications')h=await notifications();else if(S.view==='profile')h=await profile();else if(S.view==='memories')h=await WonderMemories.render();$('#main').innerHTML=h}catch(e){$('#main').innerHTML=empty('暂时无法打开',e.message,'<button class="ghost" data-action="reload">重试</button>')}}
+async function render(){try{let h='';if(S.view==='discover')h=await discover();else if(S.view==='museum')h=await museum();else if(S.view==='saved')h=await saved();else if(S.view==='journey')h=await journey();else if(S.view==='notifications')h=await notifications();else if(S.view==='profile')h=await profile();else if(S.view==='memories')h=await WonderMemories.render();else if(S.view==='world-museums')h=await WorldMuseums.render();$('#main').innerHTML=h}catch(e){$('#main').innerHTML=empty('暂时无法打开',e.message,'<button class="ghost" data-action="reload">重试</button>')}}
 async function discover(){const [stat,feed]=await Promise.all([api('/stats'),api(`/feed?q=${encodeURIComponent(S.q)}&category=${encodeURIComponent(S.cat)}&sort=${S.sort}&page=${S.page}&following=${S.following}`)]);S.items=feed.items;return `
 <section class="hero"><div class="hero-copy"><div class="eyebrow">✧ EXPLORE THE UNEXPECTED · 万物开放收藏计划</div><h1>世界很大，<br><span>万物皆可收藏。</span></h1><p>发现一件有趣的事物，或把自己的奇思妙想放进展柜。不同的馆长正在这里共同建造一座没有边界的博物馆。</p><div class="hero-buttons"><button class="primary" data-action="new">＋ 分享我的发现</button><button class="ghost" data-action="navigate" data-view="journey">✧ 开启随机奇遇 ↗</button></div></div><div class="cosmos"><div class="planet"></div></div></section>
 <div class="stats"><div class="stat"><strong>${stat.exhibits}</strong> 件公开展品</div><div class="stat"><strong>${stat.curators}</strong> 位真实馆长</div><div class="stat"><strong>${stat.halls}</strong> 座开放展厅</div></div>
+<section class="wm-discover-promo"><div><div class="eyebrow">NEW · WORLD MUSEUM COLLECTION</div><h2>不必等别人上传，世界名作已经在这里。</h2><p>从大都会、芝加哥与克利夫兰艺术博物馆的开放馆藏出发，发现真实作品，再收入自己的博物馆。</p></div><button class="primary" data-action="navigate" data-view="world-museums">进入世界名馆 ↗</button></section>
 ${usageGuide('发现广场怎么逛',['用分类或搜索找展品，也可以按最新/热门排序。','点击卡片查看完整档案；登录后可点赞、评论、收藏或关注馆长。','发布内容时选择公开或私密；只有公开展品会出现在公共广场。'])}
 ${heading('CURATED BY THE WORLD','来自世界的发现','这里展示的是用户真正发布的公开展品，没有虚构的社区内容。')}
 <form class="controls" id="searchForm"><div class="filters"><button type="button" class="chip ${S.following?'active':''}" data-action="following">♡ 关注动态</button>${categories.map(c=>`<button type="button" class="chip ${S.cat===c?'active':''}" data-action="category" data-cat="${E(c)}">${E(c)}</button>`).join('')}</div><div class="head-actions"><input class="field-inline" name="q" value="${E(S.q)}" placeholder="搜索藏品、标签、馆长…" aria-label="搜索"><button class="ghost" type="submit">⌕ 搜索</button><select class="sort" name="sort" aria-label="排序"><option value="latest" ${S.sort==='latest'?'selected':''}>最新发布</option><option value="popular" ${S.sort==='popular'?'selected':''}>最受欢迎</option></select></div></form>
@@ -118,5 +120,5 @@ if(type==='importForm'){let file=form.querySelector('input[type=file]').files[0]
 }catch(err){toast(err.message);if(btn)btn.disabled=false}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal').classList.contains('hidden'))close();if((e.key==='Enter'||e.key===' ')&&e.target.matches('.card[data-action="detail"]')){e.preventDefault();e.target.click()}});
 $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')close()});
-const mn=document.createElement('nav');mn.className='mobile-nav';mn.setAttribute('aria-label','手机导航');mn.innerHTML=[['discover','⌁','发现'],['journey','✧','奇遇'],['saved','♡','收藏'],['museum','▦','我的'],['notifications','✉','消息'],['memories','♫','回忆']].map(([k,i,t])=>`<button data-action="navigate" data-view="${k}"><span>${i}</span>${t}</button>`).join('');document.body.appendChild(mn);
+const mn=document.createElement('nav');mn.className='mobile-nav';mn.setAttribute('aria-label','手机导航');mn.innerHTML=[['discover','⌁','发现'],['world-museums','♜','名馆'],['journey','✧','奇遇'],['saved','♡','收藏'],['museum','▦','我的'],['notifications','✉','消息'],['memories','♫','回忆']].map(([k,i,t])=>`<button data-action="navigate" data-view="${k}"><span>${i}</span>${t}</button>`).join('');document.body.appendChild(mn);
 init();

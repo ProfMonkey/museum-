@@ -8,14 +8,16 @@
 <link rel="stylesheet" href="/static/style.css" />
 <link rel="stylesheet" href="/static/features.css" />
 <link rel="stylesheet" href="/static/memories.css" />
+<link rel="stylesheet" href="/static/world-museums.css" />
 </head>
 <body>
 <div class="app-shell">
  <aside class="sidebar">
   <button class="brand" data-action="navigate" data-view="discover" aria-label="回到探索大厅"><span class="brandmark">✳</span><span><strong>万物博物馆</strong><small>WONDER ATLAS · WORLD 03</small></span></button>
-  <div class="nav-cap">探索世界 <span>01 / 06</span></div>
+  <div class="nav-cap">探索世界 <span>01 / 07</span></div>
   <nav class="nav" aria-label="主导航">
    <button class="active" data-action="navigate" data-view="discover"><span>⌁</span> 发现广场</button>
+   <button data-action="navigate" data-view="world-museums"><span>♜</span> 世界名馆</button>
    <button data-action="navigate" data-view="journey"><span>✧</span> 随机奇遇</button>
    <button data-action="navigate" data-view="saved"><span>♡</span> 心动收藏</button>
    <button data-action="navigate" data-view="museum"><span>▦</span> 我的博物馆</button>
@@ -33,7 +35,7 @@
    <div class="top-right"><button id="loginTop" class="top-login" data-action="login">登录 / 注册</button><button class="cta" data-action="new">＋ 发布新发现</button></div>
   </header>
   <main id="main" tabindex="-1"><div class="loading">正在连接万物博物馆…</div></main>
-  <footer class="footer"><span>✳ 万物博物馆 · WONDER ATLAS</span><span>一个由发现与好奇心建成的世界 · V4.0</span></footer>
+  <footer class="footer"><span>✳ 万物博物馆 · WONDER ATLAS</span><span>一个由发现与好奇心建成的世界 · V5.0</span></footer>
  </div>
 </div>
 <div id="modal" class="modal-layer hidden" aria-live="polite"></div>
@@ -42,4 +44,5 @@
 <script src="/static/features.js" defer></script>
 <script src="/static/monkeys.js" defer></script>
 <script src="/static/memories.js" defer></script>
+<script src="/static/world-museums.js" defer></script>
 </body></html>
