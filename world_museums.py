@@ -149,7 +149,6 @@ def _refresh_worker():
     global _refreshing
     try:
         items = _build_catalog()
-        has_open_images = any(x.get("open_access") and x.get("image_url") for x in items)
         with _cache_lock:
             _cache["items"] = items
             # If all APIs failed, retry after a short cooldown rather than freezing

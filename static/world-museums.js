@@ -1,6 +1,6 @@
 /* World-famous museum starter collection. Uses official museum API metadata and image URLs. */
 const WorldMuseums = (() => {
-  const W = { q: '', museum: '全部', items: [], loading: false, pollCount: 0, pollScheduled: false };
+  const W = { q: '', museum: '全部', items: [], loading: false, pollCount: 0, pollScheduled: false, clientAttempted: false, clientEnriching: false };
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const iconFor = item => ({'绘画':'✧','亚洲艺术':'波','中国艺术':'山','织物与工艺':'❖','历史艺术':'⌘','宗教艺术':'☼'}[item.category] || '✦');
   const cover = item => item.image_url
@@ -15,12 +15,83 @@ const WorldMuseums = (() => {
     ['荷兰国立博物馆','Rijksmuseum','https://www.rijksmuseum.nl/en/collection'],
     ['美国国家美术馆','National Gallery of Art','https://www.nga.gov/collection.html']
   ];
+  async function jsonFetch(url) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 3200);
+    try {
+      const response = await fetch(url, { signal: controller.signal, headers: { 'Accept': 'application/json' } });
+      if (!response.ok) return null;
+      return await response.json();
+    } catch (_) { return null; }
+    finally { clearTimeout(timer); }
+  }
+  async function enrichOne(item) {
+    if (!item?.provider || !item.external_id) return item;
+    try {
+      if (item.provider === 'met') {
+        const raw = await jsonFetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${encodeURIComponent(item.external_id)}`);
+        if (!raw) return item;
+        const open = raw.isPublicDomain === true && /^https:\/\/images\.metmuseum\.org\//i.test(raw.primaryImageSmall || '');
+        return { ...item, title_en: raw.title || item.title_en, artist: raw.artistDisplayName || item.artist,
+          date: raw.objectDate || item.date, medium: raw.medium || item.medium, culture: raw.culture || item.culture,
+          department: raw.department || item.department, source_url: raw.objectURL || item.source_url,
+          image_url: open ? raw.primaryImageSmall : '', open_access: Boolean(open),
+          license: open ? 'Public Domain / Open Access' : '馆方未将该图像标记为开放访问' };
+      }
+      if (item.provider === 'aic') {
+        const fields = 'id,title,artist_display,date_display,medium_display,department_title,is_public_domain,image_id,web_url,credit_line';
+        const raw = await jsonFetch(`https://api.artic.edu/api/v1/artworks/${encodeURIComponent(item.external_id)}?fields=${encodeURIComponent(fields)}`);
+        const d = raw?.data; if (!d) return item;
+        const open = d.is_public_domain === true && Boolean(d.image_id);
+        return { ...item, title_en: d.title || item.title_en, artist: d.artist_display || item.artist,
+          date: d.date_display || item.date, medium: d.medium_display || item.medium, department: d.department_title || item.department,
+          source_url: d.web_url || item.source_url,
+          image_url: open ? `https://www.artic.edu/iiif/2/${encodeURIComponent(d.image_id)}/full/843,/0/default.jpg` : '',
+          open_access: Boolean(open), license: open ? 'Public Domain' : '馆方未将该图像标记为公有领域' };
+      }
+      if (item.provider === 'cma') {
+        const raw = await jsonFetch(`https://openaccess-api.clevelandart.org/api/artworks/${encodeURIComponent(item.external_id)}`);
+        const d = raw?.data; if (!d) return item;
+        const cc0 = String(d.share_license_status || '').toUpperCase() === 'CC0';
+        const images = d.images || {}, image = images.web?.url || images.print?.url || '';
+        const safe = /^https:\/\//i.test(image) && /(^|\.)clevelandart\.org$/i.test(new URL(image).hostname);
+        const open = cc0 && safe;
+        const creators = (d.creators || []).map(x => x.description).filter(Boolean).join(', ');
+        return { ...item, title_en: d.title || item.title_en, artist: creators || item.artist,
+          date: d.creation_date || item.date, medium: d.technique || item.medium, culture: (d.culture || []).join(', ') || item.culture,
+          department: d.department || item.department, source_url: d.url || item.source_url,
+          image_url: open ? image : '', open_access: Boolean(open), license: open ? 'CC0 开放访问' : '馆方未将该图像标记为 CC0' };
+      }
+    } catch (_) {}
+    return item;
+  }
+  async function enrichInBrowser(items) {
+    const result = new Array(items.length); let next = 0;
+    const worker = async () => { while (next < items.length) { const i = next++; result[i] = await enrichOne(items[i]); } };
+    await Promise.all(Array.from({ length: 8 }, worker));
+    return result;
+  }
   async function load() {
     W.loading = true;
     const params = new URLSearchParams({ q: W.q, museum: W.museum });
     try {
       const result = await api('/world-museums?' + params.toString());
-      W.items = result.items || [];
+      const previous = new Map(W.items.map(x => [x.id, x]));
+      W.items = (result.items || []).map(item => {
+        const old = previous.get(item.id);
+        return old?.open_access && old.image_url && !item.open_access ? { ...item, ...old, collected: item.collected } : item;
+      });
+      if (result.network_fallback && !W.clientAttempted && W.items.length) {
+        W.clientAttempted = true; W.clientEnriching = true;
+        const snapshot = [...W.items];
+        enrichInBrowser(snapshot).then(enriched => {
+          const map = new Map(enriched.map(x => [x.id, x]));
+          W.items = W.items.map(item => map.has(item.id) ? { ...map.get(item.id), collected: item.collected } : item);
+          if (W.items.some(x => x.open_access && x.image_url) && window.S?.view === 'world-museums') {
+            const main = document.querySelector('#main'); if (main) render().then(html => { if (window.S?.view === 'world-museums') main.innerHTML = html; });
+          }
+        }).finally(() => { W.clientEnriching = false; });
+      }
       return { ...result, error: '' };
     } catch (error) {
       W.items = [];
@@ -29,7 +100,8 @@ const WorldMuseums = (() => {
   }
   async function render() {
     const data = await load();
-    if (data.network_fallback && !W.pollScheduled && W.pollCount < 3) {
+    const noOpenImages = !W.items.some(x => x.open_access && x.image_url);
+    if (data.network_fallback && noOpenImages && !W.pollScheduled && W.pollCount < 3) {
       W.pollScheduled = true;
       setTimeout(async () => {
         W.pollScheduled = false; W.pollCount += 1;
@@ -60,7 +132,7 @@ const WorldMuseums = (() => {
       </section>
       <section class="wm-stats"><div><strong>${W.items.length}</strong><span>当前筛选作品</span></div><div><strong>${openCount}</strong><span>已核验开放图像</span></div><div><strong>${museums.length - 1}</strong><span>馆藏机构</span></div><div class="wm-stat-note">精选典藏会随官方数据更新；图像不复制到本站服务器。</div></section>
       ${data.error ? `<div class="wm-notice">${escapeHtml(data.error)}。当前无法连接馆方数据接口，仍会保留页面；请检查网络后重试。</div>` : ''}
-      ${data.network_fallback ? `<div class="wm-notice">当前尚未取到馆方开放图像。精选作品与来源档案仍可浏览，页面会尝试重新读取；若持续无图，请检查网络。</div>` : ''}
+      ${data.network_fallback && noOpenImages ? `<div class="wm-notice">当前尚未取到馆方开放图像。精选作品与来源档案仍可浏览，页面会尝试重新读取；若持续无图，请检查网络。</div>` : ''}
       <section class="wm-controls-wrap">
         <div><div class="eyebrow">STARTER COLLECTION / V1</div><h2>世界名馆 · 初始典藏</h2><p>精选作品来自大都会艺术博物馆、芝加哥艺术博物馆与克利夫兰艺术博物馆。</p></div>
         <form class="wm-controls" id="worldMuseumSearch"><input name="q" value="${escapeHtml(W.q)}" placeholder="搜索作品、艺术家、文化或年代…" aria-label="搜索世界名馆藏品"><select name="museum" aria-label="按博物馆筛选">${museums.map(m=>`<option value="${escapeHtml(m)}" ${W.museum===m?'selected':''}>${escapeHtml(m)}</option>`).join('')}</select><button class="primary" type="submit">⌕ 搜索</button><button class="ghost" type="button" data-world-action="clear">重置</button></form>
