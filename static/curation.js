@@ -1,17 +1,20 @@
 /* V13: embeds institutional catalogue and private curation audit into the existing time/constellation views. */
 (() => {
   'use strict';
-  const M = {museum:null,quality:null,loadingMuseum:false,loadingQuality:false,showQuality:false,error:''};
-  const esc = x => String(x ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&quot;'}[ch]));
+  const M = {museum:null,quality:null,loadingMuseum:false,loadingQuality:false,showQuality:false,error:'',museumAt:0};
+  const esc = x => String(x ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const urls = value => {
     try{const url = new URL(String(value ?? ''), location.origin);return ['https:','http:'].includes(url.protocol)?url.href:'#';}
     catch(_){return '#';}
   };
   async function loadMuseum(){
-    if(M.museum)return;
+    // Initial catalogue can be offline seed metadata while official APIs load asynchronously.
+    // Poll infrequently until at least one item has a verified open-access image.
+    const ttl = M.museum?.eras?.some(g=>g.items?.some(i=>i.open_access)) ? 15*60*1000 : 45*1000;
+    if(M.museum && Date.now()-M.museumAt < ttl)return;
     if(M.loadingMuseum)return;
     M.loadingMuseum=true;
-    try{M.museum=await api('/curation/museum-eras');M.error='';}
+    try{M.museum=await api('/curation/museum-eras');M.museumAt=Date.now();M.error='';}
     catch(e){M.error=e.message||'暂时无法读取来源目录';}
     finally{M.loadingMuseum=false;}
   }
