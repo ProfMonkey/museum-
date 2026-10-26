@@ -102,7 +102,10 @@ def mount_cosmos(app, db, read_exhibit, maybe_user, require_user, now, fail):
                 fail(400, '未知领域分类')
         except ImportError:
             pass
-        cond = ["e.visibility='public'" if scope == 'public' else 'e.user_id=?']
+        # Fantastical artifacts have no factual creation date and belong to the
+        # separate imaginary-world museum, not the real-world history timeline.
+        cond = ["e.visibility='public'" if scope == 'public' else 'e.user_id=?',
+                'NOT EXISTS (SELECT 1 FROM fantasy_relics fr WHERE fr.exhibit_id=e.id)']
         args = [] if scope == 'public' else [user['id']]
         if series != '全部':
             cond.append('e.series=?'); args.append(series)

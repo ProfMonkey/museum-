@@ -153,3 +153,19 @@ def test_generic_edit_cannot_turn_private_fiction_into_public_fact(env):
     assert '虚构' in saved.json()['story']
     assert saved.json()['source_url']==''
     assert visitor.get(f'/api/exhibits/{eid}').status_code==404
+
+
+def test_fictional_artifacts_do_not_enter_factual_time_river(env):
+    import pytest
+    alice, bob, visitor = env
+    wid=alice.post('/api/fantasy/worlds',json=world(visibility='public')).json()['id']
+    eid=alice.post(f'/api/fantasy/worlds/{wid}/forge',json=relic(visibility='public')).json()['exhibit_id']
+    assert visitor.get(f'/api/exhibits/{eid}').status_code==200  # Public fantasy showcase remains open.
+    r=visitor.get('/api/cosmos/eras')
+    if r.status_code==404:
+        pytest.skip('Older local V15 base does not include cosmos; V16 GitHub does')
+    assert r.status_code==200,r.text
+    assert eid not in {e['id'] for era in r.json()['eras'] for e in era['items']}
+    mine=alice.get('/api/cosmos/eras?scope=mine')
+    assert mine.status_code==200,mine.text
+    assert eid not in {e['id'] for era in mine.json()['eras'] for e in era['items']}
