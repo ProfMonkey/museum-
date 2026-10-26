@@ -16,6 +16,7 @@ from urllib.parse import urlencode, urlsplit
 from urllib.request import Request, urlopen
 
 from fastapi import Depends, Query
+from taxonomy import CATEGORY_TO_DOMAIN
 
 CACHE_TTL = 6 * 60 * 60
 _cache_lock = threading.Lock()
@@ -258,6 +259,13 @@ def mount_world_museums(app, db, maybe_user, require_user, now, fail):
                 VALUES(?,?,?,?,?,?,?,?,?,?,?)""", (user["id"], title, desc, story, item.get("category", "艺术"), tags,
                 item.get("image_url", ""), item.get("source_url", ""), "private", now(), now()))
             exhibit_id = cur.lastrowid
+            raw_category = str(item.get("category", "艺术"))
+            domain = {
+                "绘画": "绘画与视觉艺术", "亚洲艺术": "历史与考古", "中国艺术": "历史与考古",
+                "织物与工艺": "雕塑与工艺", "历史艺术": "历史与考古", "宗教艺术": "神话与民俗",
+            }.get(raw_category, CATEGORY_TO_DOMAIN.get(raw_category, "绘画与视觉艺术"))
+            c.execute("UPDATE exhibits SET series=?,domain=?,time_bucket=?,time_basis=?,time_note=? WHERE id=?",
+                      ("藏品系列", domain, "时间不详", "制作/创作", str(item.get("date", ""))[:100], exhibit_id))
             c.execute("INSERT INTO world_museum_imports(user_id,catalog_id,exhibit_id,imported_at) VALUES(?,?,?,?)",
                       (user["id"], catalog_id, exhibit_id, now()))
         return {"ok": True, "already_collected": False, "exhibit_id": exhibit_id, "title": title, "visibility": "private"}

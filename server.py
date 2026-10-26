@@ -25,6 +25,7 @@ from pydantic import BaseModel, Field, field_validator
 
 BASE = Path(__file__).resolve().parent
 import restore_assets  # Extract archived artwork when cloned from GitHub.
+from taxonomy import CATEGORY_TO_DOMAIN, DOMAINS, SERIES, TIME_BASES, TIME_BUCKETS
 DATA = Path(os.getenv("WONDER_DATA_DIR", str(BASE / "data")))
 DATA.mkdir(parents=True, exist_ok=True)
 MEDIA = DATA / "media"
@@ -33,7 +34,7 @@ DATABASE = DATA / "wonder.db"
 IS_SECURE = os.getenv("WONDER_COOKIE_SECURE", "0") == "1"
 SESSION_SECONDS = 60 * 60 * 24 * 21
 
-app = FastAPI(title="万物博物馆 API", version="9.0", docs_url="/api/docs", redoc_url=None)
+app = FastAPI(title="万物博物馆 API", version="10.0", docs_url="/api/docs", redoc_url=None)
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 app.mount("/media", StaticFiles(directory=MEDIA), name="media")
 
@@ -71,8 +72,10 @@ def initialize():
         CREATE TABLE IF NOT EXISTS exhibits(
           id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
           title TEXT NOT NULL, description TEXT NOT NULL DEFAULT '', story TEXT NOT NULL DEFAULT '',
-          category TEXT NOT NULL DEFAULT '其他', tags TEXT NOT NULL DEFAULT '',
-          image_url TEXT NOT NULL DEFAULT '', source_url TEXT NOT NULL DEFAULT '',
+          category TEXT NOT NULL DEFAULT '其他',
+          series TEXT NOT NULL DEFAULT '民间奇趣', domain TEXT NOT NULL DEFAULT '其他',
+          time_bucket TEXT NOT NULL DEFAULT '时间不详', time_basis TEXT NOT NULL DEFAULT '不详', time_note TEXT NOT NULL DEFAULT '',
+          tags TEXT NOT NULL DEFAULT '', image_url TEXT NOT NULL DEFAULT '', source_url TEXT NOT NULL DEFAULT '',
           visibility TEXT NOT NULL CHECK(visibility IN ('public','private')) DEFAULT 'private',
           created_at TEXT NOT NULL, updated_at TEXT NOT NULL);
         CREATE INDEX IF NOT EXISTS ix_exhibits_public ON exhibits(visibility,created_at DESC);
@@ -116,6 +119,23 @@ def initialize():
           reason TEXT NOT NULL, created_at TEXT NOT NULL,
           UNIQUE(reporter_id,exhibit_id));
         """)
+        # Safe in-place migration: existing personal exhibits remain intact.
+        columns = {row["name"] for row in c.execute("PRAGMA table_info(exhibits)")}
+        migrate_legacy_domains = "domain" not in columns
+        additions = {
+            "series": "TEXT NOT NULL DEFAULT '民间奇趣'",
+            "domain": "TEXT NOT NULL DEFAULT '其他'",
+            "time_bucket": "TEXT NOT NULL DEFAULT '时间不详'",
+            "time_basis": "TEXT NOT NULL DEFAULT '不详'",
+            "time_note": "TEXT NOT NULL DEFAULT ''",
+        }
+        for column, declaration in additions.items():
+            if column not in columns:
+                c.execute(f"ALTER TABLE exhibits ADD COLUMN {column} {declaration}")
+        if migrate_legacy_domains:
+            for legacy_category, domain_name in CATEGORY_TO_DOMAIN.items():
+                c.execute("UPDATE exhibits SET domain=? WHERE category=?", (domain_name, legacy_category))
+        c.execute("CREATE INDEX IF NOT EXISTS ix_exhibits_taxonomy ON exhibits(visibility,series,domain,time_bucket)")
 
 
 initialize()
@@ -172,11 +192,24 @@ class ExhibitPayload(BaseModel):
     title: str = Field(min_length=1, max_length=100)
     description: str = Field(default="", max_length=600)
     story: str = Field(default="", max_length=5000)
-    category: str = Field(default="其他", max_length=24)
+    category: str = Field(default="其他", max_length=48)
+    series: Literal["藏品系列", "民间奇趣"] = "民间奇趣"
+    domain: str = Field(default="其他", max_length=32)
+    time_bucket: Literal["亿年前", "百万年前", "远古与史前", "千年至万年前", "近千年", "近现代", "近30年", "最近一年", "此刻/实时", "跨越多个时期", "时间不详"] = "时间不详"
+    time_basis: Literal["形成/演化", "制作/创作", "发明/发布", "发现/出土", "走红/传播", "事件发生", "长期/跨时期", "不详"] = "不详"
+    time_note: str = Field(default="", max_length=100)
     tags: str = Field(default="", max_length=200)
     image_url: str = Field(default="", max_length=500)
     source_url: str = Field(default="", max_length=500)
     visibility: Literal["public", "private"] = "private"
+
+    @field_validator("domain")
+    @classmethod
+    def valid_domain(cls, v):
+        v = v.strip()
+        if v not in DOMAINS:
+            raise ValueError("请选择有效的领域分类")
+        return v
 
     @field_validator("image_url", "source_url")
     @classmethod
@@ -243,7 +276,19 @@ def homepage():
 
 @app.get("/api/health")
 def health():
-    return {"ok": True, "version": "9.0", "database": "sqlite"}
+    return {"ok": True, "version": "10.0", "database": "sqlite"}
+
+
+@app.get("/api/taxonomy")
+def get_taxonomy():
+    from taxonomy import DOMAIN_CATEGORIES
+    return {
+        "series": list(SERIES),
+        "domains": list(DOMAINS),
+        "categories": {key: list(value) for key, value in DOMAIN_CATEGORIES.items()},
+        "time_buckets": list(TIME_BUCKETS),
+        "time_bases": list(TIME_BASES),
+    }
 
 
 def set_session(c, user_id, response):
@@ -337,7 +382,7 @@ def read_exhibit(c, id, user, public_only=False):
 
 
 @app.get("/api/feed")
-def feed(q: str = "", category: str = "", sort: Literal["latest", "popular"] = "latest", page: int = 1, following: bool = False, user=Depends(maybe_user)):
+def feed(q: str = "", category: str = "", domain: str = "", series: str = "", time_bucket: str = "", sort: Literal["latest", "popular"] = "latest", page: int = 1, following: bool = False, user=Depends(maybe_user)):
     page = max(1, min(page, 9999))
     sql = item_select(user["id"] if user else 0) + " WHERE e.visibility='public'"
     args = [user["id"] if user else 0, user["id"] if user else 0]
@@ -350,7 +395,19 @@ def feed(q: str = "", category: str = "", sort: Literal["latest", "popular"] = "
         args.extend(["%" + q.strip()[:60] + "%"] * 4)
     if category and category != "全部":
         sql += " AND e.category=?"
-        args.append(category[:24])
+        args.append(category[:48])
+    if domain and domain != "全部":
+        if domain not in DOMAINS: fail(400, "未知领域分类")
+        sql += " AND e.domain=?"
+        args.append(domain)
+    if series and series != "全部":
+        if series not in SERIES: fail(400, "未知内容系列")
+        sql += " AND e.series=?"
+        args.append(series)
+    if time_bucket and time_bucket != "全部":
+        if time_bucket not in TIME_BUCKETS: fail(400, "未知时间分类")
+        sql += " AND e.time_bucket=?"
+        args.append(time_bucket)
     sql += " ORDER BY " + ("likes_count DESC, e.created_at DESC" if sort == "popular" else "e.created_at DESC")
     sql += " LIMIT 24 OFFSET ?"
     args.append((page - 1) * 24)
@@ -391,8 +448,8 @@ def create_exhibit(data: ExhibitPayload, user=Depends(require_user)):
     d = data.model_dump()
     d["tags"] = ",".join(dict.fromkeys(t.strip()[:24] for t in d["tags"].replace("，", ",").split(",") if t.strip()))[:200]
     with db() as c:
-        cur = c.execute("""INSERT INTO exhibits(user_id,title,description,story,category,tags,image_url,source_url,visibility,created_at,updated_at)
-        VALUES(?,?,?,?,?,?,?,?,?,?,?)""", (user["id"], d["title"].strip(), d["description"].strip(), d["story"].strip(), d["category"].strip() or "其他", d["tags"], d["image_url"], d["source_url"], d["visibility"], now(), now()))
+        cur = c.execute("""INSERT INTO exhibits(user_id,title,description,story,category,series,domain,time_bucket,time_basis,time_note,tags,image_url,source_url,visibility,created_at,updated_at)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""", (user["id"], d["title"].strip(), d["description"].strip(), d["story"].strip(), d["category"].strip() or "其他", d["series"], d["domain"], d["time_bucket"], d["time_basis"], d["time_note"].strip(), d["tags"], d["image_url"], d["source_url"], d["visibility"], now(), now()))
         return read_exhibit(c, cur.lastrowid, user)
 
 
@@ -404,8 +461,8 @@ def edit_exhibit(id: int, data: ExhibitPayload, user=Depends(require_user)):
             fail(403, "只能编辑自己的展品")
         d = data.model_dump()
         d["tags"] = ",".join(dict.fromkeys(t.strip()[:24] for t in d["tags"].replace("，", ",").split(",") if t.strip()))[:200]
-        c.execute("""UPDATE exhibits SET title=?,description=?,story=?,category=?,tags=?,image_url=?,source_url=?,visibility=?,updated_at=? WHERE id=?""",
-                  (d["title"].strip(),d["description"].strip(),d["story"].strip(),d["category"].strip() or "其他",d["tags"],d["image_url"],d["source_url"],d["visibility"],now(),id))
+        c.execute("""UPDATE exhibits SET title=?,description=?,story=?,category=?,series=?,domain=?,time_bucket=?,time_basis=?,time_note=?,tags=?,image_url=?,source_url=?,visibility=?,updated_at=? WHERE id=?""",
+                  (d["title"].strip(),d["description"].strip(),d["story"].strip(),d["category"].strip() or "其他",d["series"],d["domain"],d["time_bucket"],d["time_basis"],d["time_note"].strip(),d["tags"],d["image_url"],d["source_url"],d["visibility"],now(),id))
         return read_exhibit(c, id, user)
 
 
@@ -644,11 +701,11 @@ def import_v1(payload: dict,user=Depends(require_user)):
             image=str(raw.get("image","")).strip()
             if image.startswith("data:"): image=""  # old embedded base64 needs manual reupload
             try:
-                data=ExhibitPayload(title=str(raw.get("title",""))[:100],description=str(raw.get("description",""))[:600],story=str(raw.get("story",""))[:5000],category=str(raw.get("category","其他"))[:24],tags=",".join(str(t) for t in raw.get("tags",[])[:12])[:200] if isinstance(raw.get("tags"),list) else "",image_url=image[:500],source_url=str(raw.get("source", ""))[:500],visibility="private")
+                data=ExhibitPayload(title=str(raw.get("title",""))[:100],description=str(raw.get("description",""))[:600],story=str(raw.get("story",""))[:5000],category=str(raw.get("category","其他"))[:48],domain=CATEGORY_TO_DOMAIN.get(str(raw.get("category","其他")),"其他"),tags=",".join(str(t) for t in raw.get("tags",[])[:12])[:200] if isinstance(raw.get("tags"),list) else "",image_url=image[:500],source_url=str(raw.get("source", ""))[:500],visibility="private")
             except Exception: continue
             d=data.model_dump()
-            c.execute("INSERT INTO exhibits(user_id,title,description,story,category,tags,image_url,source_url,visibility,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
-                      (user["id"],d["title"],d["description"],d["story"],d["category"],d["tags"],d["image_url"],d["source_url"],"private",now(),now()))
+            c.execute("INSERT INTO exhibits(user_id,title,description,story,category,series,domain,time_bucket,time_basis,time_note,tags,image_url,source_url,visibility,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                      (user["id"],d["title"],d["description"],d["story"],d["category"],d["series"],d["domain"],d["time_bucket"],d["time_basis"],d["time_note"],d["tags"],d["image_url"],d["source_url"],"private",now(),now()))
             imported+=1
     return {"imported":imported,"notice":"导入展品默认为私密；旧版内嵌图片需重新上传。"}
 
@@ -695,15 +752,15 @@ def import_v2(payload:dict,user=Depends(require_user)):
             try:
                 im=str(raw.get("image_url",""))
                 if im.startswith('/media/') and not (MEDIA/im[7:]).is_file(): im=""
-                d=ExhibitPayload(title=str(raw.get("title",""))[:100],description=str(raw.get("description",""))[:600],story=str(raw.get("story",""))[:5000],category=str(raw.get("category","其他"))[:24],tags=",".join(str(t)[:24] for t in raw.get("tags",[])[:12]) if isinstance(raw.get("tags"),list) else str(raw.get("tags", ""))[:200],image_url=im[:500],source_url=str(raw.get("source_url",""))[:500],visibility=raw.get("visibility","private"))
+                d=ExhibitPayload(title=str(raw.get("title",""))[:100],description=str(raw.get("description",""))[:600],story=str(raw.get("story",""))[:5000],category=str(raw.get("category","其他"))[:48],series=raw.get("series","民间奇趣"),domain=raw.get("domain",CATEGORY_TO_DOMAIN.get(str(raw.get("category","其他")),"其他")),time_bucket=raw.get("time_bucket","时间不详"),time_basis=raw.get("time_basis","不详"),time_note=str(raw.get("time_note",""))[:100],tags=",".join(str(t)[:24] for t in raw.get("tags",[])[:12]) if isinstance(raw.get("tags"),list) else str(raw.get("tags", ""))[:200],image_url=im[:500],source_url=str(raw.get("source_url",""))[:500],visibility=raw.get("visibility","private"))
             except Exception:continue
             x=d.model_dump()
             # Repeat imports of the same backup should not endlessly copy identical records.
             existing=c.execute("SELECT id FROM exhibits WHERE user_id=? AND title=? AND description=? AND source_url=?",(user["id"],x["title"],x["description"],x["source_url"])).fetchone()
             if existing: new_id=existing["id"]
             else:
-                cur=c.execute("""INSERT INTO exhibits(user_id,title,description,story,category,tags,image_url,source_url,visibility,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?)""",
-                    (user["id"],x["title"],x["description"],x["story"],x["category"],x["tags"],x["image_url"],x["source_url"],x["visibility"],now(),now()))
+                cur=c.execute("""INSERT INTO exhibits(user_id,title,description,story,category,series,domain,time_bucket,time_basis,time_note,tags,image_url,source_url,visibility,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                    (user["id"],x["title"],x["description"],x["story"],x["category"],x["series"],x["domain"],x["time_bucket"],x["time_basis"],x["time_note"],x["tags"],x["image_url"],x["source_url"],x["visibility"],now(),now()))
                 new_id=cur.lastrowid
             idmap[raw.get("id")]=new_id
         hall_count=0

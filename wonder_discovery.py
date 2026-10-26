@@ -18,6 +18,7 @@ from urllib.request import Request, urlopen
 
 from fastapi import Depends, Query
 from pydantic import BaseModel, Field, field_validator
+from taxonomy import CATEGORY_TO_DOMAIN
 
 from world_museums import _json, _load_met, _load_aic, _load_cma, MET_LICENSE, AIC_LICENSE, CMA_LICENSE
 
@@ -313,6 +314,9 @@ def mount_wonder_discovery(app, db, maybe_user, require_user, now, fail):
             if existing: return {"ok":True, "already_collected":True, "exhibit_id":existing["id"], "title":payload.title}
             cur = c.execute("""INSERT INTO exhibits(user_id,title,description,story,category,tags,image_url,source_url,visibility,created_at,updated_at)
                 VALUES(?,?,?,?,?,?,?,?,?,?,?)""", (user["id"],payload.title,payload.description,story,payload.category,tags,payload.image_url,payload.source_url,"private",now(),now()))
+            domain = CATEGORY_TO_DOMAIN.get(payload.category, "其他")
+            c.execute("UPDATE exhibits SET series=?,domain=?,time_bucket=?,time_basis=? WHERE id=?",
+                      ("民间奇趣", domain, "时间不详", "不详", cur.lastrowid))
             return {"ok":True, "already_collected":False, "exhibit_id":cur.lastrowid, "title":payload.title, "visibility":"private"}
 
     @app.post("/api/insights/event", status_code=201)
