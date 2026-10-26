@@ -371,7 +371,7 @@ def mount_wonder_discovery(app, db, maybe_user, require_user, now, fail):
         api_query = _translate_collection_query(query)
 
         def search_met():
-            raw = _fetch_json("https://collectionapi.metmuseum.org/public/collection/v1/search?" + urlencode({"hasImages":"true", "q":api_query}), 4.5)
+            raw = _fetch_json("https://collectionapi.metmuseum.org/public/collection/v1.1/search?" + urlencode({"hasImages":"true", "q":api_query, "limit":8, "offset":0}), 4.5)
             ids = (raw.get("objectIDs") or [])[:7]
             seeds = []
             for oid in ids:
