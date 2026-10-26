@@ -229,6 +229,12 @@ def mount_fantasy(app, db, require_user, maybe_user, now, fail):
             if draft.visibility=='private':
                 c.execute('''UPDATE exhibits SET visibility='private',updated_at=? WHERE id IN
                     (SELECT exhibit_id FROM fantasy_relics WHERE world_id=?)''',(now(),world_id))
+                # Withdraw collaboration and civilization publicity on closing a world.
+                # Reopening never silently republishes consented content.
+                if c.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='fantasy_civilizations'").fetchone():
+                    c.execute("UPDATE fantasy_civilizations SET visibility='private' WHERE world_id=?", (world_id,))
+                if c.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='fantasy_encounters'").fetchone():
+                    c.execute("UPDATE fantasy_encounters SET status='withdrawn',updated_at=? WHERE status IN ('pending','accepted') AND (from_world_id=? OR to_world_id=?)",(now(),world_id,world_id))
         return {'visibility':draft.visibility, 'notice':'世界关闭时已同步隐藏全部奇物；重新开放世界不会自动公开奇物'}
 
     @app.delete('/api/fantasy/worlds/{world_id}')

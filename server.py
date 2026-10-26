@@ -34,7 +34,7 @@ DATABASE = DATA / "wonder.db"
 IS_SECURE = os.getenv("WONDER_COOKIE_SECURE", "0") == "1"
 SESSION_SECONDS = 60 * 60 * 24 * 21
 
-app = FastAPI(title="万物博物馆 API", version="16.0", docs_url="/api/docs", redoc_url=None)
+app = FastAPI(title="万物博物馆 API", version="17.0", docs_url="/api/docs", redoc_url=None)
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 app.mount("/media", StaticFiles(directory=MEDIA), name="media")
 
@@ -276,7 +276,7 @@ def homepage():
 
 @app.get("/api/health")
 def health():
-    return {"ok": True, "version": "16.0", "database": "sqlite"}
+    return {"ok": True, "version": "17.0", "database": "sqlite"}
 
 
 @app.get("/api/taxonomy")
@@ -850,3 +850,7 @@ mount_expeditions(app, db, require_user, now)
 # V16: creator-owned original fantasy worlds and explicitly fictional relics.
 from fantasy_api import mount_fantasy
 mount_fantasy(app, db, require_user, maybe_user, now, fail)
+
+# V17: consensual fiction diplomacy, civilization cards and jointly reviewed lore.
+from diplomacy_api import mount_diplomacy
+mount_diplomacy(app, db, require_user, maybe_user, now, fail)

@@ -10,7 +10,7 @@ def test_v9_shell_and_new_assets_are_served(env):
     assert '/static/culture.js' in html
     assert '/static/virtual-gallery.js' in html
     assert '/static/virtual-gallery-3d.js' in html
-    assert 'WORLD 16' in html
+    assert 'WORLD 17' in html
     for path, token in [
         ('/static/culture.js','cnmeme.wiki/api/v1/public/memes'),
         ('/static/culture.js','Hacker News'),
@@ -23,8 +23,8 @@ def test_v9_shell_and_new_assets_are_served(env):
         assert r.status_code==200, path
         assert token in r.text, path
 
-def test_health_version_is_v16(env):
+def test_health_version_is_v17(env):
     client=env[0]
     data=client.get('/api/health').json()
     assert data['ok'] is True
-    assert data['version']=='16.0'
+    assert data['version']=='17.0'
