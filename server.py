@@ -34,7 +34,7 @@ DATABASE = DATA / "wonder.db"
 IS_SECURE = os.getenv("WONDER_COOKIE_SECURE", "0") == "1"
 SESSION_SECONDS = 60 * 60 * 24 * 21
 
-app = FastAPI(title="万物博物馆 API", version="14.0", docs_url="/api/docs", redoc_url=None)
+app = FastAPI(title="万物博物馆 API", version="15.0", docs_url="/api/docs", redoc_url=None)
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 app.mount("/media", StaticFiles(directory=MEDIA), name="media")
 
@@ -276,7 +276,7 @@ def homepage():
 
 @app.get("/api/health")
 def health():
-    return {"ok": True, "version": "14.0", "database": "sqlite"}
+    return {"ok": True, "version": "15.0", "database": "sqlite"}
 
 
 @app.get("/api/taxonomy")
@@ -828,3 +828,7 @@ mount_curation(app, db, require_user, fail)
 # V14: official museum specimens and art collection discovery, private saves.
 from world_sources_v14 import mount_world_sources
 mount_world_sources(app, db, require_user, now, fail)
+
+# V15: NASA and Library of Congress discovery routes with private saves.
+from expeditions_v15 import mount_expeditions
+mount_expeditions(app, db, require_user, now)
