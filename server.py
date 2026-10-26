@@ -741,6 +741,10 @@ mount_features(app, db, read_exhibit, maybe_user, require_user, now, fail)
 from memories_api import mount_memories
 mount_memories(app, db, read_exhibit, require_user, now, fail)
 
+# V7: cross-domain routes and private journey bookmarks.
+from atlas_paths import mount_atlas
+mount_atlas(app, db, maybe_user, require_user, now, fail)
+
 # Read-only starter collection sourced from official open-access museum APIs.
 from world_museums import mount_world_museums
 mount_world_museums(app, db, maybe_user, require_user, now, fail)
