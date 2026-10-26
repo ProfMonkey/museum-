@@ -61,7 +61,7 @@
       const name = `${from?.title||edge.from} → ${to?.title||edge.to}`;
       return `<article class="cx-reason"><div><span class="cx-tag ${edge.source==='curator'?'cx-hand':''}">${edge.source==='curator'?'馆长关联':'系统推荐'}</span><strong>${esc(edge.label)}</strong></div><p>${esc(name)}</p><p>${esc(edge.explanation)}</p><div class="cx-reason-actions">${edge.author?`<small>由 ${esc(edge.author)} 提出 · 未核验</small>`:'<small>仅由共同分类或标签计算</small>'}${other?`<button type="button" data-cx="view" data-id="${other.id}">查看 ${esc(other.title)} ↗</button>`:''}${f.is_mine && edge.source==='suggestion' && edge.from===f.id?`<button type="button" data-cx="pick" data-id="${edge.to}">手动补充关联依据 ＋</button>`:''}${edge.editable?`<button type="button" data-cx="remove" data-id="${edge.id}" data-origin="${edge.from}">删除关联</button>`:''}</div></article>`;
     }).join('');
-    return `<div class="cx-view"><header class="cx-top"><div><div class="eyebrow">WONDER ATLAS · EXPLAINABLE LINKS</div><h2>${esc(f.title)}</h2><p>不是随意牵线：每条推荐都可以看到它为什么出现。</p></div><div class="cx-actions"><button class="ghost" type="button" data-cx="depth" data-depth="${graph.depth===1?2:1}">${graph.depth===1?'扩展两层':'收起一层'}</button><button class="ghost" type="button" data-cx="detail" data-id="${f.id}">查看原始档案</button></div></header>
+    return `<div class="cx-view"><header class="cx-top"><div><div class="eyebrow">WONDER ATLAS · EXPLAINABLE LINKS</div><h2>${esc(f.title)}</h2><p>不是随意牵线：每条推荐都可以看到它为什么出现。</p></div><div class="cx-actions"><button class="ghost" type="button" data-cx="depth" data-depth="${graph.depth===1?2:1}">${graph.depth===1?'扩展两层':'收起一层'}</button><button class="ghost" type="button" data-cx="detail" data-id="${f.id}">查看原始档案</button><button class="ghost" type="button" data-cx="cosmos" data-id="${f.id}">更深入的证据追溯 ↗</button></div></header>
     <section class="cx-paths"><div><h3>🏛️ 藏品分类路径</h3>${crumbs(notes.collection)}</div><div><h3>⏳ 时间路径</h3>${crumbs(notes.time)}${notes.time_note?`<small>原始年代：${esc(notes.time_note)}</small>`:''}</div><p>${esc(notes.source_status)} · ${esc(notes.notice)}</p></section>
     <section class="cx-visual"><div class="cx-key"><span>● 馆长提出</span><span>╌ 分类推荐</span><small>${graph.nodes.length} 个可见节点 · ${graph.edges.length} 条关联</small></div>${network(graph)}</section>
     <p class="cx-disclaimer">${esc(graph.disclaimer)}</p>
@@ -89,6 +89,7 @@
       if (action==='open' || action==='view') await show(button.dataset.id, action==='view'?1:depth);
       else if (action==='depth' && current) await show(current.focus.id, button.dataset.depth);
       else if (action==='detail') await openDetail(Number(button.dataset.id));
+      else if (action==='cosmos') { close();window.WonderCosmos?.focus(Number(button.dataset.id)); }
       else if (action==='pick') { const field=document.querySelector('#cxCreate [name=target_id]'); if(field){field.value=button.dataset.id;document.querySelector('#cxCreate')?.scrollIntoView({behavior:'smooth',block:'center'});field.focus();} }
       else if (action==='remove' && current) {
         if (!window.confirm('删除你提交的这条关联？')) return;
