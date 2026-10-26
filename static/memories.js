@@ -2,7 +2,7 @@
    No third-party music URL, no microphone access, no passive analytics. */
 (() => {
 'use strict';
-const M={items:[],reels:[],selected:new Set(),filter:'all',film:[],index:0,playing:false,
+const M={tab:'cinema',items:[],reels:[],selected:new Set(),filter:'all',film:[],index:0,playing:false,
        timer:null,soundTimer:null,audioCtx:null,audioNodes:[],music:'piano',customAudio:null,customURL:null,
        sourceName:'',caption:true,interval:6200};
 const e=E;
@@ -39,13 +39,15 @@ function playMusic(){stopMusic();if(M.music==='silent')return;if(M.music==='cust
 }
 function saveUserSetting(flag){if(!S.user)return;localStorage.setItem(key(),flag?'1':'0');}
 function selected(){return M.items.filter(x=>M.selected.has(x.id));}
+function tabBar(){return `<div class="mem-subtabs" role="tablist"><button role="tab" aria-selected="${M.tab==='cinema'}" class="${M.tab==='cinema'?'active':''}" data-memory="switchTab" data-tab="cinema">♫ 回忆剧场</button><button role="tab" aria-selected="${M.tab==='growth'}" class="${M.tab==='growth'?'active':''}" data-memory="switchTab" data-tab="growth">✦ 我的世界成长史</button></div>`}
 async function render(){if(!S.user)return guest('你的回忆，等你点亮','登录后可以主动开启浏览足迹，再从看过的展品中剪辑回忆影片。');
+  if(M.tab==='growth')return tabBar()+await WonderGrowth.render();
   const [hist,reels]=await Promise.all([api('/memories/history'),api('/memories/reels')]);M.items=hist.items;M.reels=reels;
   // Filter out previously selected items no longer visible.
   const possible=new Set(M.items.map(x=>x.id));M.selected=new Set([...M.selected].filter(id=>possible.has(id)));
   const dates=new Set(M.items.map(x=>day(x.last_seen_at)));const cats=new Set(M.items.map(x=>genre(x)));
   const visible=M.items.filter(x=>M.filter==='all'||genre(x)===M.filter);
-  return `<section class="memory-hero"><span class="eyebrow">WONDER ATLAS · PRIVATE MEMORIES</span><h1>回忆，是时间留下的展品。</h1><p>把你曾经看过的奇物，重新编排成一场属于自己的电影。<br>选择配乐，进入剧场，让每一段好奇心再次闪光。</p>
+  return `${tabBar()}<section class="memory-hero"><span class="eyebrow">WONDER ATLAS · PRIVATE MEMORIES</span><h1>回忆，是时间留下的展品。</h1><p>把你曾经看过的奇物，重新编排成一场属于自己的电影。<br>选择配乐，进入剧场，让每一段好奇心再次闪光。</p>
   <div class="mem-hero-actions"><button class="primary" data-memory="make" ${M.items.length?'':'disabled'}>▶ 从我的足迹放映</button><button class="ghost" data-memory="playAll" ${M.items.length?'':'disabled'}>✦ 播放全部回忆</button><button class="ghost" data-memory="revisit" ${M.items.length?'':'disabled'}>↻ 偶遇旧日奇物</button></div>
   <div class="mem-orbit">✧<i>✶</i><b>◌</b></div></section>
   <div class="memory-controls"><div><b>🔒 浏览足迹记录</b><p>默认关闭。开启之后，只有你点击进入展品详情时才会记录；别人看不到你的足迹。</p></div>
@@ -92,7 +94,8 @@ async function renderToDom(){$('#main').innerHTML=await render()}
 function userOptions(){return {title:(document.getElementById('mem-title')?.value||'我的万物回忆').trim().slice(0,60),music:document.getElementById('mem-music')?.value||'piano'}}
 document.addEventListener('click',async event=>{const b=event.target.closest('[data-memory]');if(!b)return;
   const act=b.dataset.memory,id=Number(b.dataset.id);event.preventDefault();try{
-    if(act==='toggle'){saveUserSetting(!enabled());toast(enabled()?'现在开始记录你主动打开的展品':'浏览足迹记录已暂停');await refresh()}
+    if(act==='switchTab'){M.tab=b.dataset.tab==='growth'?'growth':'cinema';await refresh()}
+    else if(act==='toggle'){saveUserSetting(!enabled());toast(enabled()?'现在开始记录你主动打开的展品':'浏览足迹记录已暂停');await refresh()}
     else if(act==='selectAll'){M.items.filter(x=>M.filter==='all'||genre(x)===M.filter).forEach(x=>M.selected.add(x.id));await refresh()}
     else if(act==='selectNone'){M.selected.clear();await refresh()}
     else if(act==='forget'){await api('/memories/history/'+id,{method:'DELETE'});M.selected.delete(id);await refresh()}
@@ -125,5 +128,5 @@ document.addEventListener('keydown',ev=>{if(!document.getElementById('memoryCine
   if(ev.key==='ArrowLeft'){ev.preventDefault();step(-1)}
   if(ev.key===' '){ev.preventDefault();togglePlay()}
 });
-window.WonderMemories={render,track,stop};
+window.WonderMemories={render,track,stop,playFilm:openFilm, isGrowth:()=>M.tab==='growth',switchTab:async tab=>{M.tab=tab==='growth'?'growth':'cinema';await refresh()}};
 })();

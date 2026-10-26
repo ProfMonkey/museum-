@@ -1,0 +1,29 @@
+/* V8 growth history: follows museum black and muted gold, no second navigation sidebar. */
+.mem-subtabs{display:flex;gap:10px;margin:20px 0 25px;border-bottom:1px solid #cca66132;padding-bottom:16px;flex-wrap:wrap}
+.mem-subtabs button{border:1px solid #cba66b45;border-radius:40px;padding:10px 22px;background:transparent;color:#d7c7b2;transition:background .2s}
+.mem-subtabs button.active,.mem-subtabs button:hover{background:#d3aa6a;color:#17110c;border-color:#d3aa6a}
+.grow-hero{border:1px solid #e2b77245;background:linear-gradient(145deg,#1c1a1b,#0d0b0a 60%,#292016);border-radius:22px;padding:35px;overflow:hidden;position:relative;margin:0 0 18px}
+.grow-hero .eyebrow,.grow-panel small,.grow-cinema .eyebrow{color:#d7ae69;letter-spacing:2px;font-size:11px}
+.grow-hero-grid{display:flex;justify-content:space-between;align-items:center;gap:32px}
+.grow-hero h1{font:clamp(29px,4vw,52px)/1.25 Georgia,'Songti SC',serif;color:#f0d59e;margin:16px 0}
+.grow-hero h1 em{font-style:normal;color:#eee5d8}
+.grow-hero p,.grow-panel p,.grow-cinema p,.grow-timeline p{color:#bfb2a4;line-height:1.8;max-width:670px}
+.grow-years{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:24px}.grow-years select,.grow-film-actions select{background:#1d1a16;color:#eed3a5;border:1px solid #c4a06670;padding:11px;border-radius:10px}
+.grow-orb{width:185px;aspect-ratio:1;border-radius:50%;border:1px solid #c3a36b;box-shadow:0 0 0 18px #b58d3110,inset 0 0 55px #d1ad5660;display:grid;place-items:center;color:#e1bb75;font-size:78px;flex-shrink:0;position:relative}
+.grow-orb>span{font:700 27px Georgia,serif;position:absolute;bottom:21px;background:#17120eae;padding:3px 12px;border-radius:12px;text-align:center}
+.grow-orb small{display:block;font:10px/1.4 sans-serif;color:#d6c5a8;max-width:110px}
+.grow-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:11px;margin:17px 0}
+.grow-stat{border:1px solid #ddbb8742;background:#141414;border-radius:14px;padding:16px;min-width:0}.grow-stat span,.grow-stat small{display:block;color:#b5a995}.grow-stat strong{display:block;color:#f2d59a;font:36px Georgia,serif;margin:8px 0}.grow-stat small{font-size:11px}
+.grow-two{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;margin:18px 0}
+.grow-panel,.grow-timeline{border:1px solid #dbc08d36;background:#100f0e;border-radius:18px;padding:23px;min-width:0}
+.grow-panel h2,.grow-timeline h2,.grow-cinema h2{font:26px Georgia,'Songti SC',serif;color:#ead09e;margin:8px 0}
+.grow-months{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));align-items:end;gap:7px;min-height:180px;margin-top:24px}
+.grow-month{text-align:center;color:#b7ae9f;min-width:0}.grow-month strong{display:block;height:20px;font:12px sans-serif}.grow-bar-wrap{height:126px;display:flex;align-items:flex-end;justify-content:center;background:#ffffff07;border-radius:8px;padding:3px}.grow-bar-wrap i{width:100%;background:linear-gradient(#efce8c,#8c693d);border-radius:6px;min-height:3px}.grow-month small{font-size:10px;letter-spacing:0;margin-top:7px;display:block}
+.grow-cat{display:grid;grid-template-columns:100px 1fr 28px;gap:10px;align-items:center;margin:15px 0;color:#d2c7b8}.grow-cat>div{height:8px;background:#241d15;border-radius:5px;overflow:hidden}.grow-cat i{display:block;height:100%;background:linear-gradient(90deg,#a3783b,#f3d18c)}.grow-cat b{text-align:right;color:#f2d59a}
+.grow-cinema{border:1px solid #dfb97473;background:linear-gradient(120deg,#271c12,#171313,#080808);border-radius:18px;margin:18px 0;padding:26px;display:flex;gap:20px;justify-content:space-between;align-items:center}.grow-footnote{color:#c1a678;font-size:12px}.grow-film-actions{display:flex;flex-direction:column;gap:10px;min-width:190px}
+.grow-timeline{margin:18px 0}.grow-filters{display:flex;flex-wrap:wrap;gap:7px;margin:20px 0}.grow-filters button{border:1px solid #d2b17740;color:#d9c5a6;background:transparent;border-radius:20px;padding:7px 14px}.grow-filters button.active{background:#d2ad73;color:#100c08}
+.grow-events{max-height:620px;overflow:auto;padding:3px 6px 3px 2px}.grow-event{display:flex;gap:16px;align-items:flex-start;border-left:1px solid #b89a6380;margin-left:16px;padding:0 0 26px 22px;position:relative}.grow-event-pin{position:absolute;left:-16px;top:3px;background:#282016;color:#d6b374;border:1px solid #bd9e6a;width:31px;height:31px;border-radius:50%;display:grid;place-items:center}.grow-event>div:nth-child(2){flex:1;min-width:0}.grow-event strong{color:#e8d7b8;font-size:15px}.grow-event p{margin:4px 0;font-size:12px}.grow-event-time{color:#b59b71;font-size:11px;margin:4px 0 6px}.grow-open{font-size:12px}.grow-empty{padding:20px;color:#baad9d}
+.grow-privacy{margin:24px 0;color:#ada293;font-size:12px;line-height:1.8}
+@media(max-width:950px){.grow-stats{grid-template-columns:repeat(3,1fr)}.grow-two{grid-template-columns:1fr}.grow-orb{width:140px}}
+@media(max-width:650px){.grow-hero{padding:20px}.grow-hero-grid{display:block}.grow-orb{display:none}.grow-stats{grid-template-columns:repeat(2,1fr)}.grow-cinema{display:block}.grow-film-actions{margin-top:18px}.grow-stat strong{font-size:28px}.grow-panel{padding:15px}.grow-months{gap:3px}.grow-cat{grid-template-columns:82px 1fr 22px}}
+@media(prefers-reduced-motion:reduce){.mem-subtabs button{transition:none}}

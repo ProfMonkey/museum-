@@ -33,7 +33,7 @@ DATABASE = DATA / "wonder.db"
 IS_SECURE = os.getenv("WONDER_COOKIE_SECURE", "0") == "1"
 SESSION_SECONDS = 60 * 60 * 24 * 21
 
-app = FastAPI(title="万物博物馆 API", version="5.0", docs_url="/api/docs", redoc_url=None)
+app = FastAPI(title="万物博物馆 API", version="8.0", docs_url="/api/docs", redoc_url=None)
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 app.mount("/media", StaticFiles(directory=MEDIA), name="media")
 
@@ -243,7 +243,7 @@ def homepage():
 
 @app.get("/api/health")
 def health():
-    return {"ok": True, "version": "5.0", "database": "sqlite"}
+    return {"ok": True, "version": "8.0", "database": "sqlite"}
 
 
 def set_session(c, user_id, response):
@@ -752,3 +752,7 @@ mount_world_museums(app, db, maybe_user, require_user, now, fail)
 # V6: broad museum directory, live curiosity radar and aggregate feature feedback.
 from wonder_discovery import mount_wonder_discovery
 mount_wonder_discovery(app, db, maybe_user, require_user, now, fail)
+
+# V8: private annual growth recap derived from member records (no passive tracking).
+from growth_api import mount_growth
+mount_growth(app, db, read_exhibit, require_user, now, fail)

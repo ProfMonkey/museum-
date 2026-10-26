@@ -52,6 +52,20 @@
     if(RD.tab==='collections') return renderCollections();
     return renderRadar();
   }
+  function priorityAdvice(items) {
+    // Advisory only: votes are all-time, active use is restricted to the selected window.
+    const enough=items.filter(x=>x.active_users>=5 && x.votes>=5);
+    if(!enough.length) return `<section class="wd-vote-callout"><b>开发建议 · 还需要真实样本</b><span>至少 5 位近期活跃用户和 5 张累计偏好票，才会展示初步建议。目前继续收集真实使用与反馈，不制造排行榜。</span></section>`;
+    const scored=enough.map(x=>{
+      const ratio=x.votes?x.improve_votes/x.votes:0;
+      const love=x.votes?x.love_votes/x.votes:0;
+      if(ratio>=.4 && x.actions>=3)return {...x,decision:'优先修复体验',why:'改进票较多，且有实际操作数据'};
+      if(love>=.6 && x.actions>=5)return {...x,decision:'值得深入打磨',why:'喜欢票占比较高，且有人持续使用'};
+      return {...x,decision:'持续观察',why:'尚无足够明显的开发方向信号'};
+    });
+    scored.sort((a,b)=>({ '优先修复体验':3,'值得深入打磨':2,'持续观察':1}[b.decision]-{'优先修复体验':3,'值得深入打磨':2,'持续观察':1}[a.decision]) || b.active_users-a.active_users);
+    return `<section class="wd-vote-callout"><b>下一步开发参考（初步）</b><span>${scored.slice(0,3).map(x=>`${esc(x.name)}：${esc(x.decision)}（${esc(x.why)}）`).join('　·　')}。这些是透明规则产生的提示，不等于已验证的产品结论。</span></section>`;
+  }
   async function renderInsights() {
     let data; try { data=await api('/insights/summary?days='+RD.days); } catch(err) { return `<div class="wd-empty"><b>功能热度暂时不可用</b><p>${esc(err.message)}</p></div>`; }
     RD.summary=data;const items=data.items||[];const max=Math.max(1,...items.map(x=>x.opens+x.actions));
@@ -59,6 +73,7 @@
     <div class="wd-insight-toolbar"><div><div class="eyebrow">FEATURE PRIORITY BOARD</div><h2>功能热度与投票</h2><p>访问和操作按周期统计；喜欢票与改进票为累计投票。</p></div><select id="wdInsightDays"><option value="7" ${RD.days===7?'selected':''}>最近 7 天</option><option value="30" ${RD.days===30?'selected':''}>最近 30 天</option><option value="90" ${RD.days===90?'selected':''}>最近 90 天</option></select></div>
     <div class="wd-insight-summary"><div><strong>${data.total_events||0}</strong><span>近 ${data.days} 天功能使用记录</span></div><div><strong>${data.total_votes||0}</strong><span>累计功能偏好票</span></div><div><strong>${items.filter(x=>x.love_votes>0).length}</strong><span>获得喜欢票的功能</span></div></div>
     <div class="wd-vote-callout"><b>馆长投票</b><span>每个账号对每项功能保留一票，可以随时改票。还没多少数据时，不会把“零票”伪装成热门。</span></div>
+    ${priorityAdvice(items)}
     <div class="wd-feature-rank">${items.map((x,i)=>`<article class="wd-feature-row"><div class="wd-rank">${String(i+1).padStart(2,'0')}</div><div class="wd-feature-info"><h3>${esc(x.name)}</h3><p>${esc(x.description)}</p><div class="wd-meter"><i style="width:${Math.max(0,Math.min(100,(x.opens+x.actions)/max*100))}%"></i></div><div class="wd-feature-stats"><span>打开 ${x.opens}</span><span>操作 ${x.actions}</span><span>活跃用户 ${x.active_users}</span><span>喜欢 ${x.love_votes}</span><span>想改进 ${x.improve_votes}</span></div></div><div class="wd-vote-buttons"><button data-wonder="vote" data-feature="${esc(x.key)}" data-value="love" class="${x.my_vote==='love'?'selected':''}">♥ 喜欢</button><button data-wonder="vote" data-feature="${esc(x.key)}" data-value="neutral" class="${x.my_vote==='neutral'?'selected':''}">一般</button><button data-wonder="vote" data-feature="${esc(x.key)}" data-value="improve" class="${x.my_vote==='improve'?'selected':''}">需改进</button></div></article>`).join('')}</div>
     <p class="wd-disclaimer">统计原则：仅登录用户的功能名和操作类型会被记录；不记录搜索词、展品 ID、私人展品内容、完整访问网址或 IP。只展示汇总值，不提供个人行为排行榜。首次启用后数据才会逐渐累积；喜欢票、使用量和改进票分别展示，不混成一个无法解释的分数。</p>`;
   }
