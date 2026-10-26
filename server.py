@@ -34,7 +34,7 @@ DATABASE = DATA / "wonder.db"
 IS_SECURE = os.getenv("WONDER_COOKIE_SECURE", "0") == "1"
 SESSION_SECONDS = 60 * 60 * 24 * 21
 
-app = FastAPI(title="万物博物馆 API", version="12.0", docs_url="/api/docs", redoc_url=None)
+app = FastAPI(title="万物博物馆 API", version="13.0", docs_url="/api/docs", redoc_url=None)
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 app.mount("/media", StaticFiles(directory=MEDIA), name="media")
 
@@ -276,7 +276,7 @@ def homepage():
 
 @app.get("/api/health")
 def health():
-    return {"ok": True, "version": "12.0", "database": "sqlite"}
+    return {"ok": True, "version": "13.0", "database": "sqlite"}
 
 
 @app.get("/api/taxonomy")
@@ -820,3 +820,7 @@ mount_connections(app, db, read_exhibit, maybe_user, require_user, now, fail)
 # V12: a shared world-time, evidence, and private interest-map explorer.
 from cosmos_api import mount_cosmos
 mount_cosmos(app, db, read_exhibit, maybe_user, require_user, now, fail)
+
+# V13: read-only institution time catalogue and private metadata quality checklist.
+from curation_api import mount_curation
+mount_curation(app, db, require_user, fail)

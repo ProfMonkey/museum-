@@ -1,0 +1,31 @@
+/* V13: restrained institutional dossier visual system on top of Cosmos. */
+.curation-rail,.curation-audit{margin-top:20px;background:linear-gradient(135deg,#171512,#0d141e);border:1px solid rgba(224,187,107,.30);border-radius:16px;padding:22px;box-shadow:0 8px 30px #0004}
+.curation-head{display:flex;align-items:flex-start;gap:16px}
+.curation-mark{border:1px solid #cfad6c73;border-radius:14px;padding:14px;color:#e5c987;background:#e3b65a10;font-size:25px;line-height:1}
+.curation-head small,.curation-kicker{color:#e6bd68;font-size:10px;font-weight:700;letter-spacing:.08em}
+.curation-head h3{margin:5px 0 7px;color:#f4e9d2;font-size:22px}
+.curation-head p,.curation-workbody p,.curation-empty{margin:0 0 8px;color:#b2bdc9;font-size:12px;line-height:1.7}
+.curation-works{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:20px}
+.curation-work{border:1px solid #bc9f6040;background:#ffffff04;border-radius:13px;overflow:hidden;min-width:0}
+.curation-cover{height:150px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 45%,#584b3025,#10141d);color:#e4bd77;font-size:36px}
+.curation-cover img{width:100%;height:100%;object-fit:contain;background:#151515}
+.curation-cover span{display:grid;text-align:center;gap:4px}.curation-cover small{font-size:10px;color:#9b9a91}
+.curation-workbody{padding:15px}
+.curation-workbody h4{margin:8px 0 6px;font-size:17px;color:#f4ebdc;font-weight:600;line-height:1.35}
+.curation-workbody p{font-size:11px;word-break:break-word}
+.curation-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px}
+.curation-actions a,.curation-actions button,.curation-toggle,.curation-reviewcard button,.curation-footer button{cursor:pointer;border:1px solid #bf9d614f;border-radius:8px;background:#d9b87211;color:#e9c985;padding:8px 10px;text-decoration:none;font-size:11px}
+.curation-actions button:disabled{opacity:.55;cursor:default}
+.curation-empty{padding:20px 2px 8px}
+.curation-footer{font-size:11px;color:#8995a4;line-height:1.65;margin-top:18px;border-top:1px solid #d3ae6030;padding-top:12px}
+.curation-footer button{border:0;background:transparent;padding:3px;color:#dec17a}
+.curation-metrics{display:flex;gap:10px;margin:17px 0;flex-wrap:wrap}
+.curation-metrics div{flex:1;min-width:95px;padding:12px;border:1px solid #bc9f6031;border-radius:11px}
+.curation-metrics b{display:block;font-size:26px;color:#f3e4bd}
+.curation-metrics span{display:block;font-size:11px;color:#abb7c6}
+.curation-toggle{width:100%;text-align:left;font-size:13px;padding:11px}
+.curation-review{display:grid;gap:10px;margin-top:12px}
+.curation-reviewcard{border:1px solid #c7a96b2e;border-radius:10px;padding:13px;background:#ffffff04}
+.curation-reviewcard>div{display:flex;justify-content:space-between;gap:8px}.curation-reviewcard strong{color:#f5e9cd}.curation-reviewcard span{color:#d8b76d;font-size:11px}
+.curation-reviewcard ul{padding-left:16px;color:#9eaab8;font-size:11px;line-height:1.7;margin:10px 0}.curation-reviewcard li{margin-bottom:5px}
+@media(max-width:640px){.curation-rail,.curation-audit{padding:14px}.curation-head h3{font-size:18px}.curation-work{display:block}}

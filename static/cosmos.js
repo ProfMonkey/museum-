@@ -15,6 +15,7 @@
   async function loadRiver(){
     const p=new URLSearchParams({series:C.series,domain:C.domain,scope:C.scope});
     C.river=await api('/cosmos/eras?'+p.toString());
+    if(window.WonderCurator)await WonderCurator.loadMuseum();
     if(!C.river.eras.some(x=>x.id===C.era))C.era='亿年前';
   }
   async function loadRelations(){
@@ -24,7 +25,8 @@
     }
     C.relations=C.focusId?await api('/cosmos/relations/'+C.focusId):null;
   }
-  async function loadWorld(){C.world = window.S?.user?await api('/cosmos/me/map'):null;}
+  async function loadWorld(){C.world = window.S?.user?await api('/cosmos/me/map'):null;
+    if(window.S?.user&&window.WonderCurator)await WonderCurator.loadQuality();}
   async function refresh(){
     C.loading=true;C.message='';
     try{
@@ -42,7 +44,7 @@
     const dims = Object.keys(window.WonderTaxonomy?.groups||{});
     return `<section class="cs-control"><div class="cs-control-title"><b>从过去到现在</b><small>按领域与年代交叉探索 · ${data.total} 件符合条件的实际展品</small></div><div class="cs-selectrow"><label>馆藏系列<select data-cosmos-filter="series">${options(['全部','藏品系列','民间奇趣'],C.series)}</select></label><label>主要领域<select data-cosmos-filter="domain">${options(['全部',...dims],C.domain)}</select></label><label>查看范围<select data-cosmos-filter="scope">${options(['public','mine'],C.scope)}</select></label></div></section>
       <div class="cs-river-view"><aside class="cs-era-rail" aria-label="世界年代导航">${eras.map((e,i)=>`<button type="button" class="cs-era ${active.id===e.id?'selected':''}" data-cosmos="era" data-era="${esc(e.id)}"><span>${numeral(i+1)}</span><div><b>${esc(e.id)}</b><small>${esc(e.title)}</small></div><em>${e.count}</em></button>`).join('')}</aside><section class="cs-era-content"><header><div class="cs-eyebrow">TIME STATION / ${numeral(eras.indexOf(active)+1)}</div><h2>${esc(active.id)}</h2><p>${esc(active.intro)}</p></header><div class="cs-era-stats"><div><b>${active.count}</b><small>这个时间段的可见展品</small></div><div><b>${active.items.length}</b><small>本页展示</small></div></div>${active.items.length?`<div class="cs-item-list">${active.items.map(itemCard).join('')}</div>`:`<div class="cs-empty"><span>◌</span><strong>这一段时间还没有符合条件的展品</strong><p>这里不会凭空制造古董或历史事件。可以从世界名馆寻找作品收藏，或上传自己的发现。</p><button type="button" class="ghost" data-cosmos="museums">去世界名馆探索 ↗</button></div>`}</section></div>
-      ${miniNotice(data.notice)}<small class="cs-footnote">公共时间长河只展示用户公开的实际展品；选择“mine”只展示自己的展品，不会公开私人记录。每个时代最多展示 20 件最近上传的匹配样本，统计数量来自数据库全部匹配记录。</small>`;
+      ${window.WonderCurator?.renderEra(active.id)||''}${miniNotice(data.notice)}<small class="cs-footnote">公共时间长河只展示用户公开的实际展品；选择“mine”只展示自己的展品，不会公开私人记录。每个时代最多展示 20 件最近上传的匹配样本，统计数量来自数据库全部匹配记录。</small>`;
   }
   function evidenceScore(n){return `<span class="cs-score">匹配 ${n.score} 分</span>`;}
   function renderLinks(){
@@ -72,7 +74,7 @@
     if(!w)return `<div class="cs-empty">${esc(C.message||'正在读取个人收藏世界…')}</div>`;
     const groups=w.domains||[];
     return `<section class="cs-world-summary"><div><div class="cs-eyebrow">PRIVATE COLLECTION CONSTELLATION</div><h2>你的世界星图</h2><p>每一颗星代表你真正收藏的一件展品。线条仅表示你本人建立的关联，不会因为属于同一领域就虚构历史联系。</p></div><div class="cs-world-stat"><b>${w.total}</b><span>总藏品</span></div><div class="cs-world-stat"><b>${groups.length}</b><span>探索领域</span></div><div class="cs-world-stat"><b>${w.edges.length}</b><span>手动关联</span></div></section>
-      <section class="cs-panel"><header class="cs-map-toolbar"><label>突出领域<select data-cosmos-filter="worldFilter">${options(['全部',...groups.map(g=>g.id)],C.worldFilter)}</select></label><small>点击星点查看藏品 · 放大后更加清晰</small></header>${w.nodes.length?worldSvg(w):`<div class="cs-empty"><span>✦</span><b>还没有藏品星星</b><p>从世界名馆收藏一件作品，或上传第一件私人展品。</p></div>`}</section><section class="cs-panel"><h3>探索轨迹：兴趣领域排行</h3><div class="cs-domain-bars">${groups.length?groups.map(g=>`<button type="button" data-cosmos="worldDomain" data-domain="${esc(g.id)}"><span>${esc(g.id)}</span><b style="width:${Math.max(8,g.count/Math.max(groups[0].count,1)*100).toFixed(1)}%"></b><small>${g.count} 件</small></button>`).join(''):'<p>尚无可分析的数据。</p>'}</div></section>${w.total>w.visible_count?miniNotice(`目前仅展示最近 ${w.visible_count} 件，全部收藏数 ${w.total} 件，避免星图在普通设备上卡顿。`):''}${miniNotice(w.notice)}`;
+      <section class="cs-panel"><header class="cs-map-toolbar"><label>突出领域<select data-cosmos-filter="worldFilter">${options(['全部',...groups.map(g=>g.id)],C.worldFilter)}</select></label><small>点击星点查看藏品 · 放大后更加清晰</small></header>${w.nodes.length?worldSvg(w):`<div class="cs-empty"><span>✦</span><b>还没有藏品星星</b><p>从世界名馆收藏一件作品，或上传第一件私人展品。</p></div>`}</section><section class="cs-panel"><h3>探索轨迹：兴趣领域排行</h3><div class="cs-domain-bars">${groups.length?groups.map(g=>`<button type="button" data-cosmos="worldDomain" data-domain="${esc(g.id)}"><span>${esc(g.id)}</span><b style="width:${Math.max(8,g.count/Math.max(groups[0].count,1)*100).toFixed(1)}%"></b><small>${g.count} 件</small></button>`).join(''):'<p>尚无可分析的数据。</p>'}</div></section>${w.total>w.visible_count?miniNotice(`目前仅展示最近 ${w.visible_count} 件，全部收藏数 ${w.total} 件，避免星图在普通设备上卡顿。`):''}${miniNotice(w.notice)}${window.WonderCurator?.renderQuality()||''}`;
   }
   async function render(){await refresh();return `<div class="cs-root">${intro}${tabs()}${C.message?miniNotice(C.message):''}${C.tab==='river'?renderRiver():C.tab==='links'?renderLinks():renderWorld()}</div>`;}
   async function rerender(){if(window.S?.view!=='cosmos')return;document.querySelector('#main').innerHTML=await render();}
