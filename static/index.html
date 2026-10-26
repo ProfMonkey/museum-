@@ -12,16 +12,20 @@
 <link rel="stylesheet" href="/static/world-museums.css" />
 <link rel="stylesheet" href="/static/wonder-discovery.css" />
 <link rel="stylesheet" href="/static/atlas.css" />
+<link rel="stylesheet" href="/static/culture.css" />
+<link rel="stylesheet" href="/static/virtual-gallery.css" />
 </head>
 <body>
 <div class="app-shell">
  <aside class="sidebar">
-  <button class="brand" data-action="navigate" data-view="discover" aria-label="回到探索大厅"><span class="brandmark">✳</span><span><strong>万物博物馆</strong><small>WONDER ATLAS · WORLD 08</small></span></button>
-  <div class="nav-cap">探索世界 <span>01 / 09</span></div>
+  <button class="brand" data-action="navigate" data-view="discover" aria-label="回到探索大厅"><span class="brandmark">✳</span><span><strong>万物博物馆</strong><small>WONDER ATLAS · WORLD 09</small></span></button>
+  <div class="nav-cap">探索世界 <span>01 / 11</span></div>
   <nav class="nav" aria-label="主导航">
    <button class="active" data-action="navigate" data-view="discover"><span>⌁</span> 发现广场</button>
    <button data-action="navigate" data-view="world-museums"><span>♜</span> 世界名馆</button>
    <button data-action="navigate" data-view="wonder-radar"><span>✧</span> 万物雷达</button>
+   <button data-action="navigate" data-view="culture"><span>♫</span> 当代新奇</button>
+   <button data-action="navigate" data-view="virtual-gallery"><span>▧</span> 展厅工坊</button>
    <button data-action="navigate" data-view="journey"><span>✧</span> 跨界探索</button>
    <button data-action="navigate" data-view="saved"><span>♡</span> 心动收藏</button>
    <button data-action="navigate" data-view="museum"><span>▦</span> 我的博物馆</button>
@@ -39,7 +43,7 @@
    <div class="top-right"><button id="loginTop" class="top-login" data-action="login">登录 / 注册</button><button class="cta" data-action="new">＋ 发布新发现</button></div>
   </header>
   <main id="main" tabindex="-1"><div class="loading">正在连接万物博物馆…</div></main>
-  <footer class="footer"><span>✳ 万物博物馆 · WONDER ATLAS</span><span>一个由发现与好奇心建成的世界 · V8.0</span></footer>
+  <footer class="footer"><span>✳ 万物博物馆 · WONDER ATLAS</span><span>一个由发现与好奇心建成的世界 · V9.0</span></footer>
  </div>
 </div>
 <div id="modal" class="modal-layer hidden" aria-live="polite"></div>
@@ -52,4 +56,8 @@
 <script src="/static/wonder-discovery.js" defer></script>
 <script src="/static/world-museums.js" defer></script>
 <script src="/static/atlas.js" defer></script>
+<script src="/static/culture.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" defer></script>
+<script src="/static/virtual-gallery-3d.js" defer></script>
+<script src="/static/virtual-gallery.js" defer></script>
 </body></html>
