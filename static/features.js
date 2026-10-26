@@ -138,7 +138,8 @@ function ta(n,p,val=''){return `<textarea name="${n}" placeholder="${fe(p)}" row
 function rowLink(x,action='select',value=x.id){return `<button class="f-row" data-wa="${action}" data-value="${fe(value)}"><span>${fe(x.title||x.question||x.name||'未命名')}</span><span>查看 →</span></button>`}
 function fnotice(text){return `<p class="feature-muted">${text}</p>`}
 async function featuredFeed(){let data=await api('/feed');return data.items||[]}
-async function featureModule(n){W.active=n;clearInterval(W.roomTimer);W.roomTimer=null;await navigate('features');}
+const analyticsFeatureKeys=['wormhole','mystery_cases','perspectives','timeline','interactive_exhibits','real_world_museum','living_monkey','collaboration','tour_guide','interactive_lab','shared_visit','provenance_passport','personal_world'];
+async function featureModule(n){W.active=n;clearInterval(W.roomTimer);W.roomTimer=null;window.WonderAnalytics?.track(analyticsFeatureKeys[n-1]||'personal_world','open');await navigate('features');}
 async function renderFeatures(){let n=W.active;if(!n)return await featureCovers();let area='';try{area=await featureBody(n)}catch(err){area=fbox('暂时无法载入',`<p>${fe(err.message)}</p>`)}return `<div class="feature-page">${featureTitle(n)}${featureGuide(n)}<div class="feature-workspace">${area}</div></div>`}
 function ensureSelection(list){if(!list.some(x=>String(x.id)===String(W.selected)))W.selected=list[0]?.id||null}
 
@@ -192,7 +193,7 @@ const mainNav=document.querySelector('.sidebar .nav');mainNav.insertBefore(navFe
 document.addEventListener('click',event=>{const b=event.target.closest('[data-action=\"navigate\"][data-view=\"features\"]');if(b)W.active=null},true);
 const mobileNav=document.querySelector('.mobile-nav');if(mobileNav){let n=document.createElement('button');n.dataset.action='navigate';n.dataset.view='features';n.innerHTML='<span>✧</span>工程';mobileNav.insertBefore(n,mobileNav.children[2]||null)}
 
-async function featureAction(action,val){let n=W.active;const id=W.selected;
+async function featureAction(action,val){let n=W.active;const id=W.selected;if(n&&['collision-reroll','blindbox-answer','memory-answer','pair-answer','future-save','case-state','room-advance','chain','story-choice'].includes(action))window.WonderAnalytics?.track(analyticsFeatureKeys[n-1]||'personal_world','complete');
 if(action==='home'){W.active=null;await render();return}
 if(action==='module'){W.selected=null;W.caseId=null;W.chainId=null;W.storyId=null;W.roomCode='';W.collisionDestination=null;await featureModule(Number(val));return}
 if(action==='collision-reroll'){const feed=await featuredFeed();W.collisionPair=makeCollisionPair(feed);W.collisionDestination=null;await render();return}

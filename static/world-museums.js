@@ -152,7 +152,7 @@ const WorldMuseums = (() => {
           </div>
         </article>`).join('')}</div>` : `<div class="empty"><b>${data.error?'馆方数据暂时不可用':'没有找到匹配的作品'}</b><p>${data.error?'稍后重试即可。':'试试其他作品名、艺术家或切换到全部馆藏。'}</p><button class="ghost" data-world-action="clear">查看全部典藏</button></div>`}
       <section class="wm-how"><div><div class="eyebrow">HOW TO COLLECT</div><h2>把世界名作，变成你世界的一部分。</h2><p>点击“收入我的博物馆”，作品会作为一条独立的个人展品记录保存。它默认是私密的，不会自动发布到公共广场，也不会把原馆图像复制或重新分发。</p></div><div class="wm-how-steps"><div><b>01</b><span>挑选感兴趣的作品</span></div><div><b>02</b><span>查看来源与开放许可</span></div><div><b>03</b><span>收入个人馆藏，再放进自己的展厅</span></div></div></section>
-      <section class="wm-source-directory"><div><div class="eyebrow">GO FURTHER</div><h2>继续逛世界名馆</h2><p>下面是各馆官方馆藏入口。它们是外部官网链接，不代表其作品已经导入本站精选目录。</p></div><div class="wm-source-links">${museumLinks.map(([zh,en,url])=>`<a href="${url}" target="_blank" rel="noopener noreferrer"><span>${escapeHtml(zh)}</span><small>${escapeHtml(en)} ↗</small></a>`).join('')}</div></section>
+      <section class="wm-source-directory"><div><div class="eyebrow">GO FURTHER</div><h2>继续逛世界名馆</h2><p>下面是各馆官方馆藏入口。它们是外部官网链接，不代表其作品已经导入本站精选目录。</p></div><div class="wm-source-links">${museumLinks.map(([zh,en,url])=>`<a href="${url}" target="_blank" rel="noopener noreferrer"><span>${escapeHtml(zh)}</span><small>${escapeHtml(en)} ↗</small></a>`).join('')}</div><button class="ghost" style="margin-top:15px" data-action="navigate" data-view="wonder-radar">⌖ 打开完整世界博物馆导航与万物雷达 ↗</button></section>
       <div class="wm-footnote">版权说明：本页优先展示由馆方 API 明确标记为 Public Domain / Open Access 或 CC0 的图像。未核验开放许可的作品只显示元数据和馆方来源链接。作品文字介绍为万物博物馆的简短导览，不替代馆方研究资料。</div>`;
   }
   function detail(item) {
@@ -170,11 +170,11 @@ const WorldMuseums = (() => {
     const action = b.dataset.worldAction, id = b.dataset.id;
     try {
       if (action === 'clear') { W.q=''; W.museum='全部'; const html=await render(); const main=document.querySelector('#main'); if(main)main.innerHTML=html; }
-      else if (action === 'details') { const item=W.items.find(x=>x.id===id); if(item)detail(item); }
+      else if (action === 'details') { const item=W.items.find(x=>x.id===id); if(item){window.WonderAnalytics?.track('world_museums','detail');detail(item);} }
       else if (action === 'collect') {
         if (!window.S?.user) { if (typeof mustLogin === 'function') mustLogin(); else toast('请先登录'); return; }
         b.disabled = true;
-        const result = await api(`/world-museums/${encodeURIComponent(id)}/collect`, { method: 'POST' });
+        const result = await api(`/world-museums/${encodeURIComponent(id)}/collect`, { method: 'POST' }); window.WonderAnalytics?.track('world_museums','collect');
         toast(result.already_collected ? '这件作品已经在你的博物馆里了' : '已收入你的博物馆，并默认设为私密');
         const html = await render(); const main = document.querySelector('#main'); if (main && window.S?.view === 'world-museums') main.innerHTML = html;
       }

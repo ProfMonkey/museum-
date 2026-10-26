@@ -98,10 +98,10 @@ document.addEventListener('click',async event=>{const b=event.target.closest('[d
     else if(act==='forget'){await api('/memories/history/'+id,{method:'DELETE'});M.selected.delete(id);await refresh()}
     else if(act==='clearHistory'){if(confirm('永久删除自己账号里的全部观看足迹？已保存的影片不会受影响。')){await api('/memories/history',{method:'DELETE'});M.selected.clear();await refresh()}}
     else if(act==='detail')await openDetail(id);
-    else if(act==='make'){const opt=userOptions(),items=prepareEditor();openFilm(items,opt.title,opt.music)}
-    else if(act==='playAll')openFilm(M.items.slice(0,40),'走过的万物 · 全部回忆','piano');
-    else if(act==='revisit'){const x=M.items[Math.floor(Math.random()*M.items.length)];if(x)await openDetail(x.id);}
-    else if(act==='saveReel'){const chosen=prepareEditor();if(!chosen.length)return toast('请先收集一些足迹');const opt=userOptions();const r=await api('/memories/reels',{method:'POST',body:{title:opt.title||'我的万物回忆',music:opt.music,exhibit_ids:chosen.map(x=>x.id)}});toast('影片已保存到你的私人片库');await refresh()}
+    else if(act==='make'){const opt=userOptions(),items=prepareEditor();window.WonderAnalytics?.track('memories','play');openFilm(items,opt.title,opt.music)}
+    else if(act==='playAll'){window.WonderAnalytics?.track('memories','play');openFilm(M.items.slice(0,40),'走过的万物 · 全部回忆','piano');}
+    else if(act==='revisit'){const x=M.items[Math.floor(Math.random()*M.items.length)];if(x){window.WonderAnalytics?.track('memories','revisit');await openDetail(x.id);}}
+    else if(act==='saveReel'){const chosen=prepareEditor();if(!chosen.length)return toast('请先收集一些足迹');const opt=userOptions();const r=await api('/memories/reels',{method:'POST',body:{title:opt.title||'我的万物回忆',music:opt.music,exhibit_ids:chosen.map(x=>x.id)}});window.WonderAnalytics?.track('memories','complete');toast('影片已保存到你的私人片库');await refresh()}
     else if(act==='reel'){const r=M.reels.find(x=>x.id===id);if(r)openFilm(r.items,r.title,r.music)}
     else if(act==='deleteReel'){if(confirm('删除这部回忆影片？不会删除观看足迹。')){await api('/memories/reels/'+id,{method:'DELETE'});await refresh()}}
     else if(act==='exit'){stop();if(document.fullscreenElement)document.exitFullscreen().catch(()=>{})}

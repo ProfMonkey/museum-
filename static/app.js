@@ -3,10 +3,11 @@
 const S={user:null,view:'discover',q:'',cat:'全部',sort:'latest',following:false,page:1,items:[],mine:[],halls:[],saved:[],profile:null,room:null,detail:null,journey:null,authMode:'login',editorId:null,editingRoom:null};
 window.S = S;
 const $=s=>document.querySelector(s), E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const categories=['全部','科学','技术','艺术','生活','自然','故事','奇怪知识','游戏','其他'];
-const icons={'科学':'✺','技术':'⌘','艺术':'❋','生活':'☕','自然':'❀','故事':'✧','奇怪知识':'☄','游戏':'♞','其他':'✦'};
-const classes={'科学':'cat-science','技术':'cat-code','艺术':'cat-art','生活':'cat-life','自然':'cat-life','故事':'cat-art','奇怪知识':'cat-odd','游戏':'cat-code'};
-const titles={discover:'发现广场',museum:'我的博物馆',saved:'心动收藏',journey:'随机奇遇',notifications:'通知中心',profile:'馆长主页',memories:'回忆剧场','world-museums':'世界名馆'};
+const categories=['全部','绘画与书画','古董与珠宝','古币与钱币','古代文明','雕塑与宗教艺术','陶瓷与器物','古籍与手稿','历史文物','科技与发明','AI与机器人','航天与宇宙','自然与化石','矿物与宝石','建筑与设计','时尚与潮流','摄影与影像','游戏与交互','互联网奇物','流行文化','音乐与声音','生活发现','原创理论','科学','技术','艺术','生活','自然','故事','奇怪知识','游戏','其他'];
+const quickCategories=['全部','绘画与书画','古董与珠宝','科技与发明','AI与机器人','航天与宇宙','自然与化石','游戏与交互','互联网奇物','流行文化','其他'];
+const icons={'科学':'✺','技术':'⌘','艺术':'❋','生活':'☕','自然':'❀','故事':'✧','奇怪知识':'☄','游戏':'♞','绘画与书画':'▧','古董与珠宝':'♜','古币与钱币':'◉','古代文明':'⌘','雕塑与宗教艺术':'☼','陶瓷与器物':'◍','古籍与手稿':'▤','历史文物':'⚒','科技与发明':'⌘','AI与机器人':'⌬','航天与宇宙':'✧','自然与化石':'✺','矿物与宝石':'◇','建筑与设计':'▦','时尚与潮流':'✦','摄影与影像':'▧','游戏与交互':'♞','互联网奇物':'☄','流行文化':'♫','音乐与声音':'♫','生活发现':'☕','原创理论':'∞','其他':'✦'};
+const classes={'科学':'cat-science','技术':'cat-code','艺术':'cat-art','生活':'cat-life','自然':'cat-life','故事':'cat-art','奇怪知识':'cat-odd','游戏':'cat-code','绘画与书画':'cat-art','古董与珠宝':'cat-odd','古币与钱币':'cat-odd','古代文明':'cat-art','雕塑与宗教艺术':'cat-art','陶瓷与器物':'cat-odd','古籍与手稿':'cat-art','历史文物':'cat-odd','科技与发明':'cat-code','AI与机器人':'cat-code','航天与宇宙':'cat-science','自然与化石':'cat-life','矿物与宝石':'cat-odd','建筑与设计':'cat-art','时尚与潮流':'cat-art','摄影与影像':'cat-art','游戏与交互':'cat-code','互联网奇物':'cat-odd','流行文化':'cat-art','音乐与声音':'cat-art','生活发现':'cat-life','原创理论':'cat-science'};
+const titles={discover:'发现广场',museum:'我的博物馆',saved:'心动收藏',journey:'随机奇遇',notifications:'通知中心',profile:'馆长主页',memories:'回忆剧场','world-museums':'世界名馆','wonder-radar':'万物雷达',insights:'功能热度'};
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>e.classList.remove('show'),3000)}
 async function api(path,{method='GET',body,form}={}){
   const options={method,credentials:'same-origin',headers:{}};
@@ -17,6 +18,9 @@ async function api(path,{method='GET',body,form}={}){
   if(!r.ok){let detail=data?.detail||data||'请求失败';if(Array.isArray(detail))detail=detail.map(x=>x.msg).join('；');throw Error(detail)}
   return data;
 }
+const usageFeatureByView={discover:'discover','world-museums':'world_museums','wonder-radar':'tech_radar',insights:'insights',memories:'memories',museum:'hall_builder',journey:'random_journey',features:'personal_world',saved:'discover',notifications:'discover',profile:'discover'};
+function trackUsage(feature,action='open'){if(!S.user)return Promise.resolve();return api('/insights/event',{method:'POST',body:{feature,action}}).catch(()=>{});}
+window.WonderAnalytics={track:trackUsage};
 function mustLogin(){if(S.user)return true;openAuth('login');toast('登录后才能继续');return false}
 function categoryGlyph(item){return icons[item.category]||'✦'}
 function art(item,extra=''){const cls=classes[item.category]||'cat-odd';return `<div class="card-art ${cls} ${extra}"><span class="glyph">${categoryGlyph(item)}</span>${item.image_url?`<img src="${E(item.image_url)}" loading="lazy" alt="${E(item.title)}">`:''}<span class="badge">${E(item.category||'其他')}</span></div>`}
@@ -25,17 +29,18 @@ function empty(heading,text='',action=''){return `<div class="empty"><b>${E(head
 function heading(e,h,p=''){return `<div class="section-title"><div><div class="eyebrow">${e}</div><h2>${h}</h2><p>${p}</p></div></div>`}
 function usageGuide(title,steps){return `<section class="usage-guide"><div class="usage-guide-title"><span>HOW IT WORKS</span><b>${title}</b></div><div class="usage-guide-steps">${steps.map((x,i)=>`<div><i>${i+1}</i><span>${E(x)}</span></div>`).join('')}</div></section>`}
 function navMark(){document.querySelectorAll('[data-action="navigate"]').forEach(b=>b.classList.toggle('active',b.dataset.view===S.view));$('#pageCrumb').textContent=titles[S.view]||'发现广场';const label=S.user?`◈ ${S.user.username} · 已连接`: '未登录 · 游客漫游中';$('#sideUser').textContent=label;$('#loginTop').textContent=S.user?`◈ ${S.user.username}`:'登录 / 注册';$('#loginTop').dataset.action=S.user?'account':'login';}
-async function init(){try{S.user=(await api('/me')).user;navMark();await render();if(S.user)refreshUnread()}catch(e){$('#main').innerHTML=empty('连接失败',e.message,'<button class="primary" data-action="reload">重新连接</button>')}}
+async function init(){try{S.user=(await api('/me')).user;navMark();await render();if(S.user){refreshUnread();trackUsage('discover','open')}}catch(e){$('#main').innerHTML=empty('连接失败',e.message,'<button class="primary" data-action="reload">重新连接</button>')}}
 async function refreshUnread(){if(!S.user){$('#navUnread').textContent='';return}try{let n=await api('/notifications');$('#navUnread').textContent=n.unread||''}catch(e){}}
-async function navigate(view){if(view!=='memories'&&window.WonderMemories)WonderMemories.stop();S.view=view;S.page=1;navMark();await render();window.scrollTo({top:0,behavior:'smooth'})}
-async function render(){try{let h='';if(S.view==='discover')h=await discover();else if(S.view==='museum')h=await museum();else if(S.view==='saved')h=await saved();else if(S.view==='journey')h=await journey();else if(S.view==='notifications')h=await notifications();else if(S.view==='profile')h=await profile();else if(S.view==='memories')h=await WonderMemories.render();else if(S.view==='world-museums')h=await WorldMuseums.render();$('#main').innerHTML=h}catch(e){$('#main').innerHTML=empty('暂时无法打开',e.message,'<button class="ghost" data-action="reload">重试</button>')}}
+async function navigate(view){if(view!=='memories'&&window.WonderMemories)WonderMemories.stop();S.view=view;S.page=1;navMark();if(usageFeatureByView[view])trackUsage(usageFeatureByView[view],'open');await render();window.scrollTo({top:0,behavior:'smooth'})}
+async function render(){try{let h='';if(S.view==='discover')h=await discover();else if(S.view==='museum')h=await museum();else if(S.view==='saved')h=await saved();else if(S.view==='journey')h=await journey();else if(S.view==='notifications')h=await notifications();else if(S.view==='profile')h=await profile();else if(S.view==='memories')h=await WonderMemories.render();else if(S.view==='world-museums')h=await WorldMuseums.render();else if(S.view==='wonder-radar')h=await WonderDiscovery.render();else if(S.view==='insights')h=await WonderDiscovery.renderInsights();$('#main').innerHTML=h}catch(e){$('#main').innerHTML=empty('暂时无法打开',e.message,'<button class="ghost" data-action="reload">重试</button>')}}
 async function discover(){const [stat,feed]=await Promise.all([api('/stats'),api(`/feed?q=${encodeURIComponent(S.q)}&category=${encodeURIComponent(S.cat)}&sort=${S.sort}&page=${S.page}&following=${S.following}`)]);S.items=feed.items;return `
 <section class="hero"><div class="hero-copy"><div class="eyebrow">✧ EXPLORE THE UNEXPECTED · 万物开放收藏计划</div><h1>世界很大，<br><span>万物皆可收藏。</span></h1><p>发现一件有趣的事物，或把自己的奇思妙想放进展柜。不同的馆长正在这里共同建造一座没有边界的博物馆。</p><div class="hero-buttons"><button class="primary" data-action="new">＋ 分享我的发现</button><button class="ghost" data-action="navigate" data-view="journey">✧ 开启随机奇遇 ↗</button></div></div><div class="cosmos"><div class="planet"></div></div></section>
 <div class="stats"><div class="stat"><strong>${stat.exhibits}</strong> 件公开展品</div><div class="stat"><strong>${stat.curators}</strong> 位真实馆长</div><div class="stat"><strong>${stat.halls}</strong> 座开放展厅</div></div>
 <section class="wm-discover-promo"><div><div class="eyebrow">NEW · WORLD MUSEUM COLLECTION</div><h2>不必等别人上传，世界名作已经在这里。</h2><p>从大都会、芝加哥与克利夫兰艺术博物馆的开放馆藏出发，发现真实作品，再收入自己的博物馆。</p></div><button class="primary" data-action="navigate" data-view="world-museums">进入世界名馆 ↗</button></section>
 ${usageGuide('发现广场怎么逛',['用分类或搜索找展品，也可以按最新/热门排序。','点击卡片查看完整档案；登录后可点赞、评论、收藏或关注馆长。','发布内容时选择公开或私密；只有公开展品会出现在公共广场。'])}
 ${heading('CURATED BY THE WORLD','来自世界的发现','这里展示的是用户真正发布的公开展品，没有虚构的社区内容。')}
-<form class="controls" id="searchForm"><div class="filters"><button type="button" class="chip ${S.following?'active':''}" data-action="following">♡ 关注动态</button>${categories.map(c=>`<button type="button" class="chip ${S.cat===c?'active':''}" data-action="category" data-cat="${E(c)}">${E(c)}</button>`).join('')}</div><div class="head-actions"><input class="field-inline" name="q" value="${E(S.q)}" placeholder="搜索藏品、标签、馆长…" aria-label="搜索"><button class="ghost" type="submit">⌕ 搜索</button><select class="sort" name="sort" aria-label="排序"><option value="latest" ${S.sort==='latest'?'selected':''}>最新发布</option><option value="popular" ${S.sort==='popular'?'selected':''}>最受欢迎</option></select></div></form>
+<section class="v6-discovery-promo"><button data-action="navigate" data-view="wonder-radar"><span>✧</span><b>万物雷达</b><small>AI、机器人、太空与互联网奇物</small><i>去探索 ↗</i></button><button data-action="navigate" data-view="insights"><span>▥</span><b>功能热度</b><small>看看大家真正喜欢什么，再决定开发优先级</small><i>查看统计 ↗</i></button></section>
+<form class="controls" id="searchForm"><div class="filters"><button type="button" class="chip ${S.following?'active':''}" data-action="following">♡ 关注动态</button>${quickCategories.map(c=>`<button type="button" class="chip ${S.cat===c?'active':''}" data-action="category" data-cat="${E(c)}">${E(c)}</button>`).join('')}<select class="sort" name="categoryFilter" aria-label="更多分类">${categories.map(c=>`<option value="${E(c)}" ${S.cat===c?'selected':''}>${c==='全部'?'全部分类':E(c)}</option>`).join('')}</select></div><div class="head-actions"><input class="field-inline" name="q" value="${E(S.q)}" placeholder="搜索藏品、标签、馆长…" aria-label="搜索"><button class="ghost" type="submit">⌕ 搜索</button><select class="sort" name="sort" aria-label="排序"><option value="latest" ${S.sort==='latest'?'selected':''}>最新发布</option><option value="popular" ${S.sort==='popular'?'selected':''}>最受欢迎</option></select></div></form>
 ${S.items.length?`<div class="card-grid">${S.items.map(card).join('')}</div>`:empty('展柜还很空','成为第一个留下发现的馆长吧。','<button class="primary" data-action="new">发布第一件展品</button>')}
 ${S.items.length===24?`<button class="ghost more" data-action="nextPage">继续探索下一页 ↓</button>`:''}`}
 async function museum(){if(!S.user)return guest('建造属于自己的世界','注册一个账号，便能发布展品、布置展厅，并向其他人公开展示。');const [mine,halls]=await Promise.all([api('/my/exhibits'),api('/my/halls')]);S.mine=mine;S.halls=halls;return `<div class="eyebrow">MY WORLD · PERSONAL MUSEUM</div><h1 class="page-title">${E(S.user.username)} 的万物博物馆</h1><p class="page-intro">收藏，是建造自己世界的第一步。所有私人展品只有你自己能看见。</p>
@@ -85,15 +90,15 @@ else if(a==='authMode')openAuth(b.dataset.mode);
 else if(a==='close')close();
 else if(a==='reload')await init();
 else if(a==='new')await openEditor();
-else if(a==='detail')await openDetail(id);
+else if(a==='detail'){trackUsage('discover','detail');await openDetail(id);}
 else if(a==='edit')await openEditor(id);
-else if(a==='like'||a==='bookmark'){if(!mustLogin())return;await api('/exhibits/'+id+'/'+a,{method:'POST'});await openDetail(id)}
+else if(a==='like'||a==='bookmark'){if(!mustLogin())return;await api('/exhibits/'+id+'/'+a,{method:'POST'});trackUsage('discover',a==='like'?'like':'save');await openDetail(id)}
 else if(a==='delete'){if(!confirm('确定要永久删除这件展品吗？'))return;await api('/exhibits/'+id,{method:'DELETE'});close();toast('展品已删除');await render()}
 else if(a==='report'){if(!mustLogin())return;let reason=prompt('请简要说明举报理由（至少5字）：');if(reason){await api('/exhibits/'+id+'/report',{method:'POST',body:{reason}});toast('举报已收到，感谢反馈')}}
 else if(a==='user'){S.profile=b.dataset.name;close();await navigate('profile')}
 else if(a==='follow'){if(!mustLogin())return;await api('/users/'+id+'/follow',{method:'POST'});await render()}
-else if(a==='reroll'){S.journey=await api('/random');await render()}
-else if(a==='newHall')await openHallForm();
+else if(a==='reroll'){S.journey=await api('/random');trackUsage('random_journey','complete');await render()}
+else if(a==='newHall'){trackUsage('hall_builder','create');await openHallForm();}
 else if(a==='hall')await openHall(id);
 else if(a==='hallEdit')await openHallForm(id);
 else if(a==='hallAdd')await hallAdd(id);
@@ -102,7 +107,7 @@ else if(a==='addToHall'){await api('/halls/'+id+'/items',{method:'POST',body:{ex
 else if(a==='addItemHall'){await api('/halls/'+S.pickingHall+'/items',{method:'POST',body:{exhibit_id:id}});toast('展品已加入展厅');await openHall(S.pickingHall)}
 else if(a==='roomRemove'){await api('/halls/'+S.room.hall.id+'/items/'+id,{method:'DELETE'});await openHall(S.room.hall.id)}
 else if(a==='toggleStudio'){S.roomEditing=!S.roomEditing;renderHall()}
-else if(a==='tour')await openTour(Number(b.dataset.index));
+else if(a==='tour'){trackUsage('hall_builder','play');await openTour(Number(b.dataset.index));}
 else if(a==='deleteHall'){if(!confirm('确定删除展厅？藏品本身不会被删除。'))return;await api('/halls/'+id,{method:'DELETE'});close();toast('展厅已删除');await navigate('museum')}
 else if(a==='markRead'){await api('/notifications/read',{method:'POST'});await refreshUnread();await render()}
 else if(a==='editBio')showModal('修改个人介绍',`<form id="bioForm"><label class="form-row">介绍<textarea maxlength="240" name="bio">${E(S.profileData.user.bio)}</textarea></label><button class="primary">保存</button></form>`);
@@ -111,7 +116,7 @@ else if(a==='export')await exportMine();
 }catch(err){toast(err.message)}});
 document.addEventListener('submit',async e=>{let form=e.target;const type=form.id;if(!['authForm','exhibitForm','hallForm','commentForm','searchForm','bioForm','importForm'].includes(type))return;e.preventDefault();const btn=form.querySelector('[type=submit],button:not([type])');if(btn)btn.disabled=true;let fd=new FormData(form);let data=Object.fromEntries(fd.entries());try{
 if(type==='authForm'){S.user=await api('/auth/'+S.authMode,{method:'POST',body:{username:data.username,password:data.password}});close();navMark();await navigate('museum');refreshUnread();toast(S.authMode==='register'?'欢迎成为万物博物馆的新馆长！':'欢迎回来！')}
-if(type==='searchForm'){S.q=data.q;S.sort=data.sort;S.page=1;await render()}
+if(type==='searchForm'){S.q=data.q;S.sort=data.sort;S.cat=data.categoryFilter||S.cat;S.page=1;await render()}
 if(type==='commentForm'){if(!mustLogin())return;await api('/exhibits/'+S.detail.id+'/comments',{method:'POST',body:{body:data.body}});await openDetail(S.detail.id);toast('留言已发表')}
 if(type==='exhibitForm'){let file=$('#coverFile')?.files?.[0];if(file){let upload=new FormData();upload.append('file',file);data.image_url=(await api('/media',{method:'POST',form:upload})).url}delete data.file;let id=S.editorId;let result=await api(id?'/exhibits/'+id:'/exhibits',{method:id?'PATCH':'POST',body:data});close();toast('你的发现已经保存！');await navigate('museum');if(!id)await openDetail(result.id)}
 if(type==='hallForm'){let id=S.editingRoom;await api(id?'/halls/'+id:'/halls',{method:id?'PATCH':'POST',body:data});close();toast('展厅已保存');await navigate('museum')}
@@ -120,5 +125,5 @@ if(type==='importForm'){let file=form.querySelector('input[type=file]').files[0]
 }catch(err){toast(err.message);if(btn)btn.disabled=false}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal').classList.contains('hidden'))close();if((e.key==='Enter'||e.key===' ')&&e.target.matches('.card[data-action="detail"]')){e.preventDefault();e.target.click()}});
 $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')close()});
-const mn=document.createElement('nav');mn.className='mobile-nav';mn.setAttribute('aria-label','手机导航');mn.innerHTML=[['discover','⌁','发现'],['world-museums','♜','名馆'],['journey','✧','奇遇'],['saved','♡','收藏'],['museum','▦','我的'],['notifications','✉','消息'],['memories','♫','回忆']].map(([k,i,t])=>`<button data-action="navigate" data-view="${k}"><span>${i}</span>${t}</button>`).join('');document.body.appendChild(mn);
+const mn=document.createElement('nav');mn.className='mobile-nav';mn.setAttribute('aria-label','手机导航');mn.innerHTML=[['discover','⌁','发现'],['world-museums','♜','名馆'],['wonder-radar','✧','雷达'],['journey','✧','奇遇'],['saved','♡','收藏'],['museum','▦','我的'],['memories','♫','回忆'],['insights','▥','热度'],['notifications','✉','消息']].map(([k,i,t])=>`<button data-action="navigate" data-view="${k}"><span>${i}</span>${t}</button>`).join('');document.body.appendChild(mn);
 init();

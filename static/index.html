@@ -9,22 +9,24 @@
 <link rel="stylesheet" href="/static/features.css" />
 <link rel="stylesheet" href="/static/memories.css" />
 <link rel="stylesheet" href="/static/world-museums.css" />
+<link rel="stylesheet" href="/static/wonder-discovery.css" />
 </head>
 <body>
 <div class="app-shell">
  <aside class="sidebar">
   <button class="brand" data-action="navigate" data-view="discover" aria-label="回到探索大厅"><span class="brandmark">✳</span><span><strong>万物博物馆</strong><small>WONDER ATLAS · WORLD 03</small></span></button>
-  <div class="nav-cap">探索世界 <span>01 / 07</span></div>
+  <div class="nav-cap">探索世界 <span>01 / 09</span></div>
   <nav class="nav" aria-label="主导航">
    <button class="active" data-action="navigate" data-view="discover"><span>⌁</span> 发现广场</button>
    <button data-action="navigate" data-view="world-museums"><span>♜</span> 世界名馆</button>
+   <button data-action="navigate" data-view="wonder-radar"><span>✧</span> 万物雷达</button>
    <button data-action="navigate" data-view="journey"><span>✧</span> 随机奇遇</button>
    <button data-action="navigate" data-view="saved"><span>♡</span> 心动收藏</button>
    <button data-action="navigate" data-view="museum"><span>▦</span> 我的博物馆</button>
    <button data-action="navigate" data-view="memories"><span>♫</span> 回忆剧场</button>
   </nav>
-  <div class="nav-cap space-top">互动消息</div>
-  <nav class="nav"><button data-action="navigate" data-view="notifications"><span>✉</span> 通知 <em id="navUnread"></em></button></nav>
+  <div class="nav-cap space-top">馆务与互动</div>
+  <nav class="nav"><button data-action="navigate" data-view="insights"><span>▥</span> 功能热度</button><button data-action="navigate" data-view="notifications"><span>✉</span> 通知 <em id="navUnread"></em></button></nav>
   <div class="side-spacer"></div>
   <div class="sidebar-box"><div>✦ <span>THE OPEN COLLECTION</span></div><h3>宇宙很大，<br>值得收藏的更多。</h3><p>不只存储信息，更分享一次真实的发现。</p></div>
   <div class="side-user" id="sideUser">未登录 · 游客漫游中</div>
@@ -35,7 +37,7 @@
    <div class="top-right"><button id="loginTop" class="top-login" data-action="login">登录 / 注册</button><button class="cta" data-action="new">＋ 发布新发现</button></div>
   </header>
   <main id="main" tabindex="-1"><div class="loading">正在连接万物博物馆…</div></main>
-  <footer class="footer"><span>✳ 万物博物馆 · WONDER ATLAS</span><span>一个由发现与好奇心建成的世界 · V5.0</span></footer>
+  <footer class="footer"><span>✳ 万物博物馆 · WONDER ATLAS</span><span>一个由发现与好奇心建成的世界 · V6.0</span></footer>
  </div>
 </div>
 <div id="modal" class="modal-layer hidden" aria-live="polite"></div>
@@ -44,5 +46,6 @@
 <script src="/static/features.js" defer></script>
 <script src="/static/monkeys.js" defer></script>
 <script src="/static/memories.js" defer></script>
+<script src="/static/wonder-discovery.js" defer></script>
 <script src="/static/world-museums.js" defer></script>
 </body></html>

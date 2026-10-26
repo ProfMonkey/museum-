@@ -744,3 +744,7 @@ mount_memories(app, db, read_exhibit, require_user, now, fail)
 # Read-only starter collection sourced from official open-access museum APIs.
 from world_museums import mount_world_museums
 mount_world_museums(app, db, maybe_user, require_user, now, fail)
+
+# V6: broad museum directory, live curiosity radar and aggregate feature feedback.
+from wonder_discovery import mount_wonder_discovery
+mount_wonder_discovery(app, db, maybe_user, require_user, now, fail)
