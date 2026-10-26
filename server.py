@@ -34,7 +34,7 @@ DATABASE = DATA / "wonder.db"
 IS_SECURE = os.getenv("WONDER_COOKIE_SECURE", "0") == "1"
 SESSION_SECONDS = 60 * 60 * 24 * 21
 
-app = FastAPI(title="万物博物馆 API", version="15.0", docs_url="/api/docs", redoc_url=None)
+app = FastAPI(title="万物博物馆 API", version="16.0", docs_url="/api/docs", redoc_url=None)
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 app.mount("/media", StaticFiles(directory=MEDIA), name="media")
 
@@ -276,7 +276,7 @@ def homepage():
 
 @app.get("/api/health")
 def health():
-    return {"ok": True, "version": "15.0", "database": "sqlite"}
+    return {"ok": True, "version": "16.0", "database": "sqlite"}
 
 
 @app.get("/api/taxonomy")
@@ -460,6 +460,20 @@ def edit_exhibit(id: int, data: ExhibitPayload, user=Depends(require_user)):
         if old["user_id"] != user["id"]:
             fail(403, "只能编辑自己的展品")
         d = data.model_dump()
+        fantasy_world = c.execute("""SELECT w.visibility FROM fantasy_relics r
+          JOIN fantasy_worlds w ON w.id=r.world_id WHERE r.exhibit_id=?""",(id,)).fetchone()
+        if fantasy_world:
+            if d['visibility']=='public' and fantasy_world['visibility']!='public':
+                fail(409,'私人玄幻世界中的奇物不能单独公开')
+            if not d['story'].startswith('【纯虚构／原创世界观】'):
+                d['story']='【纯虚构／原创世界观】故事与超自然能力均为虚构创作。\\n'+d['story']
+            d['category']='世界观设定'
+            d['series']='民间奇趣'
+            d['domain']='原创与个人创作'
+            d['time_bucket']='时间不详'
+            d['time_basis']='不详'
+            d['time_note']='虚构世界纪年'
+            d['source_url']=''
         d["tags"] = ",".join(dict.fromkeys(t.strip()[:24] for t in d["tags"].replace("，", ",").split(",") if t.strip()))[:200]
         c.execute("""UPDATE exhibits SET title=?,description=?,story=?,category=?,series=?,domain=?,time_bucket=?,time_basis=?,time_note=?,tags=?,image_url=?,source_url=?,visibility=?,updated_at=? WHERE id=?""",
                   (d["title"].strip(),d["description"].strip(),d["story"].strip(),d["category"].strip() or "其他",d["series"],d["domain"],d["time_bucket"],d["time_basis"],d["time_note"].strip(),d["tags"],d["image_url"],d["source_url"],d["visibility"],now(),id))
@@ -832,3 +846,7 @@ mount_world_sources(app, db, require_user, now, fail)
 # V15: NASA and Library of Congress discovery routes with private saves.
 from expeditions_v15 import mount_expeditions
 mount_expeditions(app, db, require_user, now)
+
+# V16: creator-owned original fantasy worlds and explicitly fictional relics.
+from fantasy_api import mount_fantasy
+mount_fantasy(app, db, require_user, maybe_user, now, fail)
