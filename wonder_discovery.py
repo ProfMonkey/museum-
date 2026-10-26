@@ -241,6 +241,7 @@ class CollectLink(BaseModel):
     image_url: str = Field(default="", max_length=500)
     category: str = Field(default="科技与发明", max_length=24)
     tags: list[str] = Field(default_factory=list, max_length=12)
+    source_note: str = Field(default="", max_length=400)
 
     @field_validator("title")
     @classmethod
@@ -306,7 +307,7 @@ def mount_wonder_discovery(app, db, maybe_user, require_user, now, fail):
     def collect_discovery_link(payload: CollectLink, user=Depends(require_user)):
         # A link saved from the radar is always private. External image URLs are allowlisted.
         tags = ",".join(t.strip()[:24] for t in payload.tags if t.strip())[:200]
-        story = "从万物雷达收入的外部发现。\n来源：" + payload.source_url + "\n说明：原始内容由来源网站托管；本馆保存链接与个人收藏记录。"
+        story = "从万物雷达收入的外部发现。\n来源：" + payload.source_url + "\n馆方／来源提示：" + (payload.source_note.strip() or "未提供额外许可说明") + "\n说明：提示仅供参考，最终许可请以原始来源当前记录为准；原始内容由来源网站托管，本馆保存链接与个人收藏记录。"
         with db() as c:
             existing = c.execute("SELECT id FROM exhibits WHERE user_id=? AND source_url=? AND title=?", (user["id"], payload.source_url, payload.title)).fetchone()
             if existing: return {"ok":True, "already_collected":True, "exhibit_id":existing["id"], "title":payload.title}

@@ -81,7 +81,7 @@
         const title=b.dataset.title||'来自万物雷达的发现';const source_url=b.dataset.url||'';
         if(!source_url)return toast('缺少原始来源链接');b.disabled=true;
         const category=b.dataset.category||'科技与发明';const tags=[category,'万物雷达'];
-        const body={title:title.slice(0,100),description:(b.dataset.description||'来自外部开放目录或科技发现。').slice(0,600),source_url,image_url:b.dataset.image||'',category,tags};
+        const body={title:title.slice(0,100),description:(b.dataset.description||'来自外部开放目录或科技发现。').slice(0,600),source_url,image_url:b.dataset.image||'',category,tags,source_note:(b.dataset.license||'').slice(0,400)};
         const result=await api('/wonder/collect-link',{method:'POST',body});track(category==='科技与发明'||category==='航天与宇宙'?'tech_radar':'museum_directory','collect');toast(result.already_collected?'这件发现已经收藏过了':'已收入你的博物馆，并默认设为私密');b.textContent=result.already_collected?'✓ 已收藏':'✓ 已收入';
       }
       else if(action==='vote'){
