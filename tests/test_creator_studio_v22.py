@@ -63,7 +63,7 @@ def test_creation_private_museum_post_and_no_answers_in_backing(env):
     assert backing["title"]=="互动展品｜神奇化石挑战"
     assert backing["visibility"]=="private"
     assert backing["domain"]=="游戏与交互"
-    assert "答案" not in backing["story"] and "correct" not in backing["story"]
+    assert "岩层里的遗迹" not in backing["story"] and "correct" not in backing["story"]
     assert alice.get("/api/my/exhibits").json()[0]["id"]==eid
 
 
