@@ -239,7 +239,7 @@ def test_assets_previous_routes_and_version(env):
     a,b,g=env
     html=g.get("/").text
     assert "WONDER ATLAS · WORLD " in html
-    assert g.get("/api/health").json()["version"]=="29.0"
+    assert g.get("/api/health").json()["version"]=="30.0"
     for asset in ("quests.css","quests.js"):
         path="/static/"+asset
         assert path in html and g.get(path).status_code==200
