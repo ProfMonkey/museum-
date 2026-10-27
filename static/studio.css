@@ -1,0 +1,56 @@
+/* V22 Studio — creator-friendly cards, 16-step rhythm sequencer, SVG ecology. */
+.cs-root{margin:10px 0 36px;color:#f2e1c6;line-height:1.75}.cs-root *{box-sizing:border-box}
+.cs-root button,.cs-root input,.cs-root textarea,.cs-root select{font:inherit}
+.cs-root button{cursor:pointer}.cs-root button:disabled{opacity:.46;cursor:not-allowed}
+.cs-root :is(input,textarea,select,button):focus-visible{outline:2px solid #f2ce8d;outline-offset:3px}
+.cs-intro{background:radial-gradient(ellipse at 77% 0%,#87674e40,transparent 57%),linear-gradient(135deg,#1a2335,#171d29);border:1px solid #d0b78455;border-radius:15px;padding:clamp(19px,3vw,30px);margin-bottom:17px}
+.cs-eyebrow{font-size:10px;color:#dec084;letter-spacing:.16em;font-weight:800}.cs-intro h2{font:600 clamp(24px,3vw,34px)/1.5 Georgia,"Noto Serif SC",serif;margin:11px 0;color:#f1dcb4}
+.cs-intro p,.cs-panel p{color:#bbc7d3;font-size:12px;line-height:1.9}.cs-benefits{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}
+.cs-benefits span,.cs-tag{background:#9d855723;border:1px solid #d7bc824d;color:#f1d8ab;border-radius:100px;padding:5px 11px;font-size:10px}
+.cs-panel{border-radius:15px;border:1px solid #cbb47c44;background:linear-gradient(145deg,#121d2b,#141a28);padding:clamp(17px,3vw,28px);margin-bottom:17px;min-width:0}
+.cs-panel h3{font-family:Georgia,"Noto Serif SC",serif;font-size:22px;color:#f5dbae;margin:9px 0}
+.cs-panel h4{font-size:20px;color:#f1deb8;margin:15px 0}
+.cs-row{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:18px}
+.cs-row small{color:#94a9b9;font-size:10px}.cs-switch,.cs-ops{display:flex;gap:9px;flex-wrap:wrap}
+.cs-root button{background:#273342;border:1px solid #d8b77b61;color:#f1d6a7;border-radius:8px;padding:9px 13px;font-size:11px}
+.cs-root button:hover:not(:disabled){border-color:#f3d79a;background:#344256}
+.cs-root .cs-primary,.cs-root button.active{background:linear-gradient(125deg,#f3dfb4,#d2ac6a);color:#1b2330;border-color:#e1c18a;font-weight:800}
+.cs-root button.active:hover{background:#eacc97}
+.cs-project-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:12px;margin-top:16px}
+.cs-root button.cs-project{display:flex;flex-direction:column;text-align:left;gap:8px;padding:18px;min-height:130px;background:#101c2c}
+.cs-root button.cs-project.active{background:#493e2e;border-color:#f0cc89;color:#fff1d2}
+.cs-project span{font-size:11px;color:#dbbd83}.cs-project b{font-size:17px;line-height:1.5;overflow-wrap:anywhere}
+.cs-project small{font-size:10px;color:#a5b8c8}
+.cs-empty{border:1px dashed #c3a87266;text-align:center;padding:24px;background:#d3ab7210;border-radius:10px;color:#aebdcd;font-size:12px}
+.cs-quiz,.cs-eco,.cs-music{background:#0d1a2a;border:1px solid #dab97935;border-radius:12px;padding:clamp(15px,3vw,24px);margin:17px 0}
+.cs-quiz h4{font-size:22px;line-height:1.6}.cs-answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:21px}
+.cs-root .cs-answers button{min-height:68px;display:flex;align-items:center;gap:11px;text-align:left;background:#142538;color:#e5e4df;border:1px solid #728ca06c;padding:13px}
+.cs-answers button span{font:600 24px Georgia,serif;color:#deb885}.cs-root .cs-answers button.correct{border-color:#8acaaa;background:#1c4d3e}
+.cs-judgement{border-radius:11px;padding:13px 16px;margin-top:18px;border:1px solid #a66d64;background:#5c332e50}
+.cs-judgement.right{background:#2b5f4e45;border-color:#71aa8a}
+.cs-judgement b{font-size:16px;color:#e2d4ab}.cs-judgement small{display:block;color:#c9ddd1;margin-top:7px;font-size:11px}
+.cs-hint,.cs-footer{font-size:11px!important;color:#9cabb9!important;line-height:1.95}
+.cs-grid,.cs-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;align-items:end;margin:17px 0}
+.cs-fields .wide{grid-column:1/-1}
+.cs-root label{display:flex;flex-direction:column;gap:7px;font-size:11px;color:#d7c5a8}
+.cs-root :is(input,textarea,select){background:#091825;border:1px solid #bba47577;color:#f3e7d4;padding:11px 12px;border-radius:9px;width:100%;min-width:0}
+.cs-root textarea{resize:vertical}.cs-root option{color:#f4e5d0;background:#13263a}
+.cs-eco .cs-grid button{align-self:end}.cs-chart{width:100%;height:auto;display:block;max-height:270px;border-radius:10px;margin-top:16px}
+.cs-result{border:1px solid #c7b07944;background:#142634;border-radius:9px;padding:12px 16px;font-size:12px;margin-top:10px;color:#cad7db}
+.cs-result b{font-size:19px;color:#d4f3db}.cs-result small{display:block;font-size:10px;color:#9eafb9;margin-top:5px}
+.cs-music-opts{display:flex;gap:11px;align-items:center;flex-wrap:wrap;margin:15px 0}
+.cs-music-opts span{color:#dbc088;font-size:15px;margin-right:auto}
+.cs-score{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:9px;background:radial-gradient(ellipse at 50% 0%,#60473622,transparent),#091726;border:1px solid #bda57a4c;border-radius:13px;padding:16px;margin:17px 0}
+.cs-score label{display:flex;align-items:center;flex-direction:column;gap:7px;border-radius:6px;padding:5px 2px;color:#deb982}
+.cs-score label:nth-child(4n){border-right:2px solid #d4b3765c}
+.cs-score small{font-size:10px}.cs-score select{text-align:center;font-size:11px;padding:8px 4px}
+.cs-templates{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:19px 0}
+.cs-templates button{min-height:50px}
+.cs-ops{margin-top:15px}
+.cs-root #cs-editor{background:#08172545;border:1px solid #cfad6e31;border-radius:11px;padding:16px}
+.cs-notice,.cs-error{padding:11px 15px;margin:14px 0;background:#b7a17721;border:1px solid #e4c48866;border-radius:9px;color:#f3d8a3;font-size:12px}
+.cs-error{border-color:#b87975;color:#f1b6af}
+.cs-footer{margin:25px 0;text-align:center}
+@media(max-width:720px){.cs-score{grid-template-columns:repeat(4,minmax(0,1fr))}.cs-answers{grid-template-columns:1fr}}
+@media(max-width:480px){.cs-grid,.cs-fields,.cs-templates{grid-template-columns:1fr}.cs-fields .wide{grid-column:auto}.cs-score{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:8px}.cs-quiz h4{font-size:18px}.cs-intro h2{font-size:24px}}
+@media(prefers-reduced-motion:reduce){.cs-root *{transition:none!important;animation:none!important}}
