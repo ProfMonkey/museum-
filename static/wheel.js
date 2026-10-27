@@ -98,25 +98,51 @@ function current(){return logged()?W.detail:{title:W.guest.title,topic:W.guest.t
  no_repeat:W.guest.no_repeat,items:selectedItems(),history:W.guest.history,
  unavailable_count:0};}
 function resetAnimation(){clearTimeout(W.spinTimer);W.busy=false;W.animation++;W.rotation=0;W.result=null;W.guestIndex=null;}
+async function ensureWheel(topic){
+ if(!SCENES[topic])topic='custom';
+ let target=W.wheels.find(x=>x.topic===topic);
+ if(!target){const d=SCENES[topic];const created=await api('/wheels',{method:'POST',body:{title:d.title,topic,theme:W.detail?.theme||'amber',no_repeat:true}});
+   W.wheels=(await api('/wheels')).items||[];target=W.wheels.find(x=>x.id===created.id);
+ }
+ W.wheelId=target?.id||W.wheelId;W.detail=await api('/wheels/'+W.wheelId);
+}
+
 async function load(){
  W.error='';localLoad();
  try{
   if(!W.config)W.config=await api('/wheels/config');
   if(logged()){
    W.wheels=(await api('/wheels')).items||[];
-   if(W.pending){
-    const topic=SCENES[W.pending.topic]?W.pending.topic:'custom';
-    let target=topic==='custom'?(W.wheels.find(x=>x.id===W.wheelId)||W.wheels[0]):W.wheels.find(x=>x.topic===topic);
-    if(target)W.wheelId=target.id;
-    else{
-     const title=topic==='food'?'今天吃什么？':topic==='custom'?'我的万物转盘':SCENES[topic].label+'？';
-     const created=await api('/wheels',{method:'POST',body:{title,topic,theme:'amber',no_repeat:true}});
-     W.wheelId=created.id;W.wheels=(await api('/wheels')).items||[];
+   if(W.pending?.topic&&SCENES[W.pending.topic]){
+    await ensureWheel(W.pending.topic);
+   }else{
+    if(!W.wheels.some(x=>x.id===W.wheelId))W.wheelId=W.wheels[0]?.id||0;
+    W.detail=W.wheelId?await api('/wheels/'+W.wheelId):null;
+   }
+  }else{
+   W.wheels=[];W.wheelId=0;W.detail=null;
+   if(W.pending?.topic&&W.guest.topic!==W.pending.topic)setGuestTopic(W.pending.topic);
+  }
+  if(W.pending?.auto){
+   // The exhibit click is explicit; no need to make the visitor click twice.
+   const queued=W.pending;W.pending=null;
+   try{
+    if(logged()){
+     if(!W.wheelId)await ensureWheel(queued.topic||'custom');
+     await api('/wheels/'+W.wheelId+'/items',{method:'POST',
+       body:{kind:'exhibit',exhibit_id:queued.id}});
+    }else guestAdd(queued.title,queued.id);
+    W.notice='✓ 已放入'+(SCENES[queued.topic]?.label||'万物')+'转盘：'+queued.title+'。添加至少两个选项即可抽取。';
+   }catch(err){
+    if(/重复|已经在|已添加/.test(err.message)){
+     W.notice='这件藏品已在当前转盘中，不必重复添加。';
+    }else{
+     W.pending={...queued,auto:false};W.error=err.message||'加入转盘失败，可以在下面重试。';
     }
-   }else if(!W.wheels.some(x=>x.id===W.wheelId))W.wheelId=W.wheels[0]?.id||0;
-   W.detail=W.wheelId?await api('/wheels/'+W.wheelId):null;
-  }else{W.wheels=[];W.wheelId=0;W.detail=null;if(W.pending?.topic&&SCENES[W.pending.topic]){W.guest.topic=W.pending.topic;W.guest.title=W.pending.topic==='food'?'今天吃什么？':SCENES[W.pending.topic].label+'？';localSave();}}
-  // Search is opt-in, not a site-wide passive fetch on every navigation.
+   }
+   if(logged()&&W.wheelId)W.detail=await api('/wheels/'+W.wheelId);
+  }
+  if(!logged())await verifyGuestSources();
   if(W.search)W.sources=(await api('/wheels/sources?q='+encodeURIComponent(W.search))).items||[];
  }catch(err){W.error=err.message||'无法连接万物转盘';}
 }
@@ -144,18 +170,18 @@ function svgWheel(items,theme){
  '<text x="180" y="185" fill="#f1d8aa" text-anchor="middle" font-size="22">✦</text></svg>';
 }
 function hero(){
- return '<section class="ww-hero"><div class="ww-kicker">WONDER ATLAS · V24 · SPIN THE UNIVERSE</div>'+
- '<h1>🎡 万物皆可抽。<br><em>今晚吃什么？交给转盘。</em></h1>'+
- '<p>在博物馆逛到好吃的、好玩的、好看的，都能加入私人转盘。吃什么、去哪玩、看什么、下一次探索什么——由你收藏，再由公平随机决定。</p>'+
+ return '<section class="ww-hero"><div class="ww-kicker">WONDER ATLAS · V39 · EIGHT DECISION WORLDS</div>'+
+ '<h1>🎡 不止今天吃什么。<br><em>你收藏的万物，都可以成为下一次选择。</em></h1>'+
+ '<p>美食 · 旅行 · 影视 · 阅读 · 学习 · 运动 · 日常活动 · 自定义。八种场景各有自己的候选选项和历史，从展品一键加入，抽中后可回到原始馆藏。</p>'+
  '<div class="ww-labels">♡ 无付费 · ◌ 随机抽取 · ✦ 真正馆藏或自己的选项</div>'+button('destiny','✨ 不只抽一次：开启万物命运接力 ↗','class="ww-destiny-link"')+'</section>';
 }
 function sceneButtons(){
- return '<div class="ww-scenes">'+Object.entries(SCENES).map(([key,x])=>
- button('scene',x.label,'data-topic="'+key+'" class="'+((current()?.topic||'food')===key?'active':'')+'"')).join('')+'</div>';
+ return '<div class="ww-scenes" role="group" aria-label="选择专属决策转盘">'+Object.entries(SCENES).map(([key,x])=>
+ button('scene',x.label,'data-topic="'+key+'" aria-pressed="'+((current()?.topic||'food')===key?'true':'false')+'" class="'+((current()?.topic||'food')===key?'active':'')+'"')).join('')+'</div>';
 }
 function showSpinner(){
  const d=current();
- if(!d)return '<section class="ww-panel"><h2>✦ 先拥有自己的第一个转盘</h2><p>创建「今天吃什么」转盘，把自己喜欢的美食或公开馆藏加入其中。</p></section>';
+ if(!d)return '<section class="ww-panel"><h2>✦ 先选一个决策主题</h2><p>点击上方八种场景，即可创建对应的独立私人转盘。</p></section>';
  const items=selectedItems(),available=items.length;
  return '<section class="ww-play-panel"><div class="ww-pane-title"><span class="ww-kicker">DECIDE BY DISCOVERY</span>'+
  '<h2>'+esc(d.title)+'</h2><p>有效选项 '+available+' / 24 · '+(d.no_repeat?'开启连续防重复':'允许连续重复')+
@@ -178,7 +204,7 @@ function showSpinner(){
 }
 function wheelControls(){
  if(!logged())return '<section class="ww-panel"><h2>🎁 游客体验：免登录也能抽</h2>'+
- '<p>上方是<b>仅供演示的预设食物名称</b>，不是社区用户投稿。所有修改只保存在当前浏览器，登录后可以创建长期私人转盘。</p>'+
+ '<p>上方是<b>仅供演示的预设候选</b>，不是社区用户投稿。八种场景互不混合；游客的自定义内容只保存在当前浏览器。</p>'+
  '<form id="ww-guest-config" class="ww-controls"><label>转盘名字<input name="title" value="'+esc(W.guest.title)+'" minlength="2" maxlength="60" required></label>'+
  '<label>颜色风格<select name="theme">'+options('theme',W.guest.theme)+'</select></label>'+
  '<label class="ww-tick"><input name="no_repeat" type="checkbox" '+(W.guest.no_repeat?'checked':'')+'>不连续抽中同一项</label>'+
