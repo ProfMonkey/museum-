@@ -34,7 +34,7 @@ DATABASE = DATA / "wonder.db"
 IS_SECURE = os.getenv("WONDER_COOKIE_SECURE", "0") == "1"
 SESSION_SECONDS = 60 * 60 * 24 * 21
 
-app = FastAPI(title="万物博物馆 API", version="17.0", docs_url="/api/docs", redoc_url=None)
+app = FastAPI(title="万物博物馆 API", version="18.0", docs_url="/api/docs", redoc_url=None)
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 app.mount("/media", StaticFiles(directory=MEDIA), name="media")
 
@@ -854,3 +854,7 @@ mount_fantasy(app, db, require_user, maybe_user, now, fail)
 # V17: consensual fiction diplomacy, civilization cards and jointly reviewed lore.
 from diplomacy_api import mount_diplomacy
 mount_diplomacy(app, db, require_user, maybe_user, now, fail)
+
+# V18: deterministic, immutable, creator-owned civilization evolution.
+from evolution_api import mount_evolution
+mount_evolution(app, db, require_user, maybe_user, now, fail)
