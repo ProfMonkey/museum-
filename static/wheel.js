@@ -82,7 +82,7 @@ function hero(){
  return '<section class="ww-hero"><div class="ww-kicker">WONDER ATLAS · V24 · SPIN THE UNIVERSE</div>'+
  '<h1>🎡 万物皆可抽。<br><em>今晚吃什么？交给转盘。</em></h1>'+
  '<p>在博物馆逛到好吃的、好玩的、好看的，都能加入私人转盘。吃什么、去哪玩、看什么、下一次探索什么——由你收藏，再由公平随机决定。</p>'+
- '<div class="ww-labels">♡ 无付费 · ◌ 随机抽取 · ✦ 真正馆藏或自己的选项</div></section>';
+ '<div class="ww-labels">♡ 无付费 · ◌ 随机抽取 · ✦ 真正馆藏或自己的选项</div>'+button('destiny','✨ 不只抽一次：开启万物命运接力 ↗','class="ww-destiny-link"')+'</section>';
 }
 function sceneButtons(){
  return '<div class="ww-scenes">'+Object.entries(SCENES).map(([key,x])=>
@@ -248,6 +248,7 @@ document.addEventListener('click',async ev=>{
  const act=b.dataset.wheel,id=Number(b.dataset.id||0);
  try{
   if(act==='spin'){await spin();return;}
+  if(act==='destiny'){await navigate('adventure');return;}
   if(W.busy)return;
   if(act==='choose'){W.wheelId=id;resetAnimation();}
   else if(act==='scene'){
