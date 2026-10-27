@@ -199,9 +199,9 @@ def test_parent_studio_visibility_must_be_public(env):
     with module.db() as c:
         # Model the public-exhibit / private-project mismatch explicitly.
         c.execute("""INSERT INTO creator_studio_projects
-             (user_id,exhibit_id,title,kind,visibility,created_at,updated_at)
-             VALUES(?,?,?,?,?,?,?)""",
-             (1, a, "内部作品", "quiz", "private", module.now(), module.now()))
+             (owner_id,exhibit_id,title,kind,visibility,config_json,created_at,updated_at)
+             VALUES(?,?,?,?,?,?,?,?)""",
+             (1, a, "内部作品", "quiz", "private", "{}", module.now(), module.now()))
     assert invite(alice, "Bob", a).status_code == 404
     assert alice.get(f"/api/parallel/suggestions?exhibit_id={a}").status_code == 404
 
