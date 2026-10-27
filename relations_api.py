@@ -227,7 +227,7 @@ def revoke_civilization(c, civilization_id, now):
     if c.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='fantasy_civilization_relations'").fetchone():
         c.execute("""UPDATE fantasy_civilization_relations
             SET status='withdrawn',updated_at=? WHERE status IN ('pending','accepted')
-            AND (source_id=? OR target_id=?)""",(now(),civilization_id,civilization_id))
+            AND (source_id=? OR target_id=?)""",(now,civilization_id,civilization_id))
 
 
 def revoke_world(c, world_id, now):
@@ -236,4 +236,4 @@ def revoke_world(c, world_id, now):
           WHERE status IN ('pending','accepted')
           AND (source_id IN (SELECT id FROM fantasy_civilizations WHERE world_id=?)
           OR target_id IN (SELECT id FROM fantasy_civilizations WHERE world_id=?))""",
-          (now(),world_id,world_id))
+          (now,world_id,world_id))
