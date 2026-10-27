@@ -193,4 +193,4 @@ def test_static_assets_and_navigation_are_exposed(env):
         assert asset in html
         assert guest.get(asset).status_code==200
     assert 'data-view="lab"' in html
-    assert "WORLD 20" in html
+    assert "WONDER ATLAS · WORLD " in html  # release marker is version-agnostic
