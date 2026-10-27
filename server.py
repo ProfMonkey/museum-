@@ -34,7 +34,7 @@ DATABASE = DATA / "wonder.db"
 IS_SECURE = os.getenv("WONDER_COOKIE_SECURE", "0") == "1"
 SESSION_SECONDS = 60 * 60 * 24 * 21
 
-app = FastAPI(title="万物博物馆 API", version="25.0", docs_url="/api/docs", redoc_url=None)
+app = FastAPI(title="万物博物馆 API", version="26.0", docs_url="/api/docs", redoc_url=None)
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 app.mount("/media", StaticFiles(directory=MEDIA), name="media")
 
@@ -893,3 +893,7 @@ mount_wheels(app, db, require_user, maybe_user, now, fail)
 # V25: stage-by-stage private destiny relays and revocable public story cards.
 from adventure_api import mount_adventures
 mount_adventures(app, db, require_user, maybe_user, now, fail)
+
+# V26: private quests following real draws into live public museum objects.
+from discovery_missions import mount_discovery_missions
+mount_discovery_missions(app, db, require_user, now, fail)
