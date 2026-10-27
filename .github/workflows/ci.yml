@@ -1,9 +1,8 @@
 name: Wonder Atlas tests
 
 on:
-  push:
-    branches: [main]
-  pull_request:
+  # Disabled automatic runs to save GitHub Actions minutes.
+  # Only manual execution initiated by the repository owner is possible.
   workflow_dispatch:
 
 permissions:
