@@ -232,5 +232,5 @@ document.addEventListener('submit',async ev=>{
   await refresh();
  }catch(err){if(typeof toast==='function')toast(err.message||'操作失败');}
 },true);
-window.WonderPlay={render,afterMount,stop(){P.drawToken++;}};
+window.WonderPlay={render,afterMount,stop(){P.drawToken++;},startFromExhibit(id,title){P.tab='relays';P.selected=Number(id);P.query=String(title||'');P.relayId=0;P.notice='已选中该公开藏品，可以从此创建接力路线。';}};
 })();
