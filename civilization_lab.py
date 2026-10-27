@@ -40,6 +40,20 @@ class CivilizationIn(BaseModel):
         return self
 
 
+class CivilizationEdit(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    name: str = Field(min_length=3, max_length=80)
+    charter: str = Field(min_length=20, max_length=580)
+
+    @model_validator(mode="after")
+    def normalize(self):
+        self.name = self.name.strip()
+        self.charter = self.charter.strip()
+        if len(self.name) < 3 or len(self.charter) < 20:
+            raise ValueError("文明名称至少3字，文明宣言至少20字")
+        return self
+
+
 class TurnIn(BaseModel):
     model_config = ConfigDict(extra="forbid")
     policy: str = Field(min_length=3, max_length=40)
@@ -282,6 +296,17 @@ def mount_civilization_lab(app, db, require_user, maybe_user, now, fail):
             if civ["status"]!="public" and (not user or user["id"]!=civ["owner_id"]):
                 fail(404,"文明仍为作者私密草稿")
             return detail_data(c,civ)
+
+    @app.put("/api/civilizations/{civ_id}")
+    def edit(civ_id:int,payload:CivilizationEdit,user=Depends(require_user)):
+        with db() as c:
+            c.execute("BEGIN IMMEDIATE")
+            own(c,civ_id,user)
+            c.execute("""UPDATE civ_civilizations
+                SET name=?,charter=?,status='draft',updated_at=? WHERE id=?""",
+                (payload.name,payload.charter,now(),civ_id))
+            return {"ok":True,"status":"draft",
+                    "notice":"文明名称和宣言已保存，新文本需作者重新公开。"}
 
     @app.post("/api/civilizations/{civ_id}/turns",status_code=201)
     def step(civ_id:int,payload:TurnIn,user=Depends(require_user)):
