@@ -32,7 +32,7 @@ function showGuest(stageInfo){
  '<div class="wq-guest">'+completed.map((x,i)=>'<div class="wq-guest-step"><div class="wq-line">'+
  '<b>第 '+x.number+' 站 · '+esc(x.label)+'</b>'+
  btn('guest-search','⌕ 从博物馆寻找线索','data-stage="'+x.number+'" data-label="'+esc(x.label)+'"')+'</div>'+
- (Q.demoResults[x.number]?renderFound(Q.demoResults[x.number],x.number,false):'')+'</div>').join('')+'</div>')+
+ (Q.demoResults[x.number]?.query===x.label?renderFound(Q.demoResults[x.number],x.number,false):'')+'</div>').join('')+'</div>')+
  '<p class="wq-footnote">游客探索仅用于体验；不保存在线私人任务进度。登录后可用自己的转盘创建可追踪的探索任务。</p></section>';
 }
 function renderFound(info,n,own,visitedId=null){
