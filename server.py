@@ -34,7 +34,7 @@ DATABASE = DATA / "wonder.db"
 IS_SECURE = os.getenv("WONDER_COOKIE_SECURE", "0") == "1"
 SESSION_SECONDS = 60 * 60 * 24 * 21
 
-app = FastAPI(title="万物博物馆 API", version="22.0", docs_url="/api/docs", redoc_url=None)
+app = FastAPI(title="万物博物馆 API", version="23.0", docs_url="/api/docs", redoc_url=None)
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 app.mount("/media", StaticFiles(directory=MEDIA), name="media")
 
@@ -481,6 +481,8 @@ def edit_exhibit(id: int, data: ExhibitPayload, user=Depends(require_user)):
             # A later public toggle must not silently restore a revoked studio work.
             if c.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='creator_studio_projects'").fetchone():
                 c.execute("UPDATE creator_studio_projects SET visibility='private',updated_at=? WHERE exhibit_id=?", (now(),id))
+            if c.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='wonder_sandbox_projects'").fetchone():
+                c.execute("UPDATE wonder_sandbox_projects SET visibility='private',updated_at=? WHERE exhibit_id=?", (now(),id))
         return read_exhibit(c, id, user)
 
 
@@ -879,3 +881,7 @@ mount_play(app, db, require_user, maybe_user, now, fail)
 # V22 no-code interactive exhibit studio.
 from creator_studio_api import mount_studio
 mount_studio(app, db, require_user, maybe_user, now, fail)
+
+# V23: interactive electrical teaching sandbox and curated historical time theatre.
+from sandbox_api import mount_sandbox
+mount_sandbox(app, db, require_user, maybe_user, now, fail)

@@ -30,4 +30,4 @@ def test_health_version_matches_current_release(env):
     client=env[0]
     data=client.get('/api/health').json()
     assert data['ok'] is True
-    assert data['version']=='22.0'
+    assert data['version']=='23.0'

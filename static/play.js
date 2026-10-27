@@ -30,7 +30,7 @@ function head(){
 }
 function tabs(){
  return '<div class="pl-tabs" role="tablist" aria-label="万物互动展馆">'+
-  [['experiments','⚙ 可玩的万物实验'],['relays','🔗 万物接力计划'],['studio','✦ 万物造物工坊']].map(([key,text])=>
+  [['experiments','⚙ 可玩的万物实验'],['relays','🔗 万物接力计划'],['studio','✦ 万物造物工坊'],['sandbox','🧱 万物沙盒']].map(([key,text])=>
   click('tab',text,'data-tab="'+key+'" role="tab" aria-selected="'+(P.tab===key)+'" class="'+(P.tab===key?'active':'')+'"')).join('')+'</div>';
 }
 const labFields={
@@ -114,7 +114,7 @@ async function render(){
  await load();
  return '<div class="pl-root">'+head()+tabs()+(P.notice?'<div class="pl-notice">'+esc(P.notice)+'</div>':'')+
  (P.error?'<div class="pl-error">'+esc(P.error)+'</div>':'')+
- (P.tab==='experiments'?form():P.tab==='relays'?relaysView():await WonderStudio.render())+
+ (P.tab==='experiments'?form():P.tab==='relays'?relaysView():P.tab==='studio'?await WonderStudio.render():await WonderSandbox.render())+
  '<footer class="pl-warning">现实藏品不等于已经证实；模型推演不等于科学测量。公开与私人内容保持隔离。</footer></div>';
 }
 function afterMount(){
