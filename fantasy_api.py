@@ -229,6 +229,9 @@ def mount_fantasy(app, db, require_user, maybe_user, now, fail):
             if draft.visibility=='private':
                 c.execute('''UPDATE exhibits SET visibility='private',updated_at=? WHERE id IN
                     (SELECT exhibit_id FROM fantasy_relics WHERE world_id=?)''',(now(),world_id))
+                # Revoke every accepted or pending inter-civilization link permanently.
+                from relations_api import revoke_world
+                revoke_world(c,world_id,now())
                 # Withdraw collaboration and civilization publicity on closing a world.
                 # Reopening never silently republishes consented content.
                 if c.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='fantasy_civilizations'").fetchone():
