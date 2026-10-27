@@ -285,13 +285,14 @@ def mount_coexhibitions(app, db, require_user, maybe_user, now, fail):
                      "a_anchor":bridge["sender_exhibit_id"],"b_anchor":bridge["recipient_exhibit_id"],
                      "a_id":bridge["sender_id"],"b_id":bridge["recipient_id"]}):
                 fail(409,"双方会合使用的公开藏品已撤回")
-            n=c.execute("""SELECT COUNT(*) FROM co_exhibitions x
-                  JOIN parallel_invitations p ON p.id=x.bridge_id
-                  WHERE x.state<>'closed' AND
-                   (p.sender_id=? OR p.recipient_id=?)""",
-                   (user["id"],user["id"])).fetchone()[0]
-            if n>=MAX_EXHIBITIONS:
-                fail(429,"每人最多管理十座进行中的联合展厅")
+            for curator_id in (bridge["sender_id"],bridge["recipient_id"]):
+                n=c.execute("""SELECT COUNT(*) FROM co_exhibitions x
+                      JOIN parallel_invitations p ON p.id=x.bridge_id
+                      WHERE x.state<>'closed' AND
+                       (p.sender_id=? OR p.recipient_id=?)""",
+                       (curator_id,curator_id)).fetchone()[0]
+                if n>=MAX_EXHIBITIONS:
+                    fail(429,"任一馆长最多管理十座进行中的联合展厅")
             cur=c.execute("""INSERT INTO co_exhibitions(bridge_id,title,introduction,created_at)
                 VALUES(?,?,?,?)""",(payload.bridge_id,payload.title,payload.introduction,now()))
             return {"exhibition":manage_preview(c,fetch_row(c,cur.lastrowid),user)}
