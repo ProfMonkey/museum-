@@ -170,11 +170,11 @@ def test_pending_source_withdrawal_hides_title_and_blocks_accept(env):
 def test_public_suggestions_exclude_private_and_show_exact_reasons(env):
     alice, bob, guest = env
     a = exhibit(alice, "古代米线", tags="云南,饮食",
-                category="饮食文化", domain="生活方式")
+                category="饮食文化", domain="食物与饮食")
     similar = exhibit(bob, "云南的茶文化", tags="云南,茶叶",
-                      category="饮食文化", domain="生活方式")
+                      category="饮食文化", domain="食物与饮食")
     hidden = exhibit(bob, "秘密云南日记", tags="云南,饮食",
-                     category="饮食文化", domain="生活方式", visibility="private")
+                     category="饮食文化", domain="食物与饮食", visibility="private")
     unrelated = exhibit(bob, "机械臂", tags="电机,电路",
                         category="科技与发明", domain="工程与发明")
     result = alice.get(f"/api/parallel/suggestions?exhibit_id={a}")
