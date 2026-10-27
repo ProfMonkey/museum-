@@ -11,7 +11,7 @@ const ITEMS=[
 {group:"探索发现",view:"culture",icon:"♫",title:"当代新奇",desc:"集中浏览热梗、游戏、数码和流行文化。",keywords:"热梗 流行文化 游戏 网络 新奇"},
 {group:"探索发现",view:"journey",icon:"↝",title:"随机奇遇",desc:"让一件公开藏品带你继续探索。",keywords:"随机 发现 探索 关联"},
 {group:"探索发现",view:"constellation",icon:"✧",title:"万物星图",desc:"把自己探索过的藏品连接成私人关系地图。",keywords:"知识图谱 关系 网络 路线"},
-{group:"探索发现",view:"wheels",icon:"🍜",title:"万物转盘 · 今天吃什么",desc:"把浏览到的美食或自己的选项加入转盘，随机决定吃什么。",keywords:"美食 食物 米线 菌子 牛排 转盘 抽取 随机菜单"},
+{group:"探索发现",view:"wheels",icon:"🍜",title:"万物转盘 · 八种随机决定",desc:"美食、旅行、影视、阅读、学习、运动、活动与自定义。逛藏品时一键加入对应转盘。",keywords:"美食 食物 米线 菌子 牛排 转盘 随机菜单 出游 旅行 影视 电影 小说 阅读 读书 数学 学习 运动 跑步 健身 活动 自定义"},
 {group:"创作与游玩",action:"new",icon:"＋",title:"发布新发现",desc:"上传图片、写下介绍与来源，创建一件新藏品。",keywords:"上传 投稿 新建 藏品 创作"},
 {group:"创作与游玩",view:"virtual-gallery",icon:"▧",title:"展厅工坊",desc:"布置自己的展厅，安排藏品并沉浸参观。",keywords:"建造 布展 房间 展示 工坊"},
 {group:"创作与游玩",view:"lab",icon:"✶",title:"万物实验室",desc:"通过互动模型与小实验玩转知识。",keywords:"实验 参数 互动 模型 学习"},
