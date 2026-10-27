@@ -65,6 +65,10 @@ function selectedPanel(){
  (x.visibility==='private'?'<span>仅自己可见</span>':'')+'</div>'+
  (x.tags?.length?'<div class="ct-tags">'+x.tags.map(t=>'<span># '+esc(t)+'</span>').join('')+'</div>':'')+
  (x.kind==='exhibit'&&x.exhibit_id?btn('open-exhibit','打开原始馆藏 ↗','data-id="'+x.exhibit_id+'" class="ct-secondary"'):'')+(x.source_unavailable?'<p class="ct-muted">原始藏品已删除、设为私密或撤回公开；你可以删除这颗失效的星点，但系统不会保留原始标题。</p>':'')+
+ (x.source_unavailable?'':'<div class="ct-divider"></div><h3>编辑个人档案</h3><form id="ctEditNodeForm">'+
+ (x.kind==='idea'?'<label>想法名称<input name="title" maxlength="100" required value="'+esc(x.title)+'"></label>':'<p class="ct-muted">展品标题来自原始馆藏；这里仅编辑你的私人注记。</p>')+
+ '<label>个人注记<textarea name="note" maxlength="280" placeholder="写下你自己的观察、问题或联想。">'+esc(x.note||'')+'</textarea></label>'+
+ '<button class="ct-secondary" type="submit">保存档案</button></form>')+
  (x.source_unavailable?'<div class="ct-divider"></div><p class="ct-muted">原始藏品已不可见，不能再从它建立新关联。你仍可删除这个占位星点和旧连线。</p>':
  '<div class="ct-divider"></div><h3>把它连接到另一颗星</h3>'+
  (!targets.filter(t=>!t.source_unavailable).length?'<p class="ct-muted">再加入至少一颗可用星点，才能建立连线。</p>':
@@ -158,7 +162,7 @@ document.addEventListener('click',async e=>{
  }catch(err){toast(err.message||'操作未完成');await refresh()}
 },true);
 document.addEventListener('submit',async e=>{
- const form=e.target;if(!['ctIdeaForm','ctSearchForm','ctEdgeForm'].includes(form.id))return;
+ const form=e.target;if(!['ctIdeaForm','ctSearchForm','ctEdgeForm','ctEditNodeForm'].includes(form.id))return;
  e.preventDefault();e.stopImmediatePropagation();
  const submit=form.querySelector('[type=submit],button');if(submit)submit.disabled=true;
  const data=Object.fromEntries(new FormData(form).entries());
@@ -173,6 +177,10 @@ document.addEventListener('submit',async e=>{
   }else if(form.id==='ctEdgeForm'){
    await api('/constellation/edges',{method:'POST',body:{from_node_id:C.selected,to_node_id:Number(data.target_id),kind:data.kind,note:data.note}});
    toast('个人连线已保存');await load();await refresh();
+  }else if(form.id==='ctEditNodeForm'){
+   const body={note:data.note||''};if(data.title!==undefined)body.title=data.title;
+   await api('/constellation/nodes/'+C.selected,{method:'PATCH',body});
+   toast('个人星图档案已更新');await load();await refresh();
   }
  }catch(err){toast(err.message||'操作未完成')}
  finally{if(submit)submit.disabled=false}
