@@ -34,7 +34,7 @@ DATABASE = DATA / "wonder.db"
 IS_SECURE = os.getenv("WONDER_COOKIE_SECURE", "0") == "1"
 SESSION_SECONDS = 60 * 60 * 24 * 21
 
-app = FastAPI(title="万物博物馆 API", version="21.0", docs_url="/api/docs", redoc_url=None)
+app = FastAPI(title="万物博物馆 API", version="22.0", docs_url="/api/docs", redoc_url=None)
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 app.mount("/media", StaticFiles(directory=MEDIA), name="media")
 
@@ -871,3 +871,7 @@ mount_everything_lab(app, db, require_user, maybe_user, now, fail)
 # V21: playable math/science demonstrations and collaborative discovery relays.
 from play_api import mount_play
 mount_play(app, db, require_user, maybe_user, now, fail)
+
+# V22 no-code interactive exhibit studio.
+from creator_studio_api import mount_studio
+mount_studio(app, db, require_user, maybe_user, now, fail)
