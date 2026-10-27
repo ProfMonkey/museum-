@@ -181,6 +181,24 @@ def test_delete_turn_and_explicit_unpublish_respects_owner(env):
     assert alice.get(f"/api/collisions/{wid}").status_code==200
 
 
+
+def test_author_may_revise_charter_but_every_public_change_requires_approval(env):
+    alice,bob,guest=env
+    cid,wid,a,b=make_published(alice,bob)
+    payload={"name":"新的金色文明","charter":"在作者修改历史宣言后，全体游客都必须在再次发布以后才能查看新内容。"}
+    assert bob.put(f"/api/civilizations/{cid}",json=payload).status_code==404
+    assert guest.put(f"/api/civilizations/{cid}",json=payload).status_code==401
+    bad=alice.put(f"/api/civilizations/{cid}",json={"name":" ","charter":"不足字数"})
+    assert bad.status_code==422
+    edited=alice.put(f"/api/civilizations/{cid}",json=payload)
+    assert edited.status_code==200,edited.text
+    assert edited.json()["status"]=="draft"
+    assert detail(guest,cid).status_code==404
+    assert detail(alice,cid).json()["name"]=="新的金色文明"
+    assert publish(alice,cid).status_code==200
+    assert detail(guest,cid).json()["name"]=="新的金色文明"
+
+
 def test_max_eight_turns_is_finite_and_comparable(env):
     alice,bob,guest=env
     wid,a,b=origin(alice,bob)
