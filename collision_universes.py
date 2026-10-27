@@ -225,11 +225,17 @@ def mount_collision_universes(app, db, require_user, maybe_user, now, fail):
             rows=c.execute("""SELECT w.*,u.username AS author FROM collision_worlds w
                 JOIN users u ON u.id=w.owner_id
                 WHERE w.status='public' ORDER BY w.id DESC LIMIT 80""").fetchall()
-            return {"items":[{"id":r["id"],"title":r["title"],"author":r["author"],
-                        "left":card(a),"right":card(b),
-                        "law":r["law"],"law_title":LAW_TITLES[r["law"]]}
-                      for r in rows if (pair:=(sources(c,r))) and
-                       (a:=pair[0]) is not None and (b:=pair[1]) is not None][:36],
+            found=[]
+            for row in rows:
+                a,b=sources(c,row)
+                if a is None or b is None:
+                    continue
+                found.append({"id":row["id"],"title":row["title"],
+                              "author":row["author"],"left":card(a),"right":card(b),
+                              "law":row["law"],"law_title":LAW_TITLES[row["law"]]})
+                if len(found)>=36:
+                    break
+            return {"items":found,
                     "notice":"只展示真实馆长自愿公开的虚构思想实验；原始藏品权限每次即时重验。"}
 
     @app.get("/api/collisions/mine")
