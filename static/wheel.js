@@ -5,16 +5,19 @@
 'use strict';
 const W={config:null,wheels:[],wheelId:0,detail:null,guest:null,pending:null,
  search:'',sources:[],notice:'',error:'',busy:false,rotation:0,animation:0,
- result:null,guestIndex:null,history:[],spinTimer:0};
+ result:null,guestIndex:null,history:[],spinTimer:0,guestByTopic:{},sourceWarning:''};
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"\'":'&#39;'}[c]));
 const logged=()=>Boolean(window.S?.user);
 const button=(action,text,attr='')=>'<button type="button" data-wheel="'+action+'" '+attr+'>'+text+'</button>';
 const SCENES={
- food:{label:'🍜 吃什么',topic:'food',samples:['米线','菌子火锅','牛排','烤鱼','小锅米线','烧烤']},
- travel:{label:'🧭 去哪玩',topic:'travel',samples:['公园散步','逛博物馆','爬山','去看展','咖啡馆','去湖边']},
- watch:{label:'🎬 看什么',topic:'watch',samples:['科幻电影','悬疑片','纪录片','动画电影','经典老片','短片']},
- activity:{label:'🎲 干什么',topic:'activity',samples:['读一本书','做一个小项目','听音乐','散步','整理收藏','摄影']},
- custom:{label:'✦ 万物',topic:'custom',samples:['探索新领域','随机看件藏品','研究一个问题','画画','体验一个实验','学习新技能']}
+ food:{label:'🍜 吃什么',title:'今天吃什么？',samples:['米线','菌子火锅','牛排','烤鱼','小锅米线','烧烤'],search:['米线','菌子','牛排','烧烤','甜品','水果']},
+ travel:{label:'🧭 去哪玩',title:'周末去哪玩？',samples:['公园散步','逛博物馆','看展览','郊外徒步','去湖边','城市漫游'],search:['旅行','景点','公园','建筑','山川','城市']},
+ watch:{label:'🎬 看什么',title:'今晚看什么？',samples:['科幻电影','悬疑片','纪录片','动画电影','经典老片','短片'],search:['电影','动画','纪录片','影视','动漫','剧集']},
+ read:{label:'📚 读什么',title:'下一本读什么？',samples:['科普读物','短篇小说','人物传记','自然图鉴','历史故事','文学作品'],search:['书籍','小说','文学','古籍','诗歌','漫画']},
+ study:{label:'🧠 学什么',title:'今晚学什么？',samples:['数学','编程','英语','算法','摄影','天文'],search:['数学','编程','物理','人工智能','计算机','语言']},
+ exercise:{label:'🏃 怎么运动',title:'今天做什么运动？',samples:['散步','慢跑','拉伸','篮球','骑行','跳绳'],search:['运动','跑步','篮球','健身','骑行','舞蹈']},
+ activity:{label:'🎲 做什么',title:'无聊时做什么？',samples:['去逛展','听音乐','动手做实验','整理收藏','画一张画','拍一张照片'],search:['手工','摄影','实验','游戏','艺术','音乐']},
+ custom:{label:'✦ 自定义',title:'让万物决定',samples:['探索新领域','随机看件藏品','研究一个问题','画画','体验一个实验','学习新技能'],search:['自然','科技','艺术','生活','故事','历史']}
 };
 const PALETTE={
  amber:['#f2b766','#e99174','#d6aa7b','#d7c389','#f29b70','#d89ba1'],
@@ -22,22 +25,74 @@ const PALETTE={
  mint:['#4aa9a1','#83c9aa','#7dbbb9','#90d5ce','#77a592','#a4d1b2'],
  rose:['#de8399','#b87fbc','#e6b3a7','#b58ab3','#d19aa3','#f3ae90']
 };
+function freshGuest(topic){
+ const def=SCENES[topic]||SCENES.food;
+ return {labels:[...def.samples],sourceIds:{},title:def.title,topic:def.topic||topic,
+  theme:'amber',no_repeat:true,last:null,history:[]};
+}
+function normalizeGuest(raw,topic){
+ const d=freshGuest(topic);
+ if(!raw||!Array.isArray(raw.labels))return d;
+ const labels=[...new Set(raw.labels.filter(x=>typeof x==='string'&&x.trim().length>0&&x.length<=75).map(x=>x.trim()))].slice(0,24);
+ return {labels,sourceIds:raw.sourceIds&&typeof raw.sourceIds==='object'?raw.sourceIds:{},
+  title:String(raw.title||d.title).slice(0,60),topic,theme:PALETTE[raw.theme]?raw.theme:'amber',
+  no_repeat:raw.no_repeat!==false,last:Number.isInteger(raw.last)?raw.last:null,
+  history:Array.isArray(raw.history)?raw.history.slice(0,20):[]};
+}
 function localLoad(){
  if(W.guest)return;
- try{
-  const obj=JSON.parse(localStorage.getItem('wonder-wheel-v24')||'null');
-  if(obj&&Array.isArray(obj.labels)) {
-   W.guest={labels:obj.labels.filter(x=>typeof x==='string'&&x.length<=75).slice(0,24),
-       sourceIds:obj.sourceIds&&typeof obj.sourceIds==='object'?obj.sourceIds:{},
-       title:String(obj.title||'今晚吃什么').slice(0,60),topic:SCENES[obj.topic]?obj.topic:'food',
-       theme:PALETTE[obj.theme]?obj.theme:'amber',no_repeat:obj.no_repeat!==false,
-       last:Number.isInteger(obj.last)?obj.last:null,history:Array.isArray(obj.history)?obj.history.slice(0,20):[]};
+ let saved=null,legacy=null;
+ try{saved=JSON.parse(localStorage.getItem('wonder-wheel-v39')||'null');
+  legacy=JSON.parse(localStorage.getItem('wonder-wheel-v24')||'null')}catch(_){}
+ W.guestByTopic={};
+ if(saved&&saved.byTopic&&typeof saved.byTopic==='object'){
+  for(const key of Object.keys(SCENES)){
+   if(saved.byTopic[key])W.guestByTopic[key]=normalizeGuest(saved.byTopic[key],key);
   }
- }catch(_){}
- if(!W.guest)W.guest={labels:['米线','菌子火锅','牛排','烧烤'],sourceIds:{},
-    title:'今天吃什么？',topic:'food',theme:'amber',no_repeat:true,last:null,history:[]};
+ }
+ if(legacy&&Array.isArray(legacy.labels)){
+  const key=SCENES[legacy.topic]?legacy.topic:'food';
+  if(!W.guestByTopic[key])W.guestByTopic[key]=normalizeGuest(legacy,key);
+ }
+ const current=SCENES[saved?.current]?saved.current:SCENES[legacy?.topic]?legacy.topic:'food';
+ W.guest=W.guestByTopic[current]||freshGuest(current);W.guestByTopic[current]=W.guest;
 }
-function localSave(){try{localStorage.setItem('wonder-wheel-v24',JSON.stringify(W.guest))}catch(_){}}
+function localSave(){
+ try{if(!W.guest)return;W.guestByTopic[W.guest.topic]=W.guest;
+  localStorage.setItem('wonder-wheel-v39',
+    JSON.stringify({current:W.guest.topic,byTopic:W.guestByTopic}))}catch(_){}
+}
+function setGuestTopic(topic){
+ localLoad();
+ if(!SCENES[topic])return;
+ W.guestByTopic[W.guest.topic]=W.guest;
+ W.guest=W.guestByTopic[topic]||freshGuest(topic);
+ W.guestByTopic[topic]=W.guest;
+ W.search='';W.sources=[];W.sourceWarning='';resetAnimation();localSave();
+}
+async function verifyGuestSources(){
+ if(logged()||!W.guest)return;
+ const oldSources=W.guest.sourceIds||{};
+ const sourceIds=[...new Set(Object.values(oldSources).map(Number).filter(Number.isSafeInteger))].slice(0,24);
+ if(!sourceIds.length)return;
+ const valid=(await api('/wheels/resolve?ids='+sourceIds.join(','))).items||[];
+ const known=new Map(valid.map(x=>[x.id,x.title]));
+ const revised=[],seen=new Set(),newIds={};
+ let hidden=0;
+ for(const name of W.guest.labels){
+  const id=Number(oldSources[name]||0);
+  if(id&&!known.has(id)){hidden++;continue}
+  const label=id?known.get(id):name;
+  if(!label||seen.has(label.toLocaleLowerCase()))continue;
+  seen.add(label.toLocaleLowerCase());revised.push(label);
+  if(id)newIds[label]=id;
+ }
+ if(hidden||revised.join('\n')!==W.guest.labels.join('\n')){
+  W.guest.labels=revised;W.guest.sourceIds=newIds;W.guest.last=null;
+  W.guest.history=[];W.sourceWarning=hidden?'有 '+hidden+' 件原始馆藏已撤回或不再公开，已移除其缓存标题及抽取记录。':'已同步最新的公开馆藏名称。';
+  localSave();
+ }
+}
 function selectedItems(){return logged()?W.detail?.items||[]:(W.guest?.labels||[]).map((label,i)=>({id:i+1,kind:W.guest.sourceIds?.[label]?'exhibit':'manual',label,exhibit_id:W.guest.sourceIds?.[label]||null}));}
 function current(){return logged()?W.detail:{title:W.guest.title,topic:W.guest.topic,theme:W.guest.theme,
  no_repeat:W.guest.no_repeat,items:selectedItems(),history:W.guest.history,
