@@ -1,0 +1,43 @@
+/* V19 fictional civilization network: night atlas and muted gold. */
+.rl-root{margin:24px 0;border:1px solid #cfaa6a44;border-radius:17px;background:linear-gradient(140deg,#121723,#171523 65%,#0d1721);padding:clamp(17px,3vw,28px);color:#f4e4ca}
+.rl-root *{box-sizing:border-box}.rl-root button,.rl-root input,.rl-root select,.rl-root textarea{font:inherit}
+.rl-root button{cursor:pointer}.rl-root button:focus-visible,.rl-root input:focus-visible,.rl-root textarea:focus-visible,.rl-root select:focus-visible{outline:2px solid #f3cf86;outline-offset:2px}
+.rl-header{display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:18px;border-bottom:1px solid #d6b77a33;padding-bottom:18px}
+.rl-kicker{color:#e0bd7c;letter-spacing:.18em;font-size:10px;font-weight:700}
+.rl-header h3{font-size:26px;line-height:1.35;font-family:Georgia,"Noto Serif SC",serif;margin:7px 0;color:#f1dbaf}
+.rl-header p{font-size:12px;line-height:1.9;color:#b4bfcd;max-width:680px}
+.rl-count{background:#c4a56c13;border:1px solid #c6a16b44;border-radius:10px;text-align:center;padding:10px 20px;min-width:130px}
+.rl-count b{font-size:27px;display:block;color:#f0d3a0}.rl-count small{font-size:10px;color:#9eacba}
+.rl-subsection{margin:17px 0;border:1px solid #d2b67622;border-radius:12px;padding:17px;background:#0d162255}
+.rl-subsection>h4{font-size:17px;color:#f1d9af;margin:2px 0 14px}
+.rl-chart{background:radial-gradient(ellipse at 50% 50%,#453b5945,transparent 68%),#101825;border:1px solid #d7b58030;border-radius:12px;overflow:hidden}
+.rl-chart svg{width:100%;height:auto;display:block;max-height:290px}
+.rl-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.rl-empty{padding:25px 15px;text-align:center;background:#d6bb8209;border:1px dashed #d2b27c46;color:#aebcca;font-size:12px;line-height:1.8;border-radius:9px}
+.rl-form label{display:flex;flex-direction:column;gap:7px;color:#c3b9aa;font-size:11px;margin:11px 0}
+.rl-field{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.rl-form textarea,.rl-form select{background:#0e1623;color:#f2e6d1;border:1px solid #d4b57966;padding:11px 12px;border-radius:8px;width:100%;min-width:0}
+.rl-form textarea{resize:vertical}
+.rl-form>button{background:linear-gradient(120deg,#ecd8a9,#ceab71);border:0;border-radius:9px;color:#201b1c;padding:11px 17px;font-weight:800}
+.rl-form p,.rl-help{color:#9eb0c3;font-size:11px;line-height:1.9}
+.rl-effects{display:grid;gap:10px}.rl-effects>div{border:1px solid #cfaa6a27;border-radius:9px;padding:13px 15px;background:#152130}
+.rl-effects b{display:block;color:#ebd8af;font-size:14px}.rl-effects span{display:block;color:#acc2d1;font-size:11px;margin-top:5px}
+.rl-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:11px}
+.rl-relation{border:1px solid #d7b87839;background:#111b29;border-radius:10px;padding:16px}
+.rl-relation h4{font-size:15px;color:#f0dfb9;line-height:1.8;margin:14px 0}.rl-relation h4 em{font-style:normal;color:#cfaa6d}
+.rl-relation p{font-size:11px;color:#b9c6d2;line-height:1.8;overflow-wrap:anywhere}
+.rl-relation small{font-size:10px;color:#bfc6cf}
+.rl-pills{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.rl-state{font-size:10px;color:#e8c991;background:#ddad6720;border-radius:5px;padding:3px 7px}
+.rl-state.accepted{color:#a3dabe;background:#47866b30}.rl-state.declined,.rl-state.withdrawn{color:#aeb7c4;background:#8d9bae22}
+.rl-active{display:block;margin:12px 0;color:#aee1c5!important}
+.rl-operations{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+.rl-operations button{color:#f0d4a7;background:#2b3037;border:1px solid #cfae7959;padding:7px 12px;border-radius:8px;font-size:11px}
+.rl-note,.rl-error{border:1px solid #ccad7255;background:#d6ae6917;color:#e9d2a8;padding:10px 12px;margin:14px 0;border-radius:9px;font-size:12px}
+.rl-error{border-color:#bf8585;color:#f0aaaa}
+.ev-influence{background:#111d2d;border:1px solid #e3bf7955;padding:13px 15px;border-radius:10px;margin:14px 0;color:#e7d1a5;font-size:12px}
+.ev-influence select{margin-top:7px}.ev-influence small{display:block;color:#a9b8c7;line-height:1.8;margin-top:6px}
+.ev-influence-mark{font-size:11px;color:#b7ddcd!important;margin-top:5px}
+@media(max-width:820px){.rl-two{grid-template-columns:1fr}}
+@media(max-width:540px){.rl-field{grid-template-columns:1fr}.rl-root{padding:14px}.rl-chart svg{min-height:140px}.rl-header h3{font-size:23px}}
+@media(prefers-reduced-motion:reduce){.rl-root *{transition:none!important;animation:none!important}}
