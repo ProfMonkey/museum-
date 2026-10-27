@@ -71,7 +71,7 @@ def test_guest_no_match_fallback_is_marked_browse_not_related(env):
     assert result["matched"]==0
     assert [v["id"] for v in result["items"]]==[eid]
     assert result["items"][0]["mode"]=="browse"
-    assert "非" in result["items"][0]["reason"]
+    assert "不声称内容相关" in result["items"][0]["reason"]
 
 
 def test_visit_rejects_unfinished_and_unrelated_and_nonowners(env,monkeypatch):
