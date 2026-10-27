@@ -34,7 +34,7 @@ DATABASE = DATA / "wonder.db"
 IS_SECURE = os.getenv("WONDER_COOKIE_SECURE", "0") == "1"
 SESSION_SECONDS = 60 * 60 * 24 * 21
 
-app = FastAPI(title="万物博物馆 API", version="36.0", docs_url="/api/docs", redoc_url=None)
+app = FastAPI(title="万物博物馆 API", version="37.0", docs_url="/api/docs", redoc_url=None)
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 app.mount("/media", StaticFiles(directory=MEDIA), name="media")
 
@@ -937,3 +937,7 @@ mount_embassies(app, db, require_user, maybe_user, now, fail)
 # V36: voluntary two-curator symbolic exhibit exchanges; no ownership transfer.
 from cultural_heritage import mount_cultural_heritage
 mount_cultural_heritage(app, db, require_user, maybe_user, now, fail)
+
+# V37: real-exhibit interpretive archaeology inside authentic public V34 civilizations.
+from archaeology import mount_archaeology
+mount_archaeology(app, db, require_user, maybe_user, now, fail)
