@@ -262,6 +262,78 @@ def test_private_studio_parent_prevents_seed_and_show(env):
     assert publish(alice,cid).status_code==409
 
 
+
+def test_foreign_artifact_shock_is_real_opt_in_and_replay_preserves_it(env):
+    alice,bob,guest=env
+    wid,a,b=origin(alice,bob)
+    incoming=exhibit(bob,"来自外部的神秘计算机",tags="计算机,未来")
+    private=exhibit(alice,"绝不公开的禁忌仪器",visibility="private")
+    cid=civ(alice,wid,a).json()["id"]
+    query=guest.get("/api/civilizations/relics?q=计算机")
+    assert query.status_code==200,query.text
+    assert query.json()["items"][0]["id"]==incoming
+    assert private not in [x["id"] for x in guest.get("/api/civilizations/relics").json()["items"]]
+    payload={
+        "policy":"research","chapter":"神秘机器坠落在古代王国",
+        "narrative":"文明获得了完全不理解的神秘机器；这只是作者自创的虚构冲击事件。",
+        "anomaly_exhibit_id":incoming}
+    assert alice.post(f"/api/civilizations/{cid}/turns",json={
+        **payload,"anomaly_exhibit_id":a}).status_code==422
+    assert alice.post(f"/api/civilizations/{cid}/turns",json={
+        **payload,"anomaly_exhibit_id":private}).status_code==404
+    first=alice.post(f"/api/civilizations/{cid}/turns",json=payload)
+    assert first.status_code==201,first.text
+    expected=apply_turn(INITIAL,"research","memory_trade",True)
+    assert first.json()["outcome"]["after"]==expected["after"]
+    assert expected["after"]=={
+        "knowledge":68,"supplies":44,"ecology":46,"cohesion":43,"culture":55}
+    assert first.json()["outcome"]["anomaly"] is True
+    assert turn(alice,cid,"restore","第二时代的资源修复").status_code==201
+    assert publish(alice,cid).status_code==200
+    d=detail(guest,cid).json()
+    assert d["turns"][0]["anomaly"]["title"]=="来自外部的神秘计算机"
+    assert d["turns"][0]["anomaly_effect"]=={"knowledge":5,"culture":4,"cohesion":-3}
+    assert d["turns"][1]["anomaly"] is None
+    alt=guest.get(f"/api/civilizations/{cid}/counterfactual?turn=1&policy=arts")
+    assert alt.status_code==200,alt.text
+    a1=apply_turn(INITIAL,"arts","memory_trade",True)
+    a2=apply_turn(a1["after"],"restore","memory_trade")
+    assert alt.json()["alternative_final"]==a2["after"]
+    assert alt.json()["alternative_history"][0]["anomaly"]["id"]==incoming
+    assert detail(guest,cid).json()["final"]==d["final"]
+    assert guest.get("/api/civilizations/policies").json()["anomaly_effect"]=={
+        "knowledge":5,"culture":4,"cohesion":-3}
+
+
+def test_withdrawn_or_deleted_foreign_artifact_invalidates_public_civilization(env):
+    alice,bob,guest=env
+    wid,a,b=origin(alice,bob)
+    outsider=exhibit(bob,"不能曝光的外来机械",tags="机械,外星")
+    cid=civ(alice,wid,a).json()["id"]
+    payload={
+        "policy":"diplomacy","chapter":"陌生世界向此国开放",
+        "narrative":"一件来自外界的机械突然降临，我们决定让它改变文化结构。",
+        "anomaly_exhibit_id":outsider}
+    assert alice.post(f"/api/civilizations/{cid}/turns",json=payload).status_code==201
+    assert turn(alice,cid,"arts","第二次文化变迁").status_code==201
+    assert publish(alice,cid).status_code==200
+    assert detail(guest,cid).status_code==200
+    assert bob.patch(f"/api/exhibits/{outsider}",json=item(
+        title="不能曝光的外来机械",visibility="private")).status_code==200
+    assert detail(guest,cid).status_code==404
+    assert guest.get("/api/civilizations").json()["items"]==[]
+    safe=alice.get("/api/civilizations/mine").json()
+    assert "不能曝光的外来机械" not in str(safe)
+    assert "陌生世界向此国开放" not in str(safe)
+    assert publish(alice,cid).status_code==409
+    assert bob.patch(f"/api/exhibits/{outsider}",json=item(
+        title="不能曝光的外来机械",visibility="public")).status_code==200
+    assert detail(guest,cid).status_code==200
+    assert bob.delete(f"/api/exhibits/{outsider}").status_code==200
+    assert detail(guest,cid).status_code==404
+    assert alice.delete(f"/api/civilizations/{cid}").status_code==200
+
+
 def test_v34_frontend_assets_and_version(env):
     alice,bob,guest=env
     assert guest.get("/api/health").json()["version"]=="34.0"
