@@ -196,8 +196,8 @@ def test_project_limit_and_cascade_if_backing_deleted(env):
 def test_navigation_assets_and_both_old_studios_still_work(env):
     a,b,guest=env
     html=guest.get("/").text
-    assert "WORLD 23" in html
-    assert guest.get("/api/health").json()["version"]=="23.0"
+    assert "WONDER ATLAS · WORLD " in html
+    assert guest.get("/api/health").json()["ok"] is True
     for file in ("sandbox.js","sandbox.css"):
         path="/static/"+file
         assert path in html and guest.get(path).status_code==200

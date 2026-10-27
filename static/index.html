@@ -20,6 +20,7 @@
 <link rel="stylesheet" href="/static/play.css" />
 <link rel="stylesheet" href="/static/studio.css" />
 <link rel="stylesheet" href="/static/sandbox.css" />
+<link rel="stylesheet" href="/static/wheel.css" />
 <link rel="stylesheet" href="/static/wonder-discovery.css" />
 <link rel="stylesheet" href="/static/atlas.css" />
 <link rel="stylesheet" href="/static/culture.css" />
@@ -31,8 +32,8 @@
 <body>
 <div class="app-shell">
  <aside class="sidebar">
-  <button class="brand" data-action="navigate" data-view="discover" aria-label="回到探索大厅"><span class="brandmark">✳</span><span><strong>万物博物馆</strong><small>WONDER ATLAS · WORLD 23</small></span></button>
-  <div class="nav-cap">探索世界 <span>01 / 13</span></div>
+  <button class="brand" data-action="navigate" data-view="discover" aria-label="回到探索大厅"><span class="brandmark">✳</span><span><strong>万物博物馆</strong><small>WONDER ATLAS · WORLD 24</small></span></button>
+  <div class="nav-cap">探索世界 <span>01 / 14</span></div>
   <nav class="nav" aria-label="主导航">
    <button class="active" data-action="navigate" data-view="discover"><span>⌁</span> 发现广场</button>
    <button data-action="navigate" data-view="world-museums"><span>♜</span> 世界名馆</button>
@@ -42,6 +43,7 @@
    <button data-action="navigate" data-view="fantasy"><span>✵</span> 玄幻异界</button>
    <button data-action="navigate" data-view="lab"><span>✶</span> 万物实验室</button>
    <button data-action="navigate" data-view="play"><span>⚙</span> 万物皆可玩</button>
+   <button data-action="navigate" data-view="wheels"><span>🎡</span> 万物转盘</button>
    <button data-action="navigate" data-view="virtual-gallery"><span>▧</span> 展厅工坊</button>
    <button data-action="navigate" data-view="journey"><span>✧</span> 跨界探索</button>
    <button data-action="navigate" data-view="saved"><span>♡</span> 心动收藏</button>
@@ -60,7 +62,7 @@
    <div class="top-right"><button id="loginTop" class="top-login" data-action="login">登录 / 注册</button><button class="cta" data-action="new">＋ 发布新发现</button></div>
   </header>
   <main id="main" tabindex="-1"><div class="loading">正在连接万物博物馆…</div></main>
-  <footer class="footer"><span>✳ 万物博物馆 · WONDER ATLAS</span><span>一个由发现与好奇心建成的世界 · V23.0</span></footer>
+  <footer class="footer"><span>✳ 万物博物馆 · WONDER ATLAS</span><span>一个由发现与好奇心建成的世界 · V24.0</span></footer>
  </div>
 </div>
 <div id="modal" class="modal-layer hidden" aria-live="polite"></div>
@@ -86,6 +88,7 @@
 <script src="/static/play.js" defer></script>
 <script src="/static/studio.js" defer></script>
 <script src="/static/sandbox.js" defer></script>
+<script src="/static/wheel.js" defer></script>
 <script src="/static/atlas.js" defer></script>
 <script src="/static/culture.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" defer></script>
