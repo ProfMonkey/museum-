@@ -34,7 +34,7 @@ DATABASE = DATA / "wonder.db"
 IS_SECURE = os.getenv("WONDER_COOKIE_SECURE", "0") == "1"
 SESSION_SECONDS = 60 * 60 * 24 * 21
 
-app = FastAPI(title="万物博物馆 API", version="32.0", docs_url="/api/docs", redoc_url=None)
+app = FastAPI(title="万物博物馆 API", version="33.0", docs_url="/api/docs", redoc_url=None)
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 app.mount("/media", StaticFiles(directory=MEDIA), name="media")
 
@@ -921,3 +921,7 @@ mount_living_museum(app, db, require_user, maybe_user, now, fail)
 # V32: real public-collection mystery trails, private individual puzzle progress.
 from mystery_trails import mount_mystery_trails
 mount_mystery_trails(app, db, require_user, maybe_user, now, fail)
+
+# V33: user-authored thought-experiment collisions of two live public museum exhibits.
+from collision_universes import mount_collision_universes
+mount_collision_universes(app, db, require_user, maybe_user, now, fail)
