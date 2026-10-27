@@ -111,14 +111,26 @@ def mount_embassies(app, db, require_user, maybe_user, now, fail):
             VALUES(NEW.id,1)
             ON CONFLICT(civ_id) DO UPDATE SET epoch=epoch+1;
           END;
+        CREATE TABLE IF NOT EXISTS embassy_exhibit_epochs(
+          exhibit_id INTEGER PRIMARY KEY REFERENCES exhibits(id) ON DELETE CASCADE,
+          epoch INTEGER NOT NULL DEFAULT 0
+        );
+        CREATE TRIGGER IF NOT EXISTS embassy_source_exhibit_changed
+          AFTER UPDATE ON exhibits
+          BEGIN
+            INSERT INTO embassy_exhibit_epochs(exhibit_id,epoch)
+            VALUES(NEW.id,1)
+            ON CONFLICT(exhibit_id) DO UPDATE SET epoch=epoch+1;
+          END;
         """)
 
     def src(c, eid):
         if not eid:
             return None
         return c.execute("""SELECT e.id,e.title,e.user_id,e.category,e.domain,
-             e.image_url,u.username AS curator
+             e.image_url,u.username AS curator,COALESCE(z.epoch,0) AS source_epoch
              FROM exhibits e JOIN users u ON u.id=e.user_id
+             LEFT JOIN embassy_exhibit_epochs z ON z.exhibit_id=e.id
              WHERE e.id=? AND """ + PUBLIC_SCOPE, (eid,)).fetchone()
 
     def civ(c, cid):
@@ -146,15 +158,15 @@ def mount_embassies(app, db, require_user, maybe_user, now, fail):
                 x = src(c,t["anomaly_exhibit_id"])
                 if x is None:
                     return None
-                foreign.append([x["id"],x["title"]])
+                foreign.append([x["id"],x["title"],x["source_epoch"]])
         epoch = c.execute("""SELECT epoch FROM embassy_source_epochs WHERE civ_id=?""",
                           (cid,)).fetchone()
         fingerprint = {"civ":[r["id"],r["name"],r["charter"],r["world_revision"],
                                epoch["epoch"] if epoch else 0],
             "world":[w["id"],w["revision"],w["law"],w["title"]],
-            "left":[left["id"],left["title"]],
-            "right":[right["id"],right["title"]],
-            "seed":[seed["id"],seed["title"]],
+            "left":[left["id"],left["title"],left["source_epoch"]],
+            "right":[right["id"],right["title"],right["source_epoch"]],
+            "seed":[seed["id"],seed["title"],seed["source_epoch"]],
             "foreign":foreign,
             "turns":[[t["id"],t["turn_index"],t["policy"],t["chapter"],
                       t["narrative"],t["after_json"],t["has_anomaly"],
