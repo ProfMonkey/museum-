@@ -20,7 +20,7 @@ def setup(alice,bob):
     payload={"my_civ_id":a,"other_civ_id":b,
         "title":"青铜国与机械国第一次会盟",
         "preface":"这是两位独立真实馆长在虚构的两个文明之间共同创造的外交历史。"}
-    return a,b,aw,bw,ax,by,payload
+    return a,b,aw,bw,ax,bx,payload
 
 
 def invite(alice,payload):
@@ -184,7 +184,7 @@ def test_live_source_withdrawal_hides_all_public_and_member_text(env):
     approve(alice,eid);approve(bob,eid)
     assert detail(guest,eid).status_code==200
     private=bob.patch(f"/api/exhibits/{by}",json=item(
-        title="云南米线",visibility="private"))
+        title="古老钟楼",visibility="private"))
     assert private.status_code==200,private.text
     assert detail(guest,eid).status_code==404
     assert guest.get("/api/embassies/public").json()["items"]==[]
