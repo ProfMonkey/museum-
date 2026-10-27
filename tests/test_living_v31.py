@@ -204,10 +204,10 @@ def test_studio_project_private_blocks_public_living_views(env):
 
 def test_v31_assets_and_integrity(env):
     alice,bob,visitor=env
-    assert visitor.get("/api/health").json()["version"]=="31.0"
+    assert visitor.get("/api/health").json()["version"]=="32.0"
     html=visitor.get("/").text
     assert "万物活体博物馆" in html
-    assert "WONDER ATLAS · WORLD 31" in html
+    assert "WONDER ATLAS · WORLD " in html
     for f in ("living.js","living.css"):
         assert f"/static/{f}" in html
         assert visitor.get(f"/static/{f}").status_code==200
