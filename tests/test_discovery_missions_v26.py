@@ -195,7 +195,8 @@ def test_source_entry_explores_itself_and_subsequent_references(env,monkeypatch)
     new=get(alice,fresh).json()["stages"][0]
     assert new["source_unavailable"] is True
     assert new["suggestions"]==[]
-    assert new["visited_count"] if False else True
+    assert new["visited"] is False
+    assert new["visit_withdrawn"] is True
     assert "恐龙大灭绝" not in str(new)
 
 
