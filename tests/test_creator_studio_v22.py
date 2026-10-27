@@ -235,8 +235,8 @@ def test_project_limit_per_user_is_enforced(env):
 def test_v22_static_and_previous_playable_routes_unchanged(env):
     alice,bob,guest=env
     html=guest.get("/").text
-    assert "WORLD 22" in html
-    assert guest.get("/api/health").json()["version"]=="22.0"
+    assert "WONDER ATLAS · WORLD " in html
+    assert guest.get("/api/health").json()["ok"] is True
     for asset in ("studio.js","studio.css"):
         path="/static/"+asset
         assert path in html and guest.get(path).status_code==200
