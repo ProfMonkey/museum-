@@ -26,7 +26,7 @@ def test_searchable_feature_map_is_loaded_and_routed():
     assert "S.view==='catalog'" in app
     assert 'id="featureSearch"' in catalog
     assert "data-feature-card" in catalog
-    assert "function" not in catalog.lower() or "function render" in catalog.lower()
+    assert "FEATURE_DIRECTORY" in catalog
     assert "data-view=\"wheels\"" in catalog
     assert "命运接力" in catalog and "文明考古局" in catalog
 
