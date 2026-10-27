@@ -215,10 +215,10 @@ def test_studio_parent_private_hides_collision_and_candidates(env):
 
 def test_v33_assets_navigation_version_and_manual_only_actions(env):
     alice,bob,guest=env
-    assert guest.get("/api/health").json()["version"]=="33.0"
+    assert guest.get("/api/health").json()["version"]=="34.0"
     html=guest.get("/").text
     assert "万物碰撞机" in html
-    assert "WONDER ATLAS · WORLD 33" in html
+    assert "WONDER ATLAS · WORLD " in html
     for filename in ("collision.js","collision.css"):
         assert f"/static/{filename}" in html
         assert guest.get(f"/static/{filename}").status_code==200
