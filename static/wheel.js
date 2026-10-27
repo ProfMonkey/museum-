@@ -89,7 +89,7 @@ async function verifyGuestSources(){
  }
  if(hidden||revised.join('\n')!==W.guest.labels.join('\n')){
   W.guest.labels=revised;W.guest.sourceIds=newIds;W.guest.last=null;
-  W.guest.history=[];W.sourceWarning=hidden?'有 '+hidden+' 件原始馆藏已撤回或不再公开，已移除其缓存标题及抽取记录。':'已同步最新的公开馆藏名称。';
+  W.guest.history=[];if(W.result?.exhibit_id&&!known.has(W.result.exhibit_id))W.result=null;W.sourceWarning=hidden?'有 '+hidden+' 件原始馆藏已撤回或不再公开，已移除其缓存标题及抽取记录。':'已同步最新的公开馆藏名称。';
   localSave();
  }
 }
@@ -280,7 +280,11 @@ function queueExhibit(id,title,topic){
 function guestAdd(label,exhibitId){
  label=String(label||'').trim();
  if(!label||label.length>75)throw Error('选项长度需要在 1–75 字内');
- if(W.guest.labels.some(x=>x.toLocaleLowerCase()===label.toLocaleLowerCase()))throw Error('该选项已经在转盘里');
+ if(W.guest.labels.some(x=>x.toLocaleLowerCase()===label.toLocaleLowerCase())){
+  const currentLabel=W.guest.labels.find(x=>x.toLocaleLowerCase()===label.toLocaleLowerCase());
+  if(exhibitId){W.guest.sourceIds[currentLabel]=Number(exhibitId);localSave();W.notice='已把现有选项关联到真实公开馆藏：'+currentLabel;return;}
+  throw Error('该选项已经在转盘里');
+ }
  if(W.guest.labels.length>=24)throw Error('转盘最多可放 24 个选项');
  W.guest.labels.push(label);if(exhibitId)W.guest.sourceIds[label]=Number(exhibitId);W.guest.last=null;W.notice='已加入临时转盘：'+label;localSave();
 }
@@ -319,7 +323,7 @@ async function spin(){
  const advance=((target-currentMod)%360+360)%360;
  W.rotation+=360*5+advance;
  if(rotor){
-  rotor.style.transition='transform 3.4s cubic-bezier(.14,.76,.11,1)';
+  rotor.style.transition=window.matchMedia('(prefers-reduced-motion: reduce)').matches?'none':'transform 3.4s cubic-bezier(.14,.76,.11,1)';
   rotor.style.transform='rotate('+W.rotation+'deg)';
  }
  W.spinTimer=setTimeout(async()=>{
@@ -337,7 +341,7 @@ async function spin(){
   try{await redraw();const again=document.getElementById('ww-rotor');
     if(again){again.style.transition='none';again.style.transform='rotate('+W.rotation+'deg)';}}
   catch(err){if(typeof toast==='function')toast(err.message||'刷新抽取记录失败');}
- },3600);
+ },window.matchMedia('(prefers-reduced-motion: reduce)').matches?150:3600);
 }
 document.addEventListener('click',async ev=>{
  const b=ev.target.closest('[data-wheel]');if(!b)return;
