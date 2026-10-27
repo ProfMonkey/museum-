@@ -77,6 +77,24 @@ class ConstellationEdgeIn(BaseModel):
         return self
 
 
+class ConstellationNodePatch(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    title: str | None = Field(default=None, max_length=100)
+    note: str | None = Field(default=None, max_length=280)
+
+    @model_validator(mode="after")
+    def validate_patch(self):
+        if self.title is None and self.note is None:
+            raise ValueError("至少提供想法名称或个人注记中的一项")
+        if self.title is not None:
+            self.title = self.title.strip()
+            if not self.title:
+                raise ValueError("想法名称不能为空")
+        if self.note is not None:
+            self.note = self.note.strip()
+        return self
+
+
 def mount_constellation(app, db, read_exhibit, require_user, now, fail):
     with db() as c:
         c.executescript("""
@@ -274,6 +292,28 @@ def mount_constellation(app, db, read_exhibit, require_user, now, fail):
             row = c.execute("SELECT * FROM constellation_nodes WHERE id=?",
                             (cur.lastrowid,)).fetchone()
             return {"node": node_view(c, row, user), "notice": "已加入你的私人星图。"}
+
+    @app.patch("/api/constellation/nodes/{node_id}")
+    def update_node(node_id: int, payload: ConstellationNodePatch, user=Depends(require_user)):
+        with db() as c:
+            row = c.execute("""SELECT * FROM constellation_nodes
+                WHERE id=? AND user_id=?""", (node_id, user["id"])).fetchone()
+            if row is None:
+                fail(404, "星图节点不存在或不属于你")
+            view = node_view(c, row, user)
+            if view is None or view.get("source_unavailable"):
+                fail(409, "原始藏品已不可见；请删除失效节点")
+            if payload.title is not None and row["kind"] != "idea":
+                fail(400, "展品标题来自原始馆藏，不能在星图中单独改名")
+            if payload.title is not None:
+                c.execute("UPDATE constellation_nodes SET title=? WHERE id=? AND user_id=?",
+                          (payload.title, node_id, user["id"]))
+            if payload.note is not None:
+                c.execute("UPDATE constellation_nodes SET note=? WHERE id=? AND user_id=?",
+                          (payload.note, node_id, user["id"]))
+            updated = c.execute("SELECT * FROM constellation_nodes WHERE id=?",
+                                (node_id,)).fetchone()
+            return {"node": node_view(c, updated, user), "notice": "个人星图档案已更新；原始展品内容未被修改。"}
 
     @app.delete("/api/constellation/nodes/{node_id}")
     def delete_node(node_id: int, user=Depends(require_user)):
