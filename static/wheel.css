@@ -78,3 +78,13 @@
 .ww-food-picks>div{display:flex;flex-wrap:wrap;gap:7px}
 .ww-food-picks button{padding:7px 11px;border-radius:18px;background:#25374a;color:#e7d6b6;font-size:11px}
 .ww-food-picks button:hover{background:#45546a;border-color:#e7c68b}
+
+/* V39 — eight distinct decision destinations, all touch-friendly. */
+.ww-scenes{gap:8px;justify-content:flex-start}
+.ww-scenes button{font-size:12px;padding:11px 15px;min-height:42px}
+.ww-suggestions>div{margin-top:9px}
+.ww-food-picks button{min-height:34px}
+.ww-pane-title h2{overflow-wrap:anywhere}
+@media(max-width:750px){.ww-scenes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.ww-scenes button{min-width:0;text-align:center;padding:10px 6px;font-size:12px}}
+@media(max-width:385px){.ww-scenes button{font-size:11px}}

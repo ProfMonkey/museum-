@@ -12,8 +12,10 @@ from datetime import datetime, timezone
 from typing import Literal
 from fastapi import Depends, Query
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from parallel_universes import PUBLIC_SCOPE
 
 TOPICS={"food":"🍜 今天吃什么","travel":"🧭 去哪里玩","watch":"🎬 今天看什么",
+        "read":"📚 读什么","study":"🧠 学什么","exercise":"🏃 怎么运动",
         "activity":"🎲 现在做什么","custom":"✦ 万物由你决定"}
 THEMES={"amber","nebula","mint","rose"}
 MAX_WHEELS=12
@@ -24,7 +26,7 @@ MAX_HISTORY=20
 class WheelDraft(BaseModel):
     model_config=ConfigDict(extra="forbid")
     title: str=Field(min_length=2,max_length=60)
-    topic: Literal["food","travel","watch","activity","custom"]="custom"
+    topic: Literal["food","travel","watch","read","study","exercise","activity","custom"]="custom"
     theme: Literal["amber","nebula","mint","rose"]="amber"
     no_repeat: bool=True
 
@@ -115,11 +117,7 @@ def mount_wheels(app,db,require_user,maybe_user,now,fail):
     def exhibit(c,exhibit_id):
         if not exhibit_id:return None
         return c.execute("""SELECT e.id,e.title,e.domain,e.category,e.visibility
-            FROM exhibits e
-            LEFT JOIN fantasy_relics fr ON fr.exhibit_id=e.id
-            LEFT JOIN fantasy_worlds fw ON fw.id=fr.world_id
-            WHERE e.id=? AND e.visibility='public'
-              AND (fr.id IS NULL OR fw.visibility='public')""",
+            FROM exhibits e WHERE e.id=? AND """ + PUBLIC_SCOPE,
             (exhibit_id,)).fetchone()
 
     def entries(c,wheel_id):
@@ -171,17 +169,33 @@ def mount_wheels(app,db,require_user,maybe_user,now,fail):
 
     @app.get("/api/wheels/sources")
     def sources(q:str=Query(default="",max_length=70)):
+        # Public originals only; reuse the source visibility of V29–V39.
         pattern="%"+q.strip()+"%"
         with db() as c:
-            rows=c.execute("""SELECT e.id FROM exhibits e
-                LEFT JOIN fantasy_relics fr ON fr.exhibit_id=e.id
-                LEFT JOIN fantasy_worlds fw ON fw.id=fr.world_id
-                WHERE e.visibility='public' AND (fr.id IS NULL OR fw.visibility='public')
-                  AND (e.title LIKE ? OR e.description LIKE ? OR e.category LIKE ? OR e.domain LIKE ? OR e.tags LIKE ?)
-                ORDER BY e.id DESC LIMIT 30""",(pattern,pattern,pattern,pattern,pattern)).fetchall()
+            rows=c.execute("""SELECT e.id FROM exhibits e WHERE """ + PUBLIC_SCOPE +
+                """ AND (e.title LIKE ? OR e.description LIKE ? OR
+                           e.category LIKE ? OR e.domain LIKE ? OR e.tags LIKE ?)
+                    ORDER BY e.id DESC LIMIT 30""",
+                    (pattern,pattern,pattern,pattern,pattern)).fetchall()
             return {"items":[{"id":e["id"],"title":e["title"],"domain":e["domain"],
                               "category":e["category"]} for x in rows
                               if (e:=exhibit(c,x["id"])) is not None]}
+
+    @app.get("/api/wheels/resolve")
+    def resolve_public(ids:str=Query(default="",max_length=300)):
+        """Resolve up to 24 guest source IDs against CURRENT public scope.
+
+        Return only public original titles; clients must discard revoked labels.
+        """
+        parts=[p.strip() for p in ids.split(",") if p.strip()]
+        if len(parts)>MAX_ITEMS or any(not p.isdecimal() or
+                                          not 1<=int(p)<=2147483647 for p in parts):
+            fail(422,"请输入最多24个有效藏品编号")
+        numbers=list(dict.fromkeys(int(p) for p in parts))
+        with db() as c:
+            found=[exhibit(c,exid) for exid in numbers]
+            return {"items":[{"id":row["id"],"title":row["title"]}
+                    for row in found if row is not None]}
 
     @app.post("/api/wheels/preview")
     def preview(payload:GuestSpin):
