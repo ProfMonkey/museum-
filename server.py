@@ -477,6 +477,10 @@ def edit_exhibit(id: int, data: ExhibitPayload, user=Depends(require_user)):
         d["tags"] = ",".join(dict.fromkeys(t.strip()[:24] for t in d["tags"].replace("，", ",").split(",") if t.strip()))[:200]
         c.execute("""UPDATE exhibits SET title=?,description=?,story=?,category=?,series=?,domain=?,time_bucket=?,time_basis=?,time_note=?,tags=?,image_url=?,source_url=?,visibility=?,updated_at=? WHERE id=?""",
                   (d["title"].strip(),d["description"].strip(),d["story"].strip(),d["category"].strip() or "其他",d["series"],d["domain"],d["time_bucket"],d["time_basis"],d["time_note"].strip(),d["tags"],d["image_url"],d["source_url"],d["visibility"],now(),id))
+        if d["visibility"]=="private":
+            # A later public toggle must not silently restore a revoked studio work.
+            if c.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='creator_studio_projects'").fetchone():
+                c.execute("UPDATE creator_studio_projects SET visibility='private',updated_at=? WHERE exhibit_id=?", (now(),id))
         return read_exhibit(c, id, user)
 
 
