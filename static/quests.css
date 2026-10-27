@@ -1,0 +1,36 @@
+/* V26 — museum quest paths with discoverable, traceable real exhibits. */
+.wq-panel{border:1px solid #d3b78467;border-radius:16px;background:radial-gradient(circle at 90% 8%,#4b6a8952,transparent 45%),#112031;padding:clamp(16px,3vw,29px);margin:16px 0 20px}
+.wq-panel *{box-sizing:border-box}
+.wq-heading{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:15px;margin-bottom:20px}
+.wq-heading small,.wq-stage small{color:#cfb488;font-size:10px;letter-spacing:.12em}
+.wq-panel h2{font:600 clamp(23px,3vw,29px)/1.4 Georgia,"Noto Serif SC",serif;color:#f5d7a7;margin:9px 0}
+.wq-panel h3{font:700 18px/1.4 Georgia,"Noto Serif SC",serif;color:#f4d8ac;margin:6px 0;overflow-wrap:anywhere}
+.wq-panel h4{color:#f2deb9;margin:9px 0;font-size:16px;overflow-wrap:anywhere}
+.wq-panel p{font-size:12px;color:#b0c1d0;line-height:1.85}
+.wq-panel button{cursor:pointer;font:inherit;border:1px solid #d6b6817b;border-radius:8px;padding:8px 11px;background:#263b52;color:#f0deb8;font-size:11px}
+.wq-panel button:hover:not(:disabled){background:#425e72;border-color:#f1d49a}
+.wq-panel button:disabled{opacity:.6;cursor:not-allowed}
+.wq-panel :is(button,a):focus-visible{outline:2px solid #f7d491;outline-offset:3px}
+.wq-progress{border:1px solid #9bc0b6b5;border-radius:30px;color:#bbd7c8;background:#26594d4f;font-size:11px;font-weight:800;padding:8px 13px}
+.wq-stages{display:grid;gap:14px}
+.wq-stage{background:#0c1b2b;border:1px solid #c5ad7d55;border-radius:12px;padding:16px}
+.wq-line{display:flex;justify-content:space-between;align-items:center;gap:13px;flex-wrap:wrap}
+.wq-status{font-size:10px;color:#cfd4c8;border:1px solid #9ba58869;border-radius:20px;padding:5px 9px;background:#42514352;white-space:nowrap}
+.wq-object{min-width:0;border-radius:11px;background:#203346;border:1px solid #bca87962;padding:14px;display:flex;flex-direction:column;gap:5px}
+.wq-objects{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:13px}
+.wq-kind{align-self:flex-start;border-radius:20px;padding:3px 9px;background:#67543888;font-size:10px;color:#ebd9ae}
+.wq-kind.source{background:#385e5688;color:#bfe8ce}.wq-kind.match{background:#3e5e7a88;color:#bedff5}
+.wq-kind.browse{background:#65495988;color:#f0c6d5}
+.wq-object small{font-size:10px;color:#b4c5d3}.wq-object p{font-size:10px;margin:0;color:#aab9c5}
+.wq-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:10px}
+.wq-actions button{padding:7px 9px}
+.wq-visited{margin:9px 0;padding:9px 10px;border-radius:8px;background:#26564855;color:#b2e3cb;font-size:11px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.wq-visited span{overflow-wrap:anywhere}
+.wq-results{margin-top:14px}.wq-signal{font-size:10px;color:#d9be8a;font-weight:800}
+.wq-footnote{font-size:10px!important;color:#9eafc0!important;margin-top:13px!important;line-height:1.9!important}
+.wq-guest{display:grid;gap:11px}.wq-guest-step{padding:12px;border-radius:10px;background:#162b40;border:1px solid #c2a9825d}
+.wq-guest-step b{color:#f2dbb6;overflow-wrap:anywhere}
+.wq-empty{text-align:center;padding:23px;background:#23374d3d;border:1px dashed #aeb38478;border-radius:12px;color:#b7c3d1;font-size:12px}
+.wq-error{border:1px solid #d48b90;padding:12px;border-radius:9px;color:#fac7c1!important}
+@media(max-width:630px){.wq-objects{grid-template-columns:1fr}.wq-panel h2{font-size:22px}}
+@media(prefers-reduced-motion:reduce){.wq-panel *{animation:none!important;transition:none!important}}
