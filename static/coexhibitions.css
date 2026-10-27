@@ -1,0 +1,82 @@
+/* V30 · Museum of two worlds — midnight lapis, warm gold and curated cards. */
+.ce-root{max-width:1480px;margin:0 auto;padding-bottom:36px;color:#e7e1d7}
+.ce-kicker{font-size:10px;letter-spacing:.16em;color:#ddc28c;font-weight:800}
+.ce-hero{position:relative;isolation:isolate;overflow:hidden;border:1px solid #d4b37645;border-radius:25px;padding:clamp(30px,5vw,55px);min-height:305px;background:radial-gradient(circle at 78% 24%,#577aa441,transparent 35%),radial-gradient(circle at 13% 95%,#1c6f7d55,transparent 42%),linear-gradient(125deg,#15273a,#0b1426 78%);margin-bottom:20px}
+.ce-hero h1{font:500 clamp(32px,4.8vw,53px)/1.28 Georgia,"Noto Serif SC",serif;letter-spacing:.01em;color:#fff2dc;margin:20px 0}
+.ce-hero h1 em{font-style:normal;color:#ebcd92}
+.ce-hero>p{max-width:680px;color:#c3d1df;font-size:13px;line-height:2}
+.ce-orbit{position:absolute;right:-10%;top:-60px;width:500px;height:500px;border:1px solid #b9b3ad22;border-radius:50%;box-shadow:0 0 0 80px #bba57f08,0 0 0 155px #d1c29709;z-index:-1}
+.ce-badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.ce-badges span{border:1px solid #cebb9460;background:#102436c9;color:#d7e0e6;font-size:11px;padding:9px 12px;border-radius:22px}
+.ce-overview{display:grid;grid-template-columns:1fr 1fr;gap:17px}
+.ce-panel{border:1px solid #d3ba8440;border-radius:18px;background:linear-gradient(132deg,#142437,#0d182a);padding:22px;margin-bottom:18px}
+.ce-panel>h2{font:500 23px/1.45 Georgia,"Noto Serif SC",serif;color:#f4dcae;margin:10px 0 15px}
+.ce-panel>p{color:#aabed0;font-size:12px;line-height:1.9}
+.ce-panel label{display:grid;gap:8px;font-size:12px;color:#c7d1dc;margin-bottom:12px}
+.ce-panel input,.ce-panel select,.ce-panel textarea{border:1px solid #aab3c37a;border-radius:10px;background:#091626;color:#f0e9d9;width:100%;padding:12px 13px;font:inherit;min-width:0}
+.ce-panel textarea{min-height:95px;resize:vertical}
+.ce-panel input:focus,.ce-panel select:focus,.ce-panel textarea:focus{outline:2px solid #dac28d80;outline-offset:1px;border-color:#dac28d}
+.ce-panel button{cursor:pointer;transition:transform .15s,border-color .15s}
+.ce-panel button:hover{transform:translateY(-1px)}
+.ce-panel button:focus-visible{outline:2px solid #e8d09e;outline-offset:2px}
+.ce-panel button:disabled{opacity:.56;cursor:wait;transform:none}
+.ce-primary{background:linear-gradient(115deg,#e8cd9e,#bd9c68);color:#1a2936;border:1px solid #f2d9a6;border-radius:10px;padding:10px 16px;font-weight:800;font-size:12px}
+.ce-muted-btn{border:1px solid #aab8bd80;border-radius:10px;background:#1c3047;color:#dce2e6;padding:9px 13px;font-size:11px}
+.ce-danger{border:1px solid #d5a1967d!important;border-radius:10px;background:#54333a35!important;color:#eab7b4!important;padding:9px 12px;font-size:11px}
+.ce-number{font:13px system-ui,sans-serif;color:#d4c199;margin-left:8px}
+.ce-directory,.ce-public-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.ce-directory button,.ce-public-list button{display:flex;flex-direction:column;text-align:left;gap:5px;border:1px solid #d0b58836;background:#0d1c2d;color:#e9e6dd;border-radius:10px;padding:13px 14px;min-width:0}
+.ce-directory button.active,.ce-public-list button.active{border-color:#e5cf96;background:#283b51}
+.ce-directory b,.ce-public-list b{font-size:12px;line-height:1.65;overflow-wrap:anywhere}
+.ce-directory small,.ce-public-list small{font-size:10px;color:#aab9cb;line-height:1.6}
+.ce-empty{padding:23px 15px;border:1px dashed #c4b99e60;border-radius:12px;color:#aab8c7;font-size:12px;line-height:1.9;background:#0d1b2b}
+.ce-empty-wide{text-align:center;padding:40px}
+.ce-show{padding:clamp(16px,3vw,30px);background:radial-gradient(ellipse at 70% 0,#293a50,#0c1828 68%)}
+.ce-show-header{display:flex;justify-content:space-between;align-items:start;gap:23px;flex-wrap:wrap;margin-bottom:22px}
+.ce-show-header h2{font:500 clamp(25px,3.5vw,39px)/1.4 Georgia,"Noto Serif SC",serif;color:#f0d7a3;margin:8px 0 10px}
+.ce-show-header p{max-width:710px;line-height:1.9;color:#b8c9d5;font-size:12px}
+.ce-curators{display:flex;gap:10px;flex-wrap:wrap;align-items:center;color:#d2dfdf;font-size:12px}
+.ce-curators b{color:#e7c88c}
+.ce-show-status{border:1px solid #d1c28b70;border-radius:16px;background:#13283a;padding:12px 16px;color:#e9c98b;font-size:12px}
+.ce-show-status small{display:block;color:#a9bfcb;margin-top:7px;font-size:10px}
+.ce-show-items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.ce-order{border-radius:16px;padding:8px 12px 15px;background:#17273a;border:1px solid #d6be8c22}
+.ce-order-label{font-size:10px;letter-spacing:.12em;color:#d6c39f;margin:8px 0 11px}
+.ce-artifact{display:flex;gap:15px;align-items:flex-start;min-width:0}
+.ce-artifact-image{width:126px;height:142px;flex-shrink:0;display:grid;place-items:center;border-radius:12px;overflow:hidden;background:radial-gradient(circle,#41546c,#17293d);border:1px solid #c2b48b47}
+.ce-artifact-image img{width:100%;height:100%;object-fit:cover}
+.ce-artifact-image span{font:48px Georgia,serif;color:#dcc48a}
+.ce-artifact-copy{flex:1;min-width:0}
+.ce-artifact-copy h4{font-size:17px;line-height:1.5;color:#f4e6c9;margin:8px 0 6px;overflow-wrap:anywhere}
+.ce-artifact-copy small{color:#9aadc0;font-size:11px}
+.ce-artifact-copy p{color:#b9c8d5;font-size:12px;line-height:1.8;overflow-wrap:anywhere}
+.ce-card-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.ce-card-actions button{border:1px solid #c8ae7866;border-radius:9px;color:#e8cc94;background:#152a41;padding:7px 10px;font-size:10px}
+.ce-missing{flex-direction:column;align-items:center;text-align:center;padding:30px 10px;color:#b4c0d0}
+.ce-missing h4{font-size:12px}
+.ce-artifact-icon{font-size:32px}
+.ce-tour{border:1px solid #cfbc875b;border-radius:18px;padding:19px;margin-top:24px;background:#102238}
+.ce-tour-label{text-align:center;font-size:12px;letter-spacing:.1em;color:#f2d9a5;margin-bottom:17px}
+.ce-tour-body{max-width:790px;margin:0 auto}
+.ce-tour-body .ce-artifact{background:#1c3147;padding:20px;border:1px solid #b4c7cd24;border-radius:16px}
+.ce-tour-steps{display:flex;justify-content:space-between;align-items:center;gap:9px;margin-top:17px}
+.ce-tour-steps>button{border:1px solid #c9b3856e;border-radius:9px;background:#1d3148;color:#f0cf94;padding:9px 13px;font-size:11px}
+.ce-tour-dots{display:flex;gap:3px;flex-wrap:wrap}
+.ce-tour-dots button{background:transparent;color:#c0d1cd;border:0;font-size:14px}
+.ce-disclaimer{color:#96aabb;font-size:11px;line-height:1.8;margin:14px 0}
+.ce-editor{border-top:1px solid #c2ae814d;margin-top:25px;padding-top:20px}
+.ce-editor-head h3{color:#eed7a9;font-size:19px}
+.ce-editor-head p{color:#9fb2bf;font-size:12px}
+.ce-approvals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin:14px 0}
+.ce-approvals>div{border:1px solid #bcbab454;border-radius:9px;background:#19273a;color:#b4bdca;padding:13px;font-size:12px}
+.ce-approvals>div.approved{border-color:#91ccb17a;color:#aedcc4;background:#163d3f66}
+.ce-actions{display:flex;gap:8px;flex-wrap:wrap}
+.ce-edit-form,.ce-add{background:#0c1b2d;padding:16px;border-radius:13px;border:1px solid #b7bca32c;margin-top:17px}
+.ce-add h4{font-size:14px;color:#f0d6a7;margin:0 0 15px}
+.ce-stamp{margin-top:23px;padding:21px;border:1px solid #d2bb9259;border-radius:17px;background:linear-gradient(110deg,#1c3749,#122334);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.ce-stamp b{color:#f4dca6;font-size:15px}
+.ce-stamp p{color:#aebfce;font-size:11px;line-height:1.8;max-width:690px}
+.ce-hide,.ce-alert{border:1px dashed #c6a09375;background:#402c3299;color:#f2b9aa;border-radius:12px;padding:18px;margin:13px 0;font-size:12px;line-height:1.9}
+@media(max-width:1020px){.ce-show-items{grid-template-columns:1fr}}
+@media(max-width:800px){.ce-overview{grid-template-columns:1fr}}
+@media(max-width:520px){.ce-panel{padding:15px}.ce-directory,.ce-public-list{grid-template-columns:1fr}.ce-artifact-image{width:90px;height:105px}.ce-artifact{gap:10px}.ce-artifact-copy h4{font-size:14px}.ce-approvals{grid-template-columns:1fr}.ce-tour-steps>button{padding:7px 9px}.ce-badges{gap:6px}}
