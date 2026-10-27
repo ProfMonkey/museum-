@@ -159,11 +159,11 @@ def mount_play(app, db, require_user, maybe_user, now, fail):
                 "reason":row["reason"],"source_url":row["source_url"]})
         return result
 
-    def card(c,row,include_steps=False):
+    def card(c,row,include_steps=False,user=None):
         steps=visible_steps(c,row["id"])
         if not steps:return None
         obj={"id":row["id"],"title":row["title"],"creator":row["creator"],
-             "is_open":bool(row["is_open"]),"count":len(steps),
+             "is_open":bool(row["is_open"]),"is_owner":bool(user and user["id"]==row["owner_id"]),"count":len(steps),
              "first":steps[0]["title"],"last":steps[-1]["title"],
              "created_at":row["created_at"],"notice":"联想不等于科学因果；外部来源链接由投稿者提供，未经本站核实。"}
         if include_steps:obj["steps"]=steps
@@ -240,10 +240,10 @@ def mount_play(app, db, require_user, maybe_user, now, fail):
             return {"id":cur.lastrowid,"count":1}
 
     @app.get("/api/play/relays/{relay_id}")
-    def get_relay(relay_id:int):
+    def get_relay(relay_id:int,user=Depends(maybe_user)):
         with db() as c:
             r=relay(c,relay_id)
-            result=card(c,r,True)
+            result=card(c,r,True,user)
             if result is None:fail(404,"起点已经撤回公开，这条路线暂时不可见")
             return result
 
