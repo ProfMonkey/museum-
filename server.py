@@ -863,6 +863,10 @@ mount_evolution(app, db, require_user, maybe_user, now, fail)
 from relations_api import mount_relations
 mount_relations(app, db, require_user, maybe_user, now, fail)
 
+# V20: universal wonder albums and private future letters.
+from everything_lab import mount_everything_lab
+mount_everything_lab(app, db, require_user, maybe_user, now, fail)
+
 # V20: universal wonder albums, sealed private letters, real daily discovery.
 from everything_lab import mount_everything_lab
 mount_everything_lab(app, db, require_user, maybe_user, now, fail)
