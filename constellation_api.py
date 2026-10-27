@@ -150,14 +150,18 @@ def mount_constellation(app, db, read_exhibit, require_user, now, fail):
             return base
         item = current_exhibit(c, row["exhibit_id"], user)
         if item is None:
-            # Do not return stored titles for unavailable or deleted sources.
-            return None
+            # Keep a removable, title-free placeholder so a revoked/deleted
+            # source cannot clog the owner's node quota or leak its old title.
+            base.update(title="原始藏品已不可见", category="暂不可用", domain="私人星图",
+                        tags=[], image_url="", visibility="unavailable", is_mine=False,
+                        exhibit_id=None, owner="", description="", source_unavailable=True)
+            return base
         base.update(
             title=item["title"], category=item["category"], domain=item.get("domain", "其他"),
             tags=item["tags"], image_url=item.get("image_url", ""),
             visibility=item["visibility"], is_mine=item["user_id"] == user["id"],
             exhibit_id=item["id"], owner=item.get("owner", ""),
-            description=item.get("description", ""),
+            description=item.get("description", ""), source_unavailable=False,
         )
         return base
 
@@ -166,12 +170,13 @@ def mount_constellation(app, db, read_exhibit, require_user, now, fail):
             WHERE id=? AND user_id=?""", (node_id, user["id"])).fetchone()
         if row is None:
             fail(404, "星图节点不存在或不属于你")
-        if node_view(c, row, user) is None:
+        view = node_view(c, row, user)
+        if view is None or view.get("source_unavailable"):
             fail(409, "节点对应的展品已删除、设为私密或撤回公开")
         return row
 
     def overlap(a, b):
-        common = sorted(set(a.get("tags", [])) & set(b.get("tags", [])) - {""})[:3]
+        common = sorted((set(a.get("tags", [])) & set(b.get("tags", []))) - {""})[:3]
         reasons = []
         if common:
             reasons.append("共同标签：" + "、".join(common))
@@ -214,7 +219,7 @@ def mount_constellation(app, db, read_exhibit, require_user, now, fail):
              max(e["from_node_id"], e["to_node_id"]))
             for e in edges
         }
-        exhibit_nodes = [x for x in nodes if x["kind"] == "exhibit"]
+        exhibit_nodes = [x for x in nodes if x["kind"] == "exhibit" and not x.get("source_unavailable")]
         suggestions = []
         for i, left in enumerate(exhibit_nodes):
             for right in exhibit_nodes[i + 1:]:
