@@ -210,7 +210,7 @@ function wheelControls(){
  '<form id="ww-guest-config" class="ww-controls"><label>转盘名字<input name="title" value="'+esc(W.guest.title)+'" minlength="2" maxlength="60" required></label>'+
  '<label>颜色风格<select name="theme">'+options('theme',W.guest.theme)+'</select></label>'+
  '<label class="ww-tick"><input name="no_repeat" type="checkbox" '+(W.guest.no_repeat?'checked':'')+'>不连续抽中同一项</label>'+
- '<button class="ww-primary" type="submit">保存转盘设置</button></form></section>';
+ '<button class="ww-primary" type="submit">保存转盘设置</button>'+button('clear-guest','⌫ 清空本场景示例，自己决定','class="ww-clear-guest"')+'</form></section>';
  return '<section class="ww-panel"><div class="ww-header-row"><div><span class="ww-kicker">MY PRIVATE DECISION WHEELS</span>'+
  '<h2>♡ 私人万物转盘</h2><p>最多 12 个转盘，每个容纳 24 项。不会公开你的选项或抽取历史。</p></div>'+
  '</div>'+
@@ -365,6 +365,11 @@ document.addEventListener('click',async ev=>{
   }else if(act==='scene-search'){
    W.search=String(b.dataset.query||'').trim();W.sources=(await api('/wheels/sources?q='+encodeURIComponent(W.search))).items||[];
    W.notice=W.sources.length?'找到 '+W.sources.length+' 件当前真实公开的馆藏。':'暂时没有匹配的公开馆藏，可直接输入你自己的选项。';
+  }else if(act==='clear-guest'){
+   if(logged())return;
+   if(!window.confirm('只清空当前主题的候选项和最近历史？其他七个主题完全保留。'))return;
+   W.guest.labels=[];W.guest.sourceIds={};W.guest.last=null;W.guest.history=[];
+   W.notice='已清空'+SCENES[W.guest.topic].label+'候选，现在可以自己添加选项。';localSave();resetAnimation();
   }else if(act==='template'){
    const k=b.dataset.topic,x=SCENES[k];if(!x)return;
    if(logged()){
