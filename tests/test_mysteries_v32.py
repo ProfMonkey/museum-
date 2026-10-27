@@ -216,7 +216,7 @@ def test_real_source_picker_and_own_private_does_not_return(env):
 
 def test_v32_frontend_assets_version_without_ci(env):
     alice,bob,guest=env
-    assert guest.get("/api/health").json()["version"]=="33.0"
+    assert guest.get("/api/health").json()["version"]=="34.0"
     html=guest.get("/").text
     assert "WONDER ATLAS · WORLD " in html
     assert "万物谜案馆" in html
