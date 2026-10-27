@@ -182,7 +182,7 @@ def mount_wheels(app,db,require_user,maybe_user,now,fail):
                               if (e:=exhibit(c,x["id"])) is not None]}
 
     @app.get("/api/wheels/resolve")
-    def resolve_public(ids:str=Query(default="",max_length=240)):
+    def resolve_public(ids:str=Query(default="",max_length=300)):
         """Resolve up to 24 guest source IDs against CURRENT public scope.
 
         Return only public original titles; clients must discard revoked labels.
