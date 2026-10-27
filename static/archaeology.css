@@ -1,0 +1,81 @@
+/* V37 archaeology of fictional civilizations: nocturne obsidian, antique amber, cyan relics */
+.ar-root{max-width:1460px;margin:0 auto 40px;color:#ebe9e1}
+.ar-overline{color:#e6c592;letter-spacing:.16em;font-size:10px;font-weight:800;line-height:1.9}
+.ar-hero{position:relative;isolation:isolate;overflow:hidden;min-height:285px;padding:clamp(30px,5vw,57px);border:1px solid #e5c68d59;border-radius:23px;background:radial-gradient(circle at 87% 23%,#a875514b,transparent 35%),radial-gradient(ellipse at 11% 90%,#33788740,transparent 55%),linear-gradient(135deg,#1b2d3d,#0d182a);margin-bottom:19px}
+.ar-hero h1{font:500 clamp(31px,4.7vw,56px)/1.28 Georgia,"Noto Serif SC",serif;margin:18px 0;color:#fff0d7}
+.ar-hero h1 em{font-style:normal;color:#e7c78c}
+.ar-hero>p{font-size:13px;color:#beced6;line-height:1.95;max-width:755px}
+.ar-ring{position:absolute;z-index:-1;pointer-events:none;width:350px;height:350px;right:6%;top:-55px;border:1px solid #edd5a18c;border-radius:50%;box-shadow:0 0 0 43px #a8c2c20e,0 0 0 103px #c09d6b0b}
+.ar-ring:before{content:"⚒";display:grid;place-items:center;position:absolute;inset:68px;border-radius:50%;border:1px dashed #b4b59378;color:#dcc19391;font:55px Georgia,serif;transform:rotate(-12deg)}
+.ar-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:17px}
+.ar-tags span{padding:8px 12px;color:#d4e2e4;border:1px solid #d3b98968;background:#1e3949ad;border-radius:23px;font-size:11px}
+.ar-panel{border:1px solid #c5af8259;border-radius:18px;padding:clamp(17px,3vw,27px);background:linear-gradient(145deg,#182c3f,#101c2d);margin-bottom:18px}
+.ar-panel h2{font:500 25px/1.5 Georgia,"Noto Serif SC",serif;color:#f0d7a3;margin:8px 0 16px}
+.ar-panel>p{color:#b6cbd1;line-height:1.9;font-size:12px}
+.ar-root button{cursor:pointer;transition:transform .16s,border-color .16s}
+.ar-root button:hover:not(:disabled){transform:translateY(-2px);border-color:#eccb8b}
+.ar-root button:focus-visible{outline:2px solid #eccb8b;outline-offset:3px}
+.ar-root button:disabled{opacity:.5;cursor:not-allowed}
+.ar-gold{border:1px solid #f1d59e;border-radius:9px;background:linear-gradient(115deg,#ead19c,#c69b62);font-size:12px;font-weight:800;padding:10px 14px;color:#192b3b}
+.ar-outline{border:1px solid #b5b9a078;border-radius:9px;background:#223b4c;color:#ebd4ab;font-size:11px;padding:9px 12px}
+.ar-danger{border:1px solid #cfa0a088;border-radius:9px;background:#4b3038;color:#f0c6c0;padding:9px 12px;font-size:11px}
+.ar-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.ar-card{position:relative;display:flex;flex-direction:column;gap:10px;min-width:0;border:1px solid #c8b38559;background:radial-gradient(ellipse at 80% 5%,#ae885b3b,transparent 50%),#102338;border-radius:16px;padding:18px}
+.ar-card .ar-symbol{width:47px;height:47px;border-radius:13px;display:grid;place-items:center;font:26px Georgia,serif;color:#ffe2a4;background:#e0c38e2d;border:1px solid #dcc28f62}
+.ar-card h3{color:#f6dfb8;font:500 20px/1.5 Georgia,"Noto Serif SC",serif;margin:2px 0;overflow-wrap:anywhere}
+.ar-card>p{font-size:12px;color:#b4cbd0;line-height:1.8;flex:1}
+.ar-metas{display:flex;gap:7px;flex-wrap:wrap}
+.ar-metas span{border-radius:15px;background:#2b4250;color:#d2d5c4;font-size:10px;padding:6px 9px}
+.ar-true-object{border-top:1px solid #b5b79e46;margin-top:7px;padding-top:11px}
+.ar-card .ar-gold{margin-top:5px}
+.ar-object{display:flex;align-items:center;gap:12px;min-width:0}
+.ar-object img,.ar-object-glyph{flex:0 0 50px;width:50px;height:50px;display:grid;place-items:center;object-fit:cover;border-radius:10px;background:#36525b;color:#ebc99a;font-size:27px}
+.ar-object>div{min-width:0;flex:1}
+.ar-object strong{display:block;color:#f1dfc2;font-size:13px;line-height:1.5;overflow-wrap:anywhere}
+.ar-object small{display:block;font-size:10px;line-height:1.6;color:#a4bac5}
+.ar-blank{padding:17px;border:1px dashed #c6ae857a;border-radius:11px;color:#abc4c6;font-size:12px}
+.ar-empty{border:1px dashed #b9ae8c74;border-radius:13px;padding:22px;color:#bbccd3;font-size:12px;line-height:1.9;background:#112a3b}
+.ar-alert{border-radius:10px;padding:13px 17px;border:1px solid #b7d1b680;background:#27443e;color:#dcebd8;font-size:12px}
+.ar-detail-head{display:flex;align-items:start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.ar-detail-head p{color:#a9c3c8;font-size:12px}
+.ar-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ar-context{display:flex;gap:19px;align-items:center;flex-wrap:wrap;margin:20px 0;padding:14px;border:1px solid #c7b28967;border-radius:13px;background:#0e2535}
+.ar-context>.ar-object{flex:1;min-width:min(310px,100%)}
+.ar-context>div:last-child{border-left:1px solid #b7ba9b5c;padding-left:19px}
+.ar-context strong{font-size:14px;color:#efdcba;display:block}
+.ar-context small{font-size:10px;color:#a8c5c7}
+.ar-intro{white-space:pre-wrap;overflow-wrap:anywhere;padding:21px;border:1px solid #c5ab806a;border-radius:14px;background:radial-gradient(ellipse at 70% 100%,#47605a4a,transparent 60%),#0c2131;color:#f4e2c2;font:400 clamp(16px,2vw,23px)/1.95 Georgia,"Noto Serif SC",serif;margin:16px 0}
+.ar-layer-title{text-align:center;margin:28px 0 15px}
+.ar-layer-title h3{color:#f1d3a6;font:500 22px Georgia,"Noto Serif SC",serif}
+.ar-layer-title p{color:#9db6c3;font-size:11px}
+.ar-layerboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ar-layerboard>article{position:relative;border-radius:13px;border:1px solid #c4b59761;background:#0d2233;display:flex;flex-direction:column;padding:16px;min-height:215px}
+.ar-layerboard>article.is-open{border-color:#ddca9c}
+.ar-layer-label{color:#e4c78e;font-size:12px;letter-spacing:.04em;margin-bottom:17px}
+.ar-layer-text{white-space:pre-wrap;overflow-wrap:anywhere;line-height:2;font-size:13px;color:#d7e2de;flex:1}
+.ar-layer-hidden{display:grid;place-items:center;color:#8ba7b1;font:italic 12px Georgia,serif;flex:1}
+.ar-layerboard button{margin-top:18px}
+.ar-explore-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}
+.ar-ethics{font-size:11px;color:#9cb4bd;line-height:1.9;margin-top:20px}
+.ar-my{display:flex;gap:8px;flex-wrap:wrap}
+.ar-panel label{display:grid;gap:7px;margin:14px 0;font-size:12px;color:#b8cbd3}
+.ar-panel input,.ar-panel select,.ar-panel textarea{min-width:0;width:100%;border:1px solid #c0b19a8c;border-radius:9px;background:#0d2234;color:#f1e3cc;padding:11px 13px;font:inherit}
+.ar-panel textarea{resize:vertical;min-height:100px}
+.ar-panel input:focus,.ar-panel select:focus,.ar-panel textarea:focus{outline:2px solid #e3c58e79}
+.ar-search{display:flex;gap:10px;margin:19px 0}
+.ar-search input{flex:1}
+.ar-search button{background:#304b54;color:#efd1a1;border:1px solid #ccae88;border-radius:9px;padding:10px 16px}
+.ar-picker{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-height:350px;overflow:auto}
+.ar-picker>button{text-align:left;border:1px solid #a8b5a663;background:#0d2739;border-radius:10px;padding:11px;color:#e9d9bd}
+.ar-picker>button.active{border-color:#f0d39a;background:#314b55}
+.ar-picked{margin-top:13px;padding:10px;border:1px solid #d1ba8668;border-radius:11px;background:#193645}
+.ar-form-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.ar-edit-note{border:1px solid #d6c18b70;border-radius:10px;background:#37453d;color:#f0e0bf;padding:12px;margin-top:15px;font-size:11px}
+.ar-echo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:17px 0}
+.ar-echo-grid article{min-width:0;padding:16px;border:1px solid #c8b38865;border-radius:13px;background:#11293c}
+.ar-echo-grid h3{font:500 18px Georgia,"Noto Serif SC",serif;color:#f2dbb5}
+.ar-echo-grid p{font-size:11px;color:#aecad0;line-height:1.9}
+.ar-echo-grid span{display:inline-block;border-radius:17px;padding:6px 10px;background:#304553;color:#e4c68e;font-size:11px}
+.ar-fine{color:#98adb9;font-size:11px;line-height:2;margin:18px 0}
+@media(max-width:1080px){.ar-grid,.ar-echo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:740px){.ar-grid,.ar-echo-grid,.ar-layerboard,.ar-picker,.ar-form-columns{grid-template-columns:1fr}.ar-hero{padding:25px}.ar-panel{padding:17px}.ar-context>div:last-child{border:0;padding-left:0}.ar-search{flex-wrap:wrap}.ar-search button{width:100%}.ar-ring{right:-130px;opacity:.4}}
