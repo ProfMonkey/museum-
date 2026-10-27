@@ -190,7 +190,7 @@ def test_cancelling_exchange_preserves_both_real_source_exhibits(env):
 
 def test_v36_frontend_and_version_with_no_automatic_actions(env):
     alice,bob,guest=env
-    assert guest.get("/api/health").json()["version"]=="36.0"
+    assert guest.get("/api/health").json()["version"]=="37.0"
     html=guest.get("/").text
     assert "万界遗产交换站" in html
     assert "WORLD 36" in html
