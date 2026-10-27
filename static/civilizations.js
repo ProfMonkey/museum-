@@ -1,7 +1,7 @@
 /* V34 · Civilization engine — user-authored history, deterministic toy simulator. */
 (() => {
 'use strict';
-const T={focus:0,notice:'',compareTurn:1,comparePolicy:'research',compareActive:false};
+const T={focus:0,notice:'',compareTurn:1,comparePolicy:'research',compareActive:false,relicQuery:''};
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const btn=(a,text,attributes='')=>'<button type="button" data-civ="'+a+'" '+attributes+'>'+text+'</button>';
 const logged=()=>Boolean(window.S?.user);
@@ -21,11 +21,14 @@ function history(d,model){
  return '<div class="cv-history"><h3>⏳ 不可重来的历史抉择</h3>'+
  (d.turns.length?d.turns.map(t=>'<article class="cv-chapter"><div class="cv-chapter-index">'+
  '<span>ERA '+String(t.turn).padStart(2,'0')+'</span><b>'+esc(t.policy_label)+'</b></div>'+
- '<h4>'+esc(t.chapter)+'</h4><p>'+esc(t.narrative)+'</p><div class="cv-chapter-footer">'+
+ '<h4>'+esc(t.chapter)+'</h4><p>'+esc(t.narrative)+'</p>'+
+ (t.anomaly?'<div class="cv-anomaly">☄️ 本时代遭遇一件来自外界的真实公开藏品：'+
+ source(t.anomaly)+'<p>玩具模型中的固定异物影响：知识 +5、文化 +4、凝聚 −3。</p></div>':'')+
+ '<div class="cv-chapter-footer">'+
  '<span>'+esc(t.event)+'</span><small>'+Object.entries(t.delta).map(([k,n])=>(n>=0?'+':'')+n+' '+esc(model.stats.find(s=>s.key===k)?.label||k)).join(' · ')+'</small></div></article>').join(''):
  '<div class="cv-empty">文明尚无历史决策；原作者可以编写第一轮。</div>')+'</div>';
 }
-function editPanel(d,model){
+function editPanel(d,model,relics){
  if(!logged()||window.S.user.username!==d.owner)return '';
  return '<section class="cv-author"><div class="cv-author-header"><h3>✍️ 文明创世者控制台</h3>'+
  '<p>每一轮选择都由透明固定规则计算。只有你编写的事件故事属于你的原创文明历史。</p></div>'+
@@ -37,8 +40,16 @@ function editPanel(d,model){
  '<label>文明名称<input name="name" required minlength="3" maxlength="80" value="'+esc(d.name)+'"></label>'+
  '<label>文明宣言<textarea name="charter" required minlength="20" maxlength="580">'+esc(d.charter)+'</textarea></label>'+
  '<button class="cv-muted" type="submit">✓ 保存新宣言并回到私密草稿</button></form>'+
- (d.turns.length<8?'<form id="cvTurnForm" class="cv-form"><h4>⚡ 时代抉择 · 第 '+(d.turns.length+1)+' 轮</h4>'+
+ (d.turns.length<8?'<div class="cv-exotic-picker"><h4>☄️ 异世界物件冲击（可选）</h4>'+
+ '<p>把一件不属于本世界的真实公开藏品投入下一轮文明。固定游戏效果：知识 +5，文化 +4，凝聚 −3。撤回来源会令整个文明暂停公开。</p>'+
+ '<form id="cvRelicSearch"><input name="query" maxlength="60" value="'+esc(T.relicQuery)+'" placeholder="搜索其他公开馆藏标题、类别或标签">'+
+ '<button class="cv-muted">搜索原始展品</button></form></div>'+
+ '<form id="cvTurnForm" class="cv-form"><h4>⚡ 时代抉择 · 第 '+(d.turns.length+1)+' 轮</h4>'+
  '<label>选择一项文明政策<select name="policy">'+model.policies.map(x=>'<option value="'+x.id+'">'+esc(x.label)+' · '+esc(x.caption)+'</option>').join('')+'</select></label>'+
+ '<label>投放外来藏品（可不选）<select name="anomaly_exhibit_id"><option value="">不投放 · 只用本轮策略</option>'+
+ (relics?.items||[]).filter(x=>!d.sources.some(src=>src.id===x.id)).map(x=>'<option value="'+x.id+'">'+
+ esc(x.title)+' · @'+esc(x.curator)+' · #'+x.id+'</option>').join('')+
+ '</select></label>'+
  '<label>原创篇章名称<input name="chapter" minlength="3" maxlength="90" required placeholder="例如：第一座图书馆与饥荒的代价"></label>'+
  '<label>写下发生在你的虚构文明里的事件<textarea name="narrative" minlength="12" maxlength="620" required placeholder="由你讲述本轮发展、冲突、人物和历史；数值仅按照游戏规则变化。"></textarea></label>'+
  '<button class="cv-primary">＋ 提交一次重大文明抉择</button></form>':
@@ -64,7 +75,7 @@ function experiment(d,model,result){
  '<b>第'+t.turn+'轮 · '+esc(t.policy_label)+'</b><span>'+esc(t.event)+'</span></div>').join('')+'</div>'+
  '<p class="cv-disclaimer">'+esc(result.notice)+'</p>':'')+'</section>';
 }
-function showroom(d,model,result){
+function showroom(d,model,result,relics){
  return '<section class="cv-panel cv-show"><div class="cv-overline">02 / CIVILIZATION #'+d.id+
  ' · MODEL '+d.model_version+'</div><div class="cv-show-heading"><div><h2>'+esc(d.name)+'</h2>'+
  '<p>来自 @'+esc(d.owner)+' 的架空世界 · '+(d.status==='public'?'◉ 作者已公开':'○ 仅作者可见')+'</p></div>'+
@@ -75,7 +86,7 @@ function showroom(d,model,result){
  '<div><small>文明种子</small>'+source(d.seed)+'</div></div>'+
  '<div class="cv-stats-shell"><div class="cv-overline">CIVILIZATION STATE · MODEL 1</div>'+
  '<h3>五维虚构文明状态</h3>'+statBars(d.final,model)+'</div>'+
- history(d,model)+experiment(d,model,result)+editPanel(d,model)+'</section>';
+ history(d,model)+experiment(d,model,result)+editPanel(d,model,relics)+'</section>';
 }
 async function render(){
  let gallery,model,mine={items:[]},worlds={items:[]};
@@ -84,10 +95,14 @@ async function render(){
  catch(e){return '<section class="cv-root cv-panel"><h2>文明演化实验室暂不可用</h2><p>'+esc(e.message)+'</p></section>';}
  const all=[...mine.items,...gallery.items];
  if(!T.focus)T.focus=all.find(x=>x.available)?.id||0;
- let current=null,result=null;
+ let current=null,result=null,relics={items:[]};
  if(T.focus){
   try{current=await api('/civilizations/'+T.focus)}
   catch(e){T.focus=0;T.compareActive=false;T.notice='旧文明已经私密或其原始来源已撤回。';}
+ }
+ if(current&&logged()&&current.owner===window.S.user.username){
+  try{relics=await api('/civilizations/relics?q='+encodeURIComponent(T.relicQuery))}
+  catch(e){T.notice='当前无法加载可投放的外来公开藏品。'}
  }
  if(current&&current.turns.length){
   T.compareTurn=Math.max(1,Math.min(current.turns.length,T.compareTurn));
@@ -101,7 +116,7 @@ async function render(){
  '<div class="cv-overline">WONDER ATLAS · WORLD 34 · CIVILIZATION LABORATORY</div>'+
  '<h1>一件藏品，<br><em>能创造多少种文明？</em></h1>'+
  '<p>让 V33 的一个公开碰撞世界孕育最多六个文明。你写下八个时代的抉择；游客再用「历史分岔显微镜」观察：如果曾经作出另一种选择，最终结局会有多大不同？</p>'+
- '<div class="cv-hero-pills"><span>🏛 文明创造</span><span>🌱 物件种子</span><span>⏳ 八轮历史</span><span>🔬 反事实显微镜</span><span>⚖️ 透明模拟规则</span></div></section>'+
+ '<div class="cv-hero-pills"><span>🏛 文明创造</span><span>🌱 物件种子</span><span>⏳ 八轮历史</span><span>🔬 反事实显微镜</span><span>⚖️ 透明模拟规则</span><span>☄️ 异物冲击</span></div></section>'+
  (T.notice?'<p class="cv-alert">'+esc(T.notice)+'</p>':'')+
  '<section class="cv-panel"><div class="cv-overline">01 / PUBLIC CIVILIZATION GALLERY</div><h2>🌍 真实作者公开的虚构文明</h2>'+
  '<p>只显示可追溯到当前仍公开的 V33 世界和真实公开藏品的创作；没有内容时不制造“热门文明”。</p>'+
@@ -109,7 +124,7 @@ async function render(){
  ' · '+esc(x.world_law)+'</div><h3>'+esc(x.name)+'</h3><small>✍️ @'+esc(x.owner)+' · 已完成 '+x.turn_count+' 轮</small>'+
  btn('select','◈ 进入文明年轮','data-id="'+x.id+'" class="cv-primary"')+'</article>').join('')+'</div>':
  '<div class="cv-empty">目前还没有真实用户公开的文明。你可以在自己的 V33 碰撞世界中开启第一部虚构编年史。</div>')+'</section>'+
- (current?showroom(current,model,result):
+ (current?showroom(current,model,result,relics):
  '<section class="cv-panel cv-empty">选择一座已经公开的文明，或在下面创建属于自己的文明实验。</section>')+
  '<section class="cv-panel"><div class="cv-overline">04 / MY CIVILIZATION STUDIO</div><h2>✍️ 新文明的创世图纸</h2>'+
  (logged()?'<p>只有 V33 世界的原作者，才能在自己当下公开的碰撞世界里创建文明。每个世界最多六个文明，每个文明最多八轮历史。</p>'+
@@ -135,12 +150,14 @@ async function render(){
 }
 async function refresh(){if(window.S?.view==='civilizations'){const main=document.querySelector('#main');if(main)main.innerHTML=await render();}}
 document.addEventListener('submit',async e=>{
- const f=e.target;if(!['cvCreateForm','cvTurnForm','cvCompareForm','cvEditForm'].includes(f.id))return;
+ const f=e.target;if(!['cvCreateForm','cvTurnForm','cvCompareForm','cvEditForm','cvRelicSearch'].includes(f.id))return;
  e.preventDefault();e.stopImmediatePropagation();
  const d=Object.fromEntries(new FormData(f).entries()),submit=f.querySelector('[type=submit],button');
  if(submit)submit.disabled=true;
  try{
-  if(f.id==='cvCompareForm'){
+  if(f.id==='cvRelicSearch'){
+   T.relicQuery=String(d.query||'').trim();
+  }else if(f.id==='cvCompareForm'){
    T.compareTurn=Number(d.turn);T.comparePolicy=d.policy;T.compareActive=true;
   }else if(f.id==='cvEditForm'){
    await api('/civilizations/'+T.focus,{method:'PUT',body:{name:d.name,charter:d.charter}});
@@ -153,7 +170,8 @@ document.addEventListener('submit',async e=>{
    T.focus=r.id;T.compareActive=false;T.notice='一座新的私密文明已经诞生！请先写两轮历史后主动公开。';
   }else{
    const r=await api('/civilizations/'+T.focus+'/turns',{method:'POST',body:{
-    policy:d.policy,chapter:d.chapter,narrative:d.narrative}});
+    policy:d.policy,chapter:d.chapter,narrative:d.narrative,
+    anomaly_exhibit_id:d.anomaly_exhibit_id?Number(d.anomaly_exhibit_id):null}});
    T.compareActive=false;T.notice='✨ 文明进入第 '+r.turn+' 轮。数值由明确的游戏规则计算；最新版本已经自动转为私密草稿。';
   }
   await refresh();
