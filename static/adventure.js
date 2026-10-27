@@ -1,4 +1,4 @@
-/* V25 · Destiny Relay. Each stage is an actual server draw from a real private wheel.
+/* V26 · Destiny Relay + Live Museum Discovery. Each stage is an actual server draw from a real private wheel.
    Demo suggestions are explicitly synthetic templates, not community submissions. */
 (() => {
 'use strict';
@@ -234,7 +234,7 @@ document.addEventListener('submit',async e=>{
 async function render(){await load();return '<div class="dr-root">'+intro()+
  (A.notice?'<div class="dr-notice">'+esc(A.notice)+'</div>':'')+
  (A.error?'<div class="dr-error">'+esc(A.error)+'</div>':'')+
- '<div class="dr-layout"><div>'+collection()+'</div><div>'+routeCard()+shareInfo()+'</div></div>'+
+ '<div class="dr-layout"><div>'+collection()+'</div><div>'+routeCard()+await WonderQuests.render(stages(),A.selected)+shareInfo()+'</div></div>'+
  '<p class="dr-footer">随机选择不是现实建议；请结合自身实际情况决策。用户内容未经本站事实认证。</p></div>';}
 window.WonderAdventure={render,stop:()=>{A.drawing++;}};
 })();
