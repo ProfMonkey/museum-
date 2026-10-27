@@ -65,3 +65,6 @@
 
 @media(max-width:700px){.mobile-nav{justify-content:space-around}.mobile-nav button{flex:1 1 0;min-width:0}.mobile-nav button span{font-size:19px}}
 @media(max-width:590px){.top-find{display:none}}
+
+.sidebar-find.active{background:#d9b66c18;border-color:#d9b66c80;color:#fff}
+.top-find.active{background:#d9b66c16;border-color:#d9b66c80;color:#f4d79e}
