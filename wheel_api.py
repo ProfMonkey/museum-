@@ -177,8 +177,8 @@ def mount_wheels(app,db,require_user,maybe_user,now,fail):
                 LEFT JOIN fantasy_relics fr ON fr.exhibit_id=e.id
                 LEFT JOIN fantasy_worlds fw ON fw.id=fr.world_id
                 WHERE e.visibility='public' AND (fr.id IS NULL OR fw.visibility='public')
-                  AND (e.title LIKE ? OR e.description LIKE ?)
-                ORDER BY e.id DESC LIMIT 30""",(pattern,pattern)).fetchall()
+                  AND (e.title LIKE ? OR e.description LIKE ? OR e.category LIKE ? OR e.domain LIKE ? OR e.tags LIKE ?)
+                ORDER BY e.id DESC LIMIT 30""",(pattern,pattern,pattern,pattern,pattern)).fetchall()
             return {"items":[{"id":e["id"],"title":e["title"],"domain":e["domain"],
                               "category":e["category"]} for x in rows
                               if (e:=exhibit(c,x["id"])) is not None]}
