@@ -96,3 +96,13 @@
 .cv-personal>div{display:flex;gap:5px}
 @media(max-width:1120px){.cv-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.cv-compare-form{grid-template-columns:1fr 1fr}.cv-compare-form button{grid-column:1/-1}}
 @media(max-width:760px){.cv-cards,.cv-sources,.cv-compare-grid,.cv-worlds{grid-template-columns:1fr}.cv-hero{padding:26px}.cv-planet{right:-40%;opacity:.7}.cv-compare-form{grid-template-columns:1fr}.cv-panel{padding:17px}.cv-chapter{margin-left:13px}.cv-hero h1{font-size:31px}}
+
+.cv-exotic-picker{border:1px solid #b4bda25c;border-radius:12px;padding:15px;background:radial-gradient(circle at 80% 20%,#7d856c2f,transparent 60%),#152f3b;margin:15px 0}
+.cv-exotic-picker h4{color:#f3d9a4;font-size:15px;margin:0 0 9px}
+.cv-exotic-picker p{color:#b6cbd0;font-size:11px;line-height:1.9}
+.cv-exotic-picker form{display:flex;gap:9px;align-items:center}
+.cv-exotic-picker input{flex:1}
+.cv-anomaly{border-radius:12px;border:1px solid #bea77e8c;background:#263d40;padding:14px;color:#f4ddae;font-size:12px;line-height:1.9;margin:14px 0}
+.cv-anomaly>.cv-source{margin:10px 0}
+.cv-anomaly p{font-size:11px;color:#bedbd4;margin-bottom:0}
+@media(max-width:600px){.cv-exotic-picker form{flex-direction:column}.cv-exotic-picker form button{width:100%}}
