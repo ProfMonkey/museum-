@@ -2,7 +2,7 @@
 (() => {
 'use strict';
 const M={focus:0,compare:null,left:0,right:0,msg:'',edit:false};
-const esc=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[ch]));
+const esc=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const button=(cmd,label,extra='')=>'<button type="button" data-live="'+cmd+'" '+extra+'>'+label+'</button>';
 const icon={observation:'👁',milestone:'🏁',correction:'📝',discovery:'✨'};
 const kindLabel={observation:'观察',milestone:'里程碑',correction:'修正记录',discovery:'新发现'};
@@ -97,7 +97,7 @@ async function render(){
  (w.available?artifact(w.exhibit,{action:'focus',label:w.unread?'🔔 '+w.unread+' 条新变化':'查看变化'}):
  '<span class="lv-secret">🔒 原始藏品已撤回公开。旧标题不再显示。</span>')+
  button('unwatch','取消关注','data-id="'+w.exhibit_id+'" class="lv-quiet"')+'</div>').join('')+'</div>':
- '<div class="lv-empty">还没有关注任何展品。进入一件真实的公开藏品，点击「关注变化」开始观察。</div>')))+
+ '<div class="lv-empty">还没有关注任何展品。进入一件真实的公开藏品，点击「关注变化」开始观察。</div>'))+
  '<h3 class="lv-section-sub">我的原始藏品 <span>'+museum.length+'</span></h3>'+
  (museum.length?'<div class="lv-mine">'+museum.map(x=>'<div>'+
  button('focus',esc(x.title)+' '+(x.visibility==='private'?'🔒':''),'data-id="'+x.id+'" class="lv-mine-button"')+'</div>').join('')+'</div>':
