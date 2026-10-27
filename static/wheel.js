@@ -28,16 +28,17 @@ function localLoad(){
   const obj=JSON.parse(localStorage.getItem('wonder-wheel-v24')||'null');
   if(obj&&Array.isArray(obj.labels)) {
    W.guest={labels:obj.labels.filter(x=>typeof x==='string'&&x.length<=75).slice(0,24),
+       sourceIds:obj.sourceIds&&typeof obj.sourceIds==='object'?obj.sourceIds:{},
        title:String(obj.title||'今晚吃什么').slice(0,60),topic:SCENES[obj.topic]?obj.topic:'food',
        theme:PALETTE[obj.theme]?obj.theme:'amber',no_repeat:obj.no_repeat!==false,
        last:Number.isInteger(obj.last)?obj.last:null,history:Array.isArray(obj.history)?obj.history.slice(0,20):[]};
   }
  }catch(_){}
- if(!W.guest)W.guest={labels:['米线','菌子火锅','牛排','烧烤'],
+ if(!W.guest)W.guest={labels:['米线','菌子火锅','牛排','烧烤'],sourceIds:{},
     title:'今天吃什么？',topic:'food',theme:'amber',no_repeat:true,last:null,history:[]};
 }
 function localSave(){try{localStorage.setItem('wonder-wheel-v24',JSON.stringify(W.guest))}catch(_){}}
-function selectedItems(){return logged()?W.detail?.items||[]:(W.guest?.labels||[]).map((label,i)=>({id:i+1,kind:'manual',label}));}
+function selectedItems(){return logged()?W.detail?.items||[]:(W.guest?.labels||[]).map((label,i)=>({id:i+1,kind:W.guest.sourceIds?.[label]?'exhibit':'manual',label,exhibit_id:W.guest.sourceIds?.[label]||null}));}
 function current(){return logged()?W.detail:{title:W.guest.title,topic:W.guest.topic,theme:W.guest.theme,
  no_repeat:W.guest.no_repeat,items:selectedItems(),history:W.guest.history,
  unavailable_count:0};}
@@ -48,9 +49,18 @@ async function load(){
   if(!W.config)W.config=await api('/wheels/config');
   if(logged()){
    W.wheels=(await api('/wheels')).items||[];
-   if(!W.wheels.some(x=>x.id===W.wheelId))W.wheelId=W.wheels[0]?.id||0;
+   if(W.pending){
+    const topic=SCENES[W.pending.topic]?W.pending.topic:'custom';
+    let target=topic==='custom'?(W.wheels.find(x=>x.id===W.wheelId)||W.wheels[0]):W.wheels.find(x=>x.topic===topic);
+    if(target)W.wheelId=target.id;
+    else{
+     const title=topic==='food'?'今天吃什么？':topic==='custom'?'我的万物转盘':SCENES[topic].label+'？';
+     const created=await api('/wheels',{method:'POST',body:{title,topic,theme:'amber',no_repeat:true}});
+     W.wheelId=created.id;W.wheels=(await api('/wheels')).items||[];
+    }
+   }else if(!W.wheels.some(x=>x.id===W.wheelId))W.wheelId=W.wheels[0]?.id||0;
    W.detail=W.wheelId?await api('/wheels/'+W.wheelId):null;
-  }else{W.wheels=[];W.wheelId=0;W.detail=null;}
+  }else{W.wheels=[];W.wheelId=0;W.detail=null;if(W.pending?.topic&&SCENES[W.pending.topic]){W.guest.topic=W.pending.topic;W.guest.title=W.pending.topic==='food'?'今天吃什么？':SCENES[W.pending.topic].label+'？';localSave();}}
   // Search is opt-in, not a site-wide passive fetch on every navigation.
   if(W.search)W.sources=(await api('/wheels/sources?q='+encodeURIComponent(W.search))).items||[];
  }catch(err){W.error=err.message||'无法连接万物转盘';}
@@ -141,6 +151,7 @@ function addControls(){
  const d=current();
  return '<section class="ww-panel"><div class="ww-header-row"><div><span class="ww-kicker">COLLECT FIRST · DRAW LATER</span>'+
  '<h2>✦ 把万物放进转盘</h2><p>可以输入任意有趣的选项，也可以从博物馆真正公开的藏品中添加。</p></div></div>'+
+ (d?.topic==='food'?'<div class="ww-food-picks"><b>🍜 快速寻找馆内美食</b><p>只显示目前真正公开的馆藏；找不到时也可以手动加入食物。</p><div>'+['米线','菌子','牛排','烧烤','甜品','水果','茶饮','地方小吃'].map(q=>button('food-search',esc(q),'data-query="'+esc(q)+'"')).join('')+'</div></div>':'')+
  (W.pending?'<div class="ww-pending"><b>🏛 刚刚在展厅逛到：</b><span>'+esc(W.pending.title)+'</span>'+
  button('add-pending',logged()?'放入当前私人转盘':'加入临时转盘','class="ww-primary"')+
  button('dismiss','取消')+'</div>':'')+
@@ -179,16 +190,17 @@ async function redraw(){
  if(!main)return;
  main.innerHTML=await render();
 }
-function queueExhibit(id,title){
- W.pending={id:Number(id),title:String(title||'这件藏品')};
- W.notice='已经找到这件公开藏品，选择下面的转盘后点击加入。';
+function queueExhibit(id,title,topic){
+ W.pending={id:Number(id),title:String(title||'这件藏品'),topic:SCENES[topic]?topic:null};
+ if(W.pending.topic==='food'){W.guest.topic='food';W.guest.title='今天吃什么？';localSave();}
+ W.notice=W.pending.topic==='food'?'已把这道美食带到「今天吃什么」转盘。':'已经找到这件公开藏品，选择下面的转盘后点击加入。';
 }
-function guestAdd(label){
+function guestAdd(label,exhibitId){
  label=String(label||'').trim();
  if(!label||label.length>75)throw Error('选项长度需要在 1–75 字内');
  if(W.guest.labels.some(x=>x.toLocaleLowerCase()===label.toLocaleLowerCase()))throw Error('该选项已经在转盘里');
  if(W.guest.labels.length>=24)throw Error('转盘最多可放 24 个选项');
- W.guest.labels.push(label);W.guest.last=null;W.notice='已加入临时转盘：'+label;localSave();
+ W.guest.labels.push(label);if(exhibitId)W.guest.sourceIds[label]=Number(exhibitId);W.guest.last=null;W.notice='已加入临时转盘：'+label;localSave();
 }
 function formValues(f){
  const o=Object.fromEntries(new FormData(f));
@@ -216,7 +228,7 @@ async function spin(){
     last_index:W.guest.last,no_repeat:W.guest.no_repeat}});
  }catch(e){W.busy=false;document.querySelector('#ww-trigger')?.removeAttribute('disabled');throw e;}
  const index=logged()?response.winner_index:response.index;
- const item=logged()?response.winner:{label:response.label,exhibit_id:null};
+ const item=logged()?response.winner:{label:response.label,exhibit_id:W.guest.sourceIds?.[response.label]||null};
  if(startAnimation!==W.animation)return;
  const rotor=document.getElementById('ww-rotor');
  const deg=360/entries.length;
@@ -253,8 +265,14 @@ document.addEventListener('click',async ev=>{
   if(act==='choose'){W.wheelId=id;resetAnimation();}
   else if(act==='scene'){
    const k=b.dataset.topic;
-   if(logged()){W.notice='当前正在浏览 '+SCENES[k].label+' 灵感。可在转盘设置中选择对应场景。';}
-   else {W.guest.topic=k;W.guest.title=SCENES[k].label+'？';localSave();W.notice='已切换场景；现有选项保留，可点击灵感模板替换。';resetAnimation();}
+   if(logged()){
+    let target=W.wheels.find(x=>x.topic===k);
+    if(!target){const title=k==='food'?'今天吃什么？':SCENES[k].label+'？';const created=await api('/wheels',{method:'POST',body:{title,topic:k,theme:W.detail?.theme||'amber',no_repeat:true}});W.wheelId=created.id;W.notice='已创建'+SCENES[k].label+'专属转盘。';}
+    else{W.wheelId=target.id;W.notice='已切换到'+SCENES[k].label+'专属转盘。';}
+   }else {W.guest.topic=k;W.guest.title=k==='food'?'今天吃什么？':SCENES[k].label+'？';localSave();W.notice='已切换场景；现有选项保留，可点击灵感模板替换。';resetAnimation();}
+  }else if(act==='food-search'){
+   W.search=String(b.dataset.query||'').trim();W.sources=(await api('/wheels/sources?q='+encodeURIComponent(W.search))).items||[];
+   W.notice=W.sources.length?'找到 '+W.sources.length+' 件当前公开的相关馆藏。':'暂时没有匹配的公开馆藏，可以手动加入这个食物。';
   }else if(act==='template'){
    const x=SCENES[b.dataset.topic];if(!x)return;
    if(logged()){
@@ -267,7 +285,7 @@ document.addEventListener('click',async ev=>{
     }
     W.notice='已添加 '+added+' 个演示灵感选项。它们不是馆长的真实投稿。';
    }else{
-    W.guest.labels=[...x.samples];W.guest.topic=b.dataset.topic;W.guest.title=x.label+'？';
+    W.guest.labels=[...x.samples];W.guest.sourceIds={};W.guest.topic=b.dataset.topic;W.guest.title=b.dataset.topic==='food'?'今天吃什么？':x.label+'？';
     W.guest.last=null;W.guest.history=[];localSave();W.notice='已装填演示灵感选项。';
    }
    resetAnimation();
@@ -283,7 +301,7 @@ document.addEventListener('click',async ev=>{
    await api('/wheels/'+W.wheelId,{method:'DELETE'});W.wheelId=0;W.notice='已删除转盘';resetAnimation();
   }else if(act==='remove'){
    if(logged())await api('/wheels/'+W.wheelId+'/items/'+id,{method:'DELETE'});
-   else {W.guest.labels.splice(id-1,1);W.guest.last=null;localSave();}
+   else {const removed=W.guest.labels.splice(id-1,1)[0];if(removed&&W.guest.sourceIds)delete W.guest.sourceIds[removed];W.guest.last=null;localSave();}
    resetAnimation();W.notice='已移除该选项';
   }else if(act==='add-pending'){
    if(!W.pending)return;
@@ -291,7 +309,7 @@ document.addEventListener('click',async ev=>{
     if(!W.wheelId)throw Error('请先创建一个私人转盘');
     await api('/wheels/'+W.wheelId+'/items',{method:'POST',
       body:{kind:'exhibit',exhibit_id:W.pending.id}});
-   }else guestAdd(W.pending.title);
+   }else guestAdd(W.pending.title,W.pending.id);
    W.notice='🏛 已加入刚刚发现的馆藏：'+W.pending.title;W.pending=null;resetAnimation();
   }else if(act==='dismiss'){W.pending=null;}
   else if(act==='add-source'){
@@ -299,7 +317,7 @@ document.addEventListener('click',async ev=>{
     if(!W.wheelId)throw Error('请先创建一个私人转盘');
     await api('/wheels/'+W.wheelId+'/items',{method:'POST',body:{kind:'exhibit',exhibit_id:id}});
     W.notice='已经把真实馆藏加入私人转盘！';
-   }else guestAdd(b.dataset.title);
+   }else guestAdd(b.dataset.title,id);
    resetAnimation();
   }else if(act==='look'){
    if(typeof openDetail==='function')await openDetail(id);
