@@ -65,7 +65,7 @@ function showOwner(stageInfo){
  x.source_unavailable?'<p class="wq-footnote">来源不再公开，不能从私密信息衍生新的推荐。</p>':
  renderFound(x,x.number,true,x.visited_exhibit_id))+
  '</article>').join('')+'</div>')+
- '<p class="wq-footnote">匹配依据：公开藏品标题、简介、标签的文本重合，未使用 AI，也不保证事实准确或内容真实相关；“随意逛逛”仅为拓展，不是相关匹配。参观完成为你自行标记，不代表平台核实了实际到访。</p>')+
+ '<p class="wq-footnote">匹配依据：公开藏品标题、简介、标签的文本重合，未使用 AI，也不保证事实准确或内容真实相关；“随意逛逛”仅为拓展，不是相关匹配。参观完成为你自行标记，不代表平台核实了实际到访。</p>'+
  '</section>';
 }
 async function render(stageInfo,cardId){
