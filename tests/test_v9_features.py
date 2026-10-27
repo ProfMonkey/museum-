@@ -1,4 +1,5 @@
 """V10 frontend integration smoke tests."""
+import re
 from test_multiuser import env
 
 def test_v9_shell_and_new_assets_are_served(env):
@@ -10,7 +11,9 @@ def test_v9_shell_and_new_assets_are_served(env):
     assert '/static/culture.js' in html
     assert '/static/virtual-gallery.js' in html
     assert '/static/virtual-gallery-3d.js' in html
-    assert 'WORLD 17' in html
+    assert re.search(r'WONDER ATLAS · WORLD \\d+', html)
+    assert '/static/evolution.js' in html
+    assert '/static/evolution.css' in html
     for path, token in [
         ('/static/culture.js','cnmeme.wiki/api/v1/public/memes'),
         ('/static/culture.js','Hacker News'),
@@ -23,8 +26,8 @@ def test_v9_shell_and_new_assets_are_served(env):
         assert r.status_code==200, path
         assert token in r.text, path
 
-def test_health_version_is_v17(env):
+def test_health_version_matches_current_release(env):
     client=env[0]
     data=client.get('/api/health').json()
     assert data['ok'] is True
-    assert data['version']=='17.0'
+    assert data['version']=='18.0'
