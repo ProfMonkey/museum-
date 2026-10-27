@@ -147,7 +147,7 @@ def mount_living_museum(app, db, require_user, maybe_user, now, fail):
             rows=c.execute("""SELECT l.id,e.id AS exhibit_id,e.domain
                  FROM living_entries l JOIN exhibits e ON e.id=l.exhibit_id
                  WHERE l.withdrawn=0 AND l.curator_id=e.user_id AND """+PUBLIC_SCOPE+"""
-                  AND l.created_at>=datetime('now','-30 days')
+                  AND datetime(l.created_at)>=datetime('now','-30 days')
                  ORDER BY l.id DESC LIMIT 10000""").fetchall()
             domains={}
             for r in rows: domains[r["domain"]]=domains.get(r["domain"],0)+1
