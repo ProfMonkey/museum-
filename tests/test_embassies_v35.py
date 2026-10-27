@@ -240,3 +240,25 @@ def test_v35_nav_version_and_manual_only_policy(env):
         assert f"/static/{file}" in html
         assert guest.get(f"/static/{file}").status_code==200
     assert "WonderEmbassies.render" in guest.get("/static/app.js").text
+
+def test_same_second_private_to_public_still_invalidates_old_joint_approval(env):
+    alice,bob,guest=env
+    a,b,aw,bw,ax,bx,p=setup(alice,bob)
+    eid=invite(alice,p).json()["id"]
+    assert accept(bob,eid).status_code==200
+    assert letter(alice,eid,"第一位馆长来函").status_code==201
+    assert letter(bob,eid,"第二位馆长亲笔回复").status_code==201
+    approve(alice,eid);approve(bob,eid)
+    assert detail(guest,eid).status_code==200
+    assert bob.patch(f"/api/exhibits/{bx}",
+        json=item(title="古老钟楼",visibility="private")).status_code==200
+    assert bob.patch(f"/api/exhibits/{bx}",
+        json=item(title="古老钟楼",visibility="public")).status_code==200
+    assert detail(guest,eid).status_code==404
+    assert detail(alice,eid).json()["available"] is False
+    assert alice.post(f"/api/embassies/{eid}/refresh").status_code==200
+    assert detail(guest,eid).status_code==404
+    assert approve(bob,eid).status_code==200
+    assert detail(guest,eid).status_code==404
+    assert approve(alice,eid).status_code==200
+    assert detail(guest,eid).status_code==200
