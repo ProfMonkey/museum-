@@ -11,7 +11,7 @@ def test_v9_shell_and_new_assets_are_served(env):
     assert '/static/culture.js' in html
     assert '/static/virtual-gallery.js' in html
     assert '/static/virtual-gallery-3d.js' in html
-    assert re.search(r'WONDER ATLAS · WORLD \\d+', html)
+    assert re.search(r'WONDER ATLAS · WORLD \d+', html)
     assert '/static/evolution.js' in html
     assert '/static/evolution.css' in html
     for path, token in [
