@@ -33,6 +33,10 @@ function editPanel(d,model){
  (d.status==='public'?btn('unpublish','暂停公开','class="cv-muted"'):btn('publish','✦ 审核并公开文明','class="cv-primary" '+(d.turns.length<2?'disabled':'')))+
  (d.turns.length?btn('undo','↶ 撤回最后一轮（下架并重审）','class="cv-muted"'):'')+
  btn('delete','删除我的文明','class="cv-danger"')+'</div>'+
+ '<form id="cvEditForm" class="cv-form"><h4>📝 修订文明宣言</h4>'+
+ '<label>文明名称<input name="name" required minlength="3" maxlength="80" value="'+esc(d.name)+'"></label>'+
+ '<label>文明宣言<textarea name="charter" required minlength="20" maxlength="580">'+esc(d.charter)+'</textarea></label>'+
+ '<button class="cv-muted" type="submit">✓ 保存新宣言并回到私密草稿</button></form>'+
  (d.turns.length<8?'<form id="cvTurnForm" class="cv-form"><h4>⚡ 时代抉择 · 第 '+(d.turns.length+1)+' 轮</h4>'+
  '<label>选择一项文明政策<select name="policy">'+model.policies.map(x=>'<option value="'+x.id+'">'+esc(x.label)+' · '+esc(x.caption)+'</option>').join('')+'</select></label>'+
  '<label>原创篇章名称<input name="chapter" minlength="3" maxlength="90" required placeholder="例如：第一座图书馆与饥荒的代价"></label>'+
@@ -131,13 +135,16 @@ async function render(){
 }
 async function refresh(){if(window.S?.view==='civilizations'){const main=document.querySelector('#main');if(main)main.innerHTML=await render();}}
 document.addEventListener('submit',async e=>{
- const f=e.target;if(!['cvCreateForm','cvTurnForm','cvCompareForm'].includes(f.id))return;
+ const f=e.target;if(!['cvCreateForm','cvTurnForm','cvCompareForm','cvEditForm'].includes(f.id))return;
  e.preventDefault();e.stopImmediatePropagation();
  const d=Object.fromEntries(new FormData(f).entries()),submit=f.querySelector('[type=submit],button');
  if(submit)submit.disabled=true;
  try{
   if(f.id==='cvCompareForm'){
    T.compareTurn=Number(d.turn);T.comparePolicy=d.policy;T.compareActive=true;
+  }else if(f.id==='cvEditForm'){
+   await api('/civilizations/'+T.focus,{method:'PUT',body:{name:d.name,charter:d.charter}});
+   T.compareActive=false;T.notice='文明名称与宣言已保存为新私密草稿，需要你重新主动公开。';
   }else if(f.id==='cvCreateForm'){
    const ids=(d.origin||'').split(':').map(Number);
    if(ids.length!==2||ids.some(x=>!Number.isInteger(x)||x<1))throw Error('请先创建并公开属于你自己的 V33 世界');
