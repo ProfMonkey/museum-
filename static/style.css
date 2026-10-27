@@ -68,3 +68,14 @@
 
 .sidebar-find.active{background:#d9b66c18;border-color:#d9b66c80;color:#fff}
 .top-find.active{background:#d9b66c16;border-color:#d9b66c80;color:#f4d79e}
+
+/* V39 — decision actions belong to the exhibit, not a separate universe. */
+.detail-wheel-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center;width:100%;padding:10px 0;border-top:1px solid #dfc08330}
+.detail-wheel-actions>.primary{font-size:12px}
+.detail-wheel-more{position:relative;max-width:100%;flex:1 1 220px}
+.detail-wheel-more>summary{display:inline-flex;gap:7px;align-items:center;padding:10px 12px;color:#f1d4a5;cursor:pointer;list-style:none;border:1px solid #c7a64b6b;border-radius:9px;background:#d6b76911;font-size:12px}
+.detail-wheel-more>summary::-webkit-details-marker{display:none}
+.detail-wheel-options{display:flex;flex-wrap:wrap;gap:6px;padding:11px 0}
+.detail-wheel-options button{font-size:11px!important;padding:8px 10px!important}
+.detail-wheel-more>p{color:#9facbc;font-size:10px;line-height:1.7;margin:6px 0}
+@media(max-width:590px){.detail-wheel-actions>.primary{width:100%;padding:13px}.detail-wheel-more{width:100%}}
