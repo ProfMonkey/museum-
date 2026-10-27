@@ -238,7 +238,7 @@ def test_mark_schema_and_foreign_card_validation(env,monkeypatch):
 def test_assets_previous_routes_and_version(env):
     a,b,g=env
     html=g.get("/").text
-    assert "WORLD 26" in html
+    assert "WONDER ATLAS · WORLD 27" in html
     assert g.get("/api/health").json()["version"]=="26.0"
     for asset in ("quests.css","quests.js"):
         path="/static/"+asset
