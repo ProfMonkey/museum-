@@ -81,10 +81,11 @@ def mount_discovery_missions(app,db,require_user,now,fail):
             ON wonder_adventure_visits(adventure_id,step_number);
         """)
 
-    def live_exhibits(c):
-        # Retrieving a bounded set of actual, public exhibits, also respecting
-        # private fantasy worlds and revocable studio/sandbox publication.
-        return c.execute("""SELECT e.id,e.title,e.description,e.tags,e.category,e.domain
+    def live_exhibits(c,origin_ids=()):
+        # Bounded candidate search, with explicit lookup of older original
+        # source exhibits so early museum artifacts remain discoverable.
+        # Privacy checks are identical for both queries.
+        base="""SELECT e.id,e.title,e.description,e.tags,e.category,e.domain
             FROM exhibits e
             LEFT JOIN fantasy_relics fr ON fr.exhibit_id=e.id
             LEFT JOIN fantasy_worlds fw ON fw.id=fr.world_id
@@ -93,8 +94,17 @@ def mount_discovery_missions(app,db,require_user,now,fail):
             WHERE e.visibility='public'
               AND (fr.id IS NULL OR fw.visibility='public')
               AND (sp.id IS NULL OR sp.visibility='public')
-              AND (sb.id IS NULL OR sb.visibility='public')
-            ORDER BY e.id DESC LIMIT ?""",(CANDIDATE_LIMIT,)).fetchall()
+              AND (sb.id IS NULL OR sb.visibility='public')"""
+        rows=list(c.execute(base+" ORDER BY e.id DESC LIMIT ?",
+                            (CANDIDATE_LIMIT,)).fetchall())
+        seen={row["id"] for row in rows}
+        missing=[eid for eid in dict.fromkeys(origin_ids)
+                 if isinstance(eid,int) and eid>0 and eid not in seen]
+        if missing:
+            placeholders=",".join("?" for _ in missing)
+            rows.extend(c.execute(base+" AND e.id IN ("+placeholders+")",
+                                  missing).fetchall())
+        return rows
 
     def card(row,mode,reason):
         return {"id":row["id"],"title":row["title"],"domain":row["domain"],
@@ -197,12 +207,13 @@ def mount_discovery_missions(app,db,require_user,now,fail):
     def list_quests(card_id:int,user=Depends(require_user)):
         with db() as c:
             owned(c,card_id,user)
-            live=live_exhibits(c)
+            stage_list=stage_rows(c,card_id)
+            live=live_exhibits(c,[s["chosen_exhibit_id"] for s in stage_list])
             visit_rows=c.execute("""SELECT step_number,exhibit_id,visited_at FROM wonder_adventure_visits
                 WHERE adventure_id=?""",(card_id,)).fetchall()
             visits={r["step_number"]:r for r in visit_rows}
             result=[stage_view(c,card_id,row,live,visits)
-                    for row in stage_rows(c,card_id)]
+                    for row in stage_list]
             return {"card_id":card_id,"stages":result,
                     "visited_count":sum(1 for x in result if x["visited"]),
                     "available_stages":sum(1 for x in result if x["ready"] and x["suggestions"]),
@@ -214,7 +225,7 @@ def mount_discovery_missions(app,db,require_user,now,fail):
             c.execute("BEGIN IMMEDIATE")
             owned(c,card_id,user)
             stage=current_stage(c,card_id,stage_number)
-            live=live_exhibits(c)
+            live=live_exhibits(c,[stage["chosen_exhibit_id"]])
             term,origin,_=stage_term(stage,live)
             if term is None:fail(409,"本次抽中的公开馆藏已撤回，无法使用它继续任务")
             allowed={x["id"] for x in picks(term,live,origin)}
