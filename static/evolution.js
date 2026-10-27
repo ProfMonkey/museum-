@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const E={scope:'mine',civilizationId:0,timelineId:0,config:null,civilizations:[],
-    timelines:[],detail:null,notice:'',error:'',showAll:false};
+    timelines:[],detail:null,available:[],notice:'',error:'',showAll:false};
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
   const mine=()=>Boolean(window.S?.user);
   const t=(v)=>Number(v||0);
@@ -19,6 +19,7 @@
       E.timelines=E.civilizationId?(await api('/fantasy/evolution/timelines?civilization_id='+E.civilizationId)).items:[];
       if(!E.timelines.some(x=>x.id===E.timelineId))E.timelineId=E.timelines[0]?.id||0;
       E.detail=E.timelineId?await api('/fantasy/evolution/timelines/'+E.timelineId):null;
+      E.available=(E.detail?.is_owner)?(await api('/fantasy/relations/available?timeline_id='+E.timelineId)).items:[];
     }catch(err){E.error=err.message||'无法读取文明年历';E.detail=null;}
   }
   const control=(kind,label,attrs='')=>'<button type="button" data-evolution="'+kind+'" '+attrs+'>'+label+'</button>';
@@ -47,7 +48,7 @@
   }
   function history(years){
     let list=E.showAll?[...years].reverse():[...years].reverse().slice(0,10);
-    return '<div class="ev-history">'+list.map(row=>'<article class="ev-year"><span class="ev-date">'+String(row.year).padStart(3,'0')+' 年</span><div><strong>'+esc(row.event?.name||'平稳纪年')+'</strong><small>施政：'+esc(row.policy)+'</small><p>'+esc(row.event?.description||'文明沿着馆长选择的方向缓慢演化，没有发生特殊事件。')+'</p></div><b>✧</b></article>').join('')+'</div>'+
+    return '<div class="ev-history">'+list.map(row=>'<article class="ev-year"><span class="ev-date">'+String(row.year).padStart(3,'0')+' 年</span><div><strong>'+esc(row.event?.name||'平稳纪年')+'</strong><small>施政：'+esc(row.policy)+'</small><p>'+esc(row.event?.description||'文明沿着馆长选择的方向缓慢演化，没有发生特殊事件。')+'</p>'+(row.influence?'<small class="ev-influence-mark">🤝 曾使用：'+esc(row.influence)+'（不透露其他文明的私人信息）</small>':'')+'</div><b>✧</b></article>').join('')+'</div>'+
       (years.length>10?control('toggle-all',E.showAll?'收起部分纪年':'查看全部 '+years.length+' 年档案'):'');
   }
   function detailView(){
@@ -58,7 +59,11 @@
       '<span class="ev-pill">'+(d.visibility==='public'?'已授权公开':'仅馆长可见')+'</span></div>'+
       '<div class="ev-year-hero"><span>SIMULATED YEAR</span><strong>'+last.year+'</strong><small>/ 100 虚构年</small><p>每推进一年都会保存独立快照。不同选择可形成不同的文明史。</p></div>'+
       metricCards(last.stats)+'<div class="ev-chart-box"><h4>文明脉搏 · 演化曲线</h4>'+chart(d.years)+'</div>'+
-      (canStep?'<div class="ev-decisions"><h4>决定下一个纪元的发展方向</h4><div class="ev-policy-grid">'+
+      (canStep?'<div class="ev-decisions"><h4>决定下一个纪元的发展方向</h4>'+
+      (E.available.length?'<label class="ev-influence">🤝 选择本年度虚构文明交流（自愿）<select id="ev-relation"><option value="">不使用交流加成</option>'+
+        E.available.map(r=>'<option value="'+r.id+'">'+esc(r.kind)+'：'+esc(r.source_name)+' ⟷ '+esc(r.target_name)+'</option>').join('')+
+        '</select><small>仅本次推进生效，另一位馆长的历史不会改变。撤回授权后无法再次使用。</small></label>':'')+
+      '<div class="ev-policy-grid">'+
         policies().map(p=>control('advance','<strong>'+esc(p.name)+'</strong><small>'+Object.entries(p.effects).map(([k,v])=>esc(statNames[k])+ (v>0?' +':' ')+v).join(' · ')+'</small>', 'data-policy="'+esc(p.name)+'"')).join('')+'</div></div>':
         (owner?'<p class="ev-hint">这一分支已到达100年上限，可以从过去的一个纪年开启新的分支。</p>':''))+
       (owner?'<div class="ev-owner"><button data-evolution="visibility" data-next="'+(d.visibility==='public'?'private':'public')+'">'+(d.visibility==='public'?'撤回公开授权':'公开这条虚构年历')+'</button>'+
@@ -82,10 +87,11 @@
   }
   async function render(){
     await load();
-    return '<div class="ev-root"><section class="ev-hero"><span>WONDER ATLAS · V18 · THE AGE OF CIVILIZATIONS</span><h2>文明不是一段简介。<br><em>让它活过一百年。</em></h2><p>每一年由馆长选择方向：开垦、求知、守护或通商。粮储会枯竭，文化会繁荣，天律会带来代价。所有纪事都是原创虚构。</p><div class="ev-hero-sig" aria-hidden="true">纪</div><small>⏳ 手动推进 · 确定性推演 · 多线历史 · 永久档案</small></section>'+
+    const relations=await WonderRelations.render();
+    return '<div class="ev-root"><section class="ev-hero"><span>WONDER ATLAS · V19 · THE LIVING MULTIVERSE</span><h2>文明不是一段简介。<br><em>让它活过一百年，再与万界相遇。</em></h2><p>每一年由馆长选择方向：开垦、求知、守护或通商。粮储会枯竭，文化会繁荣，天律会带来代价。所有纪事都是原创虚构。</p><div class="ev-hero-sig" aria-hidden="true">纪</div><small>⏳ 手动推进 · 多线历史 · 双方同意的文明交流</small></section>'+
       (E.notice?'<div class="ev-note">'+esc(E.notice)+'</div>':'')+
       (E.error?'<div class="ev-error" role="alert">'+esc(E.error)+'</div>':'')+
-      indexView()+detailView()+'<p class="ev-disclaimer">'+esc(E.config?.notice||'纯虚构演化模拟')+' 不涉及真实人口数据、货币、资产交换或替他人修改世界。</p></div>';
+      indexView()+detailView()+relations+'<p class="ev-disclaimer">'+esc(E.config?.notice||'纯虚构演化模拟')+' 不涉及真实人口数据、货币、资产交换或替他人修改世界。</p></div>';
   }
   async function refresh(){
     if(window.S?.view!=='fantasy')return;
@@ -104,8 +110,8 @@
         case 'select':E.timelineId=t(btn.dataset.id);E.showAll=false;break;
         case 'advance':{
           const result=await api('/fantasy/evolution/timelines/'+id+'/advance',
-            {method:'POST',body:{policy:btn.dataset.policy}});
-          E.notice='第 '+result.year+' 年已归档 · '+(result.event?.name||'文明平稳发展');break;
+            {method:'POST',body:{policy:btn.dataset.policy,...(Number(document.querySelector('#ev-relation')?.value)>0?{relation_id:Number(document.querySelector('#ev-relation').value)}:{})}});
+          E.notice='第 '+result.year+' 年已归档 · '+(result.event?.name||'文明平稳发展')+(result.influence?' · '+result.influence:'');break;
         }
         case 'visibility':{
           const result=await api('/fantasy/evolution/timelines/'+id+'/visibility',

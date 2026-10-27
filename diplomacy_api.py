@@ -240,6 +240,9 @@ def mount_diplomacy(app, db, require_user, maybe_user, now, fail):
             w=_own_world(c,row['world_id'],user)
             if draft.visibility=='public' and w['visibility']!='public':fail(409,'请先开放所属世界')
             c.execute('UPDATE fantasy_civilizations SET visibility=? WHERE id=?',(draft.visibility,civilization_id))
+            if draft.visibility=='private':
+                from relations_api import revoke_civilization
+                revoke_civilization(c,civilization_id,now())
             if draft.visibility=='private' and c.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='fantasy_evolution_timelines'").fetchone():
                 # Withdrawing civilization publicity permanently revokes archive shares.
                 c.execute("UPDATE fantasy_evolution_timelines SET visibility='private' WHERE civilization_id=?",(civilization_id,))
