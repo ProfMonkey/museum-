@@ -70,3 +70,11 @@
 @media(max-width:650px){.ww-two{grid-template-columns:1fr}.ww-dial svg{max-width:310px}.ww-rhs{display:grid;grid-template-columns:1fr}.ww-controls{grid-template-columns:1fr}.ww-hero h1{font-size:37px}}
 @media(max-width:460px){.ww-dial svg{max-width:290px}.ww-scenes button{flex:1;padding:9px}.ww-panel h2{font-size:22px}.ww-history>div{grid-template-columns:44px minmax(0,1fr)}.ww-history small{grid-column:2}}
 @media(prefers-reduced-motion:reduce){.ww-root *{animation-duration:0s!important}}
+
+/* V38 — food discovery shortcuts inside the wheel, not an isolated toy. */
+.ww-food-picks{margin:15px 0;padding:15px;border:1px solid #e7bf8061;border-radius:12px;background:linear-gradient(120deg,#c88e3513,#d97e6310)}
+.ww-food-picks>b{display:block;color:#f1d4a1;font-size:13px;margin-bottom:5px}
+.ww-food-picks>p{color:#aebfce;font-size:11px;line-height:1.8;margin:0 0 10px}
+.ww-food-picks>div{display:flex;flex-wrap:wrap;gap:7px}
+.ww-food-picks button{padding:7px 11px;border-radius:18px;background:#25374a;color:#e7d6b6;font-size:11px}
+.ww-food-picks button:hover{background:#45546a;border-color:#e7c68b}
