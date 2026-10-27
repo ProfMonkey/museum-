@@ -225,22 +225,21 @@ function wheelControls(){
 }
 function options(field,value){
  const opts=field==='theme'?[['amber','琥珀金'],['nebula','星云紫'],['mint','生命绿'],['rose','玫瑰粉']]:
-   [['food','吃什么'],['travel','去哪玩'],['watch','看什么'],['activity','做什么'],['custom','随机万物']];
+   Object.entries(SCENES).map(([key,x])=>[key,x.label]);
  return opts.map(([id,label])=>'<option value="'+id+'" '+(value===id?'selected':'')+'>'+label+'</option>').join('');
 }
 function addControls(){
  const d=current();
  return '<section class="ww-panel"><div class="ww-header-row"><div><span class="ww-kicker">COLLECT FIRST · DRAW LATER</span>'+
- '<h2>✦ 把万物放进转盘</h2><p>可以输入任意有趣的选项，也可以从博物馆真正公开的藏品中添加。</p></div></div>'+
- (d?.topic==='food'?'<div class="ww-food-picks"><b>🍜 快速寻找馆内美食</b><p>只显示目前真正公开的馆藏；找不到时也可以手动加入食物。</p><div>'+['米线','菌子','牛排','烧烤','甜品','水果','茶饮','地方小吃'].map(q=>button('food-search',esc(q),'data-query="'+esc(q)+'"')).join('')+'</div></div>':'')+
+ '<h2>✦ 放进'+esc((SCENES[d?.topic]||SCENES.custom).label)+'转盘</h2><p>① 选择场景 → ② 放入真实公开藏品或自定义选项 → ③ 至少两项，开始抽取。</p></div></div>'+
+ '<div class="ww-food-picks"><b>⌕ '+esc((SCENES[d?.topic]||SCENES.custom).label)+' · 发现相关馆藏</b><p>从本站当前公开的真实藏品中选择；没有找到时，可以手动添加。</p><div>'+((SCENES[d?.topic]||SCENES.custom).search).map(q=>button('scene-search',esc(q),'data-query="'+esc(q)+'"')).join('')+'</div></div>'+
  (W.pending?'<div class="ww-pending"><b>🏛 刚刚在展厅逛到：</b><span>'+esc(W.pending.title)+'</span>'+
  button('add-pending',logged()?'放入当前私人转盘':'加入临时转盘','class="ww-primary"')+
  button('dismiss','取消')+'</div>':'')+
- '<form id="ww-add-manual" class="ww-search"><label>自定义选项<input name="label" maxlength="75" placeholder="米线、菌子火锅、牛排、去徒步……" required></label>'+
+ '<form id="ww-add-manual" class="ww-search"><label>自定义选项<input name="label" maxlength="75" placeholder="例如：米线、读书、郊游、写代码……" required></label>'+
  '<button class="ww-primary" type="submit" '+(logged()&&!W.wheelId?'disabled':'')+'>＋ 加入转盘</button></form>'+
- '<div class="ww-suggestions"><b>⚡ 一键装填灵感模板（演示项，非用户投稿）</b><div>'+Object.entries(SCENES).map(([k,x])=>
- button('template',x.label,'data-topic="'+k+'"')).join('')+'</div></div>'+
- '<form id="ww-search-museum" class="ww-search"><label>🔎 搜索真实公开馆藏<input name="q" value="'+esc(W.search)+'" maxlength="70" placeholder="食物 / 面 / 恐龙 / 动漫 / 星球"></label>'+
+ '<div class="ww-suggestions"><b>⚡ 想不到候选项？用当前场景的示例开始</b><div>'+button('template','✨ 装填 '+esc((SCENES[d?.topic]||SCENES.custom).label)+'示例','data-topic="'+esc(d?.topic||'custom')+'"')+'</div></div>'+
+ '<form id="ww-search-museum" class="ww-search"><label>🔎 搜索真实公开馆藏<input name="q" value="'+esc(W.search)+'" maxlength="70" placeholder="搜索公开馆藏，也可点上方快捷搜索"></label>'+
  '<button type="submit">查找馆藏</button></form>'+
  (W.search?'<div class="ww-source-list">'+(W.sources.length?W.sources.map(x=>
  '<div><span>🏛 '+esc(x.title)+'<small>'+esc(x.domain)+' · '+esc(x.category)+'</small></span>'+
@@ -261,6 +260,7 @@ async function render(){
  await load();return '<div class="ww-root">'+hero()+sceneButtons()+
  (W.notice?'<div class="ww-notice">'+esc(W.notice)+'</div>':'')+
  (W.error?'<div class="ww-error">'+esc(W.error)+'</div>':'')+
+ (W.sourceWarning?'<div class="ww-notice" role="status">'+esc(W.sourceWarning)+'</div>':'')+
  '<div class="ww-layout"><div>'+showSpinner()+wheelControls()+'</div>'+
  '<div>'+addControls()+history()+'</div></div>'+
  '<footer class="ww-small">这是私人随机决策工具，不涉及付费、彩票、赌注或中奖金钱。手动模板不是平台真实馆藏。</footer></div>';
@@ -273,9 +273,9 @@ async function redraw(){
 }
 function queueExhibit(id,title,topic){
  localLoad();
- W.pending={id:Number(id),title:String(title||'这件藏品'),topic:SCENES[topic]?topic:null};
- if(!logged()&&W.pending.topic==='food'){W.guest.topic='food';W.guest.title='今天吃什么？';localSave();}
- W.notice=W.pending.topic==='food'?'已把这道美食带到「今天吃什么」转盘。':'已经找到这件公开藏品，选择下面的转盘后点击加入。';
+ W.pending={id:Number(id),title:String(title||'这件藏品'),topic:SCENES[topic]?topic:'custom',auto:true};
+ if(!logged()&&W.pending.topic!==W.guest.topic)setGuestTopic(W.pending.topic);
+ W.notice='正在把这件原始藏品加入「'+SCENES[W.pending.topic].label+'」转盘。';
 }
 function guestAdd(label,exhibitId){
  label=String(label||'').trim();
