@@ -79,9 +79,9 @@ def test_user_can_create_and_remove_personal_links(env):
 
 def test_system_clues_are_explainable_and_not_auto_saved(env):
     alice,bob,guest=env
-    a=exhibit(alice,"古画中的星河","星河,古画,艺术",category="绘画与书画",domain="艺术")
-    b=exhibit(bob,"另一件星河作品","星河,绘画,艺术",category="绘画与书画",domain="艺术")
-    unrelated=exhibit(bob,"一台机械钟","齿轮,机械",category="科技与发明",domain="技术")
+    a=exhibit(alice,"古画中的星河","星河,古画,艺术",category="绘画与书画",domain="绘画与视觉艺术")
+    b=exhibit(bob,"另一件星河作品","星河,绘画,艺术",category="绘画与书画",domain="绘画与视觉艺术")
+    unrelated=exhibit(bob,"一台机械钟","齿轮,机械",category="科技与发明",domain="工程与发明")
     na=add_exhibit_node(alice,a["id"]).json()["node"]
     nb=add_exhibit_node(alice,b["id"]).json()["node"]
     nu=add_exhibit_node(alice,unrelated["id"]).json()["node"]
