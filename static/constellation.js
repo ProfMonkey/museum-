@@ -65,12 +65,13 @@ function selectedPanel(){
  (x.visibility==='private'?'<span>仅自己可见</span>':'')+'</div>'+
  (x.tags?.length?'<div class="ct-tags">'+x.tags.map(t=>'<span># '+esc(t)+'</span>').join('')+'</div>':'')+
  (x.kind==='exhibit'&&x.exhibit_id?btn('open-exhibit','打开原始馆藏 ↗','data-id="'+x.exhibit_id+'" class="ct-secondary"'):'')+(x.source_unavailable?'<p class="ct-muted">原始藏品已删除、设为私密或撤回公开；你可以删除这颗失效的星点，但系统不会保留原始标题。</p>':'')+
+ (x.source_unavailable?'<div class="ct-divider"></div><p class="ct-muted">原始藏品已不可见，不能再从它建立新关联。你仍可删除这个占位星点和旧连线。</p>':
  '<div class="ct-divider"></div><h3>把它连接到另一颗星</h3>'+
- (!targets.length?'<p class="ct-muted">再加入至少一颗星，才能建立连线。</p>':
- '<form id="ctEdgeForm"><label>连接到<select name="target_id" required>'+targets.map(t=>'<option value="'+t.id+'">'+esc(t.title)+'</option>').join('')+'</select></label>'+
+ (!targets.filter(t=>!t.source_unavailable).length?'<p class="ct-muted">再加入至少一颗可用星点，才能建立连线。</p>':
+ '<form id="ctEdgeForm"><label>连接到<select name="target_id" required>'+targets.filter(t=>!t.source_unavailable).map(t=>'<option value="'+t.id+'">'+esc(t.title)+'</option>').join('')+'</select></label>'+
  '<label>关联类型<select name="kind">'+edgeKinds.map(([k,v])=>'<option value="'+k+'">'+v+'</option>').join('')+'</select></label>'+
  '<label>为什么有关联？<textarea name="note" maxlength="280" minlength="8" required placeholder="写下你自己的理由，而不只是它们看起来相似。"></textarea></label>'+
- '<button class="ct-primary" type="submit">✧ 保存个人连线</button></form>')+
+ '<button class="ct-primary" type="submit">✧ 保存个人连线</button></form>'))+
  '<div class="ct-divider"></div><h3>与这颗星相连的路径 <span>'+related.length+'</span></h3>'+
  (related.length?'<div class="ct-edge-list">'+related.map(e=>{
   const other=nodes.find(n=>n.id===(e.from_node_id===x.id?e.to_node_id:e.from_node_id));
