@@ -15,8 +15,8 @@
 - **🔐 原始来源与版本保护**：母世界撤回/更改修订、任一原始藏品变私密、所属工作室/玄幻世界/沙盒不再公开，都会即时隐藏依赖它的公共文明及旧历史，避免借题泄漏私密作品。
 - **🌌 黑金文明长卷**：独立响应式桌面/手机导航「🏛️ 万物文明演化实验室」，公开分享 `?civilization=<ID>`。
 
-实现：`civilization_engine.py`、`civilization_lab.py`、`static/civilizations.{js,css}`、`tests/test_civilizations_v34.py`。
-详见 `docs/V34.0_文明演化实验室.md`。
+实现：`civilization_engine.py`、`civilization_lab.py`、`static/civilizations.{js,css}`、`tests/test_civilization_v34.py`。
+详见 `docs/V34.0_万物文明演化实验室.md`。
 
 **节省 GitHub Actions 配额**：自动 push/PR 运行保持关闭，只能由仓库所有者手动触发。V34 不使用 GitHub Actions，也不假装没有运行过的 Python 测试已通过。
 
