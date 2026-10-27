@@ -30,7 +30,7 @@ def main() -> int:
 
     failed = False
     if not args.js_only:
-        tests = ["tests/test_mysteries_v32.py", "tests/test_collision_v33.py", "tests/test_civilizations_v34.py"] if args.quick else ["tests"]
+        tests = ["tests/test_mysteries_v32.py", "tests/test_collision_v33.py", "tests/test_civilization_v34.py"] if args.quick else ["tests"]
         failed |= run([sys.executable, "-m", "pytest", "-q", *tests]) != 0
     node = shutil.which("node")
     if node:
