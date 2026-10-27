@@ -276,7 +276,7 @@ def homepage():
 
 @app.get("/api/health")
 def health():
-    return {"ok": True, "version": "17.0", "database": "sqlite"}
+    return {"ok": True, "version": app.version, "database": "sqlite"}
 
 
 @app.get("/api/taxonomy")
