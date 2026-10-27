@@ -254,7 +254,7 @@ def test_source_search_matches_food_category_domain_and_tags(env):
     by_tag=guest.get("/api/wheels/sources?q=云南米线")
     assert by_tag.status_code==200
     assert [x["id"] for x in by_tag.json()["items"]]==[tagged]
-    by_category_id=museum(bob,"家常食谱",category="美食",domain="其他",tags="家常")
-    found=guest.get("/api/wheels/sources?q=美食")
+    by_category_id=museum(bob,"家常食谱",category="饮食文化",domain="食物与饮食",tags="家常")
+    found=guest.get("/api/wheels/sources?q=饮食文化")
     assert found.status_code==200
     assert by_category_id in [x["id"] for x in found.json()["items"]]
