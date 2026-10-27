@@ -130,7 +130,7 @@ def test_static_expedition_panel_is_available(env):
     page=client.get('/')
     assert '/static/expeditions.js' in page.text
     assert '/static/expeditions.css' in page.text
-    assert 'WORLD 15' in page.text
+    assert 'WONDER ATLAS · WORLD' in page.text
     assert 'WonderExpeditions?.renderPanel()' in client.get('/static/world-museums.js').text
     assert 'api(\'/expeditions/catalog\')' in client.get('/static/expeditions.js').text
 
