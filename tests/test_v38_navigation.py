@@ -14,7 +14,7 @@ def test_sidebar_prioritizes_core_features_and_collapses_specialist_groups():
     assert 'class="nav-cap">探索发现</div>' in html
     assert 'class="nav-cap">创作与游玩</div>' in html
     assert html.count('class="nav-group"') == 3
-    assert 'data-view="wheels"><span>🍜</span> 今天吃什么</button>' in html
+    assert 'data-view="wheels"><span>🎡</span> 万物转盘</button>' in html
     assert '本机预览 · 暂未公开发布' in html
 
 
