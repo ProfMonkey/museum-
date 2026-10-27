@@ -191,6 +191,7 @@ async function redraw(){
  main.innerHTML=await render();
 }
 function queueExhibit(id,title,topic){
+ localLoad();
  W.pending={id:Number(id),title:String(title||'这件藏品'),topic:SCENES[topic]?topic:null};
  if(W.pending.topic==='food'){W.guest.topic='food';W.guest.title='今天吃什么？';localSave();}
  W.notice=W.pending.topic==='food'?'已把这道美食带到「今天吃什么」转盘。':'已经找到这件公开藏品，选择下面的转盘后点击加入。';
