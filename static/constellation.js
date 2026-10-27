@@ -130,7 +130,7 @@ document.addEventListener('click',async e=>{
   if(act==='idea-focus'){document.querySelector('#ctIdeaForm [name=title]')?.focus();return}
   if(act==='select-node'){C.selected=id;await refresh();return}
   if(act==='import'){
-   b.disabled=true;const r=await api('/constellation/import',{method:'POST',body:{}});
+   b.disabled=true;const r=await api('/constellation/import',{method:'POST'});
    toast('已导入 '+r.added+' 颗星点'+(r.skipped?'，跳过 '+r.skipped+' 件':''));
    await load();await refresh();return;
   }
