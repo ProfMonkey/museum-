@@ -64,7 +64,7 @@ function selectedPanel(){
  '<div class="ct-meta"><span>'+esc(x.category||'个人想法')+'</span><span>'+esc(x.origin_label)+'</span>'+
  (x.visibility==='private'?'<span>仅自己可见</span>':'')+'</div>'+
  (x.tags?.length?'<div class="ct-tags">'+x.tags.map(t=>'<span># '+esc(t)+'</span>').join('')+'</div>':'')+
- (x.kind==='exhibit'?btn('open-exhibit','打开原始馆藏 ↗','data-id="'+x.exhibit_id+'" class="ct-secondary"'):'')+
+ (x.kind==='exhibit'&&x.exhibit_id?btn('open-exhibit','打开原始馆藏 ↗','data-id="'+x.exhibit_id+'" class="ct-secondary"'):'')+(x.source_unavailable?'<p class="ct-muted">原始藏品已删除、设为私密或撤回公开；你可以删除这颗失效的星点，但系统不会保留原始标题。</p>':'')+
  '<div class="ct-divider"></div><h3>把它连接到另一颗星</h3>'+
  (!targets.length?'<p class="ct-muted">再加入至少一颗星，才能建立连线。</p>':
  '<form id="ctEdgeForm"><label>连接到<select name="target_id" required>'+targets.map(t=>'<option value="'+t.id+'">'+esc(t.title)+'</option>').join('')+'</select></label>'+
