@@ -30,7 +30,7 @@ function head(){
 }
 function tabs(){
  return '<div class="pl-tabs" role="tablist" aria-label="万物互动展馆">'+
-  [['experiments','⚙ 可玩的万物实验'],['relays','🔗 万物接力计划']].map(([key,text])=>
+  [['experiments','⚙ 可玩的万物实验'],['relays','🔗 万物接力计划'],['studio','✦ 万物造物工坊']].map(([key,text])=>
   click('tab',text,'data-tab="'+key+'" role="tab" aria-selected="'+(P.tab===key)+'" class="'+(P.tab===key?'active':'')+'"')).join('')+'</div>';
 }
 const labFields={
@@ -114,7 +114,7 @@ async function render(){
  await load();
  return '<div class="pl-root">'+head()+tabs()+(P.notice?'<div class="pl-notice">'+esc(P.notice)+'</div>':'')+
  (P.error?'<div class="pl-error">'+esc(P.error)+'</div>':'')+
- (P.tab==='experiments'?form():relaysView())+
+ (P.tab==='experiments'?form():P.tab==='relays'?relaysView():await WonderStudio.render())+
  '<footer class="pl-warning">现实藏品不等于已经证实；模型推演不等于科学测量。公开与私人内容保持隔离。</footer></div>';
 }
 function afterMount(){
@@ -193,7 +193,7 @@ document.addEventListener('click',async ev=>{
  ev.preventDefault();ev.stopImmediatePropagation();
  const k=b.dataset.play,id=Number(b.dataset.id||0);
  try{
-  if(k==='tab'){P.tab=b.dataset.tab;P.notice='';await refresh();}
+  if(k==='tab'){window.WonderStudio?.stop();P.tab=b.dataset.tab;P.notice='';await refresh();}
   else if(k==='model'){
    P.kind=b.dataset.kind;P.params={kind:P.kind,...defaults[P.kind]};P.result=null;P.notice='';await refresh();
   }else if(k==='record'){
@@ -232,5 +232,5 @@ document.addEventListener('submit',async ev=>{
   await refresh();
  }catch(err){if(typeof toast==='function')toast(err.message||'操作失败');}
 },true);
-window.WonderPlay={render,afterMount,stop(){P.drawToken++;},startFromExhibit(id,title){P.tab='relays';P.selected=Number(id);P.query=String(title||'');P.relayId=0;P.notice='已选中该公开藏品，可以从此创建接力路线。';}};
+window.WonderPlay={render,afterMount,stop(){P.drawToken++;window.WonderStudio?.stop();},startFromExhibit(id,title){P.tab='relays';P.selected=Number(id);P.query=String(title||'');P.relayId=0;P.notice='已选中该公开藏品，可以从此创建接力路线。';}};
 })();

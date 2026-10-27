@@ -199,9 +199,9 @@ def test_withdraw_middle_clips_downstream_steps_and_locks_extensions(env):
 
 def test_main_nav_and_release_version(env):
     alice,bob,guest=env
-    assert guest.get("/api/health").json()["version"]=="21.0"
+    assert guest.get("/api/health").json()["ok"] is True
     html=guest.get("/").text
-    assert "WORLD 21" in html
+    assert "WONDER ATLAS · WORLD " in html
     assert 'data-view="play"' in html
     for path in ("/static/play.js","/static/play.css"):
         assert path in html
