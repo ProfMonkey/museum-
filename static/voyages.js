@@ -24,8 +24,22 @@ function pathHtml(v){
 async function render(graph){
  if(!window.S?.user)return '';
  const nodes=safeNodes(graph);
- if(!nodes.some(x=>x.id===R.start))R.start=nodes[0]?.id||0;
- if(!nodes.some(x=>x.id===R.end))R.end=nodes[nodes.length-1]?.id||0;
+ const startLive=nodes.some(x=>x.id===R.start),endLive=nodes.some(x=>x.id===R.end);
+ // Never reuse an old preview caption after an exhibit becomes inaccessible.
+ if(R.preview){
+  if(!startLive||!endLive){
+   R.preview={connected:false,path:[],legs:[],reason:'原始星点已不可见，请重新选择起点和终点'};
+  }else{
+   try{
+    R.preview=await api('/constellation/voyages/preview',{method:'POST',
+     body:{start_node_id:R.start,end_node_id:R.end}});
+   }catch(_){
+    R.preview={connected:false,path:[],legs:[],reason:'当前预览不可用，请重新检查连线'};
+   }
+  }
+ }
+ if(!startLive)R.start=nodes[0]?.id||0;
+ if(!endLive)R.end=nodes[nodes.length-1]?.id||0;
  let list={items:[],max_routes:20};
  try{list=await api('/constellation/voyages');R.error='';}
  catch(e){R.error=e.message||'私人航线加载失败';}
