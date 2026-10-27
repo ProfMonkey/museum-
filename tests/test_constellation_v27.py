@@ -218,3 +218,25 @@ def test_assets_and_version_are_integrated(env):
         assert f"/static/{asset}" in html
         assert guest.get(f"/static/{asset}").status_code==200
     assert graph(alice).status_code==200
+
+
+
+def test_personal_idea_editing_never_changes_original_exhibit(env):
+    alice,bob,guest=env
+    idea=add_idea(alice,"旧想法","第一版笔记").json()["node"]
+    edited=alice.patch(f"/api/constellation/nodes/{idea['id']}",json={
+        "title":"更新后的想法","note":"经过思考，我想把这个问题重新表述。"})
+    assert edited.status_code==200,edited.text
+    assert edited.json()["node"]["title"]=="更新后的想法"
+    assert edited.json()["node"]["note"]=="经过思考，我想把这个问题重新表述。"
+    assert bob.patch(f"/api/constellation/nodes/{idea['id']}",json={
+        "title":"试图修改别人节点"}).status_code==404
+    original=exhibit(bob,"不可在星图中改名的藏品")
+    node=add_exhibit_node(alice,original["id"]).json()["node"]
+    assert alice.patch(f"/api/constellation/nodes/{node['id']}",json={
+        "title":"伪造的新展品名称"}).status_code==400
+    note=alice.patch(f"/api/constellation/nodes/{node['id']}",json={
+        "note":"我个人认为它可以和别的展品对照。"})
+    assert note.status_code==200,note.text
+    assert note.json()["node"]["title"]=="不可在星图中改名的藏品"
+    assert note.json()["node"]["note"]=="我个人认为它可以和别的展品对照。"
