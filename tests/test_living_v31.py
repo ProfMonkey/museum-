@@ -81,7 +81,7 @@ def test_watch_starts_at_latest_then_counts_only_new_entries(env):
     record(alice,x,headline="第一次公开观察")
     r=bob.post(f"/api/living/exhibits/{x}/watch")
     assert r.status_code==200,r.text
-    assert "今后" in r.json()["notice"]
+    assert "以后" in r.json()["notice"]
     assert watches(bob).json()["items"][0]["unread"]==0
     assert bob.post(f"/api/living/exhibits/{x}/watch").status_code==200
     record(alice,x,headline="第二次公开观察")
