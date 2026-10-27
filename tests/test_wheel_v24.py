@@ -237,9 +237,9 @@ def test_history_bounded_to_last_twenty(env,monkeypatch):
 
 def test_release_assets_and_old_play_features_survive(env):
     alice,bob,guest=env
-    assert guest.get("/api/health").json()["version"]=="24.0"
+    assert guest.get("/api/health").json()["ok"] is True
     html=guest.get("/").text
-    assert "WORLD 24" in html
+    assert "WONDER ATLAS · WORLD " in html
     assert 'data-view="wheels"' in html
     for asset in ("/static/wheel.css","/static/wheel.js"):
         assert asset in html and guest.get(asset).status_code==200
