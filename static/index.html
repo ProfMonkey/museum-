@@ -45,53 +45,75 @@
 <body>
 <div class="app-shell">
  <aside class="sidebar">
-  <button class="brand" data-action="navigate" data-view="discover" aria-label="回到探索大厅"><span class="brandmark">✳</span><span><strong>万物博物馆</strong><small>WONDER ATLAS · WORLD 37</small></span></button>
-  <div class="nav-cap">探索世界 <span>01 / 16</span></div>
-  <nav class="nav" aria-label="主导航">
+  <button class="brand" data-action="navigate" data-view="discover" aria-label="回到发现广场"><span class="brandmark">✳</span><span><strong>万物博物馆</strong><small>WONDER ATLAS · WORLD 38</small></span></button>
+  <button class="sidebar-find" data-action="navigate" data-view="catalog"><span class="sidebar-find-icon">⌕</span><span><strong>找功能</strong><small>搜入口，不再迷路</small></span><kbd>/</kbd></button>
+  <div class="nav-cap">核心功能</div>
+  <nav class="nav" aria-label="核心功能">
    <button class="active" data-action="navigate" data-view="discover"><span>⌁</span> 发现广场</button>
    <button data-action="navigate" data-view="world-museums"><span>♜</span> 世界名馆</button>
+   <button data-action="navigate" data-view="wheels"><span>🍜</span> 今天吃什么</button>
+   <button data-action="navigate" data-view="saved"><span>♡</span> 心动收藏</button>
+   <button data-action="navigate" data-view="museum"><span>▦</span> 我的博物馆</button>
+  </nav>
+  <div class="nav-cap">探索发现</div>
+  <nav class="nav" aria-label="探索发现">
    <button data-action="navigate" data-view="cosmos"><span>⏳</span> 万物时光</button>
    <button data-action="navigate" data-view="wonder-radar"><span>✧</span> 万物雷达</button>
    <button data-action="navigate" data-view="culture"><span>♫</span> 当代新奇</button>
-   <button data-action="navigate" data-view="fantasy"><span>✵</span> 玄幻异界</button>
-   <button data-action="navigate" data-view="lab"><span>✶</span> 万物实验室</button>
-   <button data-action="navigate" data-view="play"><span>⚙</span> 万物皆可玩</button>
-   <button data-action="navigate" data-view="wheels"><span>🎡</span> 万物转盘</button>
-   <button data-action="navigate" data-view="adventure"><span>✨</span> 万物命运接力</button>
-   <button data-action="navigate" data-view="virtual-gallery"><span>▧</span> 展厅工坊</button>
-   <button data-action="navigate" data-view="journey"><span>✧</span> 跨界探索</button>
-   <button data-action="navigate" data-view="saved"><span>♡</span> 心动收藏</button>
-   <button data-action="navigate" data-view="museum"><span>▦</span> 我的博物馆</button>
+   <button data-action="navigate" data-view="journey"><span>↝</span> 随机奇遇</button>
    <button data-action="navigate" data-view="constellation"><span>✧</span> 万物星图</button>
-   <button data-action="navigate" data-view="parallel"><span>🌌</span> 万物平行宇宙</button>
-   <button data-action="navigate" data-view="coexhibitions"><span>🏛</span> 万物联合展厅</button>
-   <button data-action="navigate" data-view="living"><span>🌱</span> 万物活体博物馆</button>
-   <button data-action="navigate" data-view="mysteries"><span>🗝</span> 万物谜案馆</button>
-   <button data-action="navigate" data-view="collision"><span>⚗️</span> 万物碰撞机</button>
-   <button data-action="navigate" data-view="civilizations"><span>🏛️</span> 万物文明演化实验室</button>
-   <button data-action="navigate" data-view="embassies"><span>🤝</span> 万界文明大使馆</button>
-   <button data-action="navigate" data-view="heritage"><span>🎁</span> 万界遗产交换站</button>
-   <button data-action="navigate" data-view="archaeology"><span>⛏</span> 万物文明考古局</button>
-   <button data-action="navigate" data-view="memories"><span>♫</span> 回忆剧场</button>
   </nav>
-  <div class="nav-cap space-top">馆务与互动</div>
-  <nav class="nav"><button data-action="navigate" data-view="insights"><span>▥</span> 功能热度</button><button data-action="navigate" data-view="notifications"><span>✉</span> 通知 <em id="navUnread"></em></button></nav>
+  <div class="nav-cap">创作与游玩</div>
+  <nav class="nav" aria-label="创作与游玩">
+   <button data-action="navigate" data-view="virtual-gallery"><span>▧</span> 展厅工坊</button>
+   <button data-action="navigate" data-view="lab"><span>✶</span> 万物实验室</button>
+   <button data-action="navigate" data-view="play"><span>⚙</span> 互动玩法</button>
+   <button data-action="navigate" data-view="adventure"><span>✨</span> 命运接力</button>
+  </nav>
+  <details class="nav-group">
+   <summary>专题世界与故事 <span>6 项</span></summary>
+   <nav class="nav" aria-label="专题世界与故事">
+    <button data-action="navigate" data-view="fantasy"><span>✵</span> 玄幻异界</button>
+    <button data-action="navigate" data-view="parallel"><span>🌌</span> 平行宇宙</button>
+    <button data-action="navigate" data-view="coexhibitions"><span>🏛</span> 联合展厅</button>
+    <button data-action="navigate" data-view="living"><span>🌱</span> 活体博物馆</button>
+    <button data-action="navigate" data-view="mysteries"><span>🗝</span> 谜案馆</button>
+    <button data-action="navigate" data-view="collision"><span>⚗</span> 万物碰撞机</button>
+   </nav>
+  </details>
+  <details class="nav-group">
+   <summary>文明与合作 <span>4 项</span></summary>
+   <nav class="nav" aria-label="文明与合作">
+    <button data-action="navigate" data-view="civilizations"><span>🏛</span> 文明演化</button>
+    <button data-action="navigate" data-view="embassies"><span>🤝</span> 文明大使馆</button>
+    <button data-action="navigate" data-view="heritage"><span>🎁</span> 遗产交换站</button>
+    <button data-action="navigate" data-view="archaeology"><span>⛏</span> 文明考古局</button>
+   </nav>
+  </details>
+  <details class="nav-group">
+   <summary>个人与系统 <span>3 项</span></summary>
+   <nav class="nav" aria-label="个人与系统">
+    <button data-action="navigate" data-view="memories"><span>♫</span> 回忆剧场</button>
+    <button data-action="navigate" data-view="insights"><span>▥</span> 功能热度</button>
+    <button data-action="navigate" data-view="notifications"><span>✉</span> 通知 <em id="navUnread"></em></button>
+   </nav>
+  </details>
   <div class="side-spacer"></div>
-  <div class="sidebar-box"><div>✦ <span>THE OPEN COLLECTION</span></div><h3>宇宙很大，<br>值得收藏的更多。</h3><p>不只存储信息，更分享一次真实的发现。</p></div>
   <div class="side-user" id="sideUser">未登录 · 游客漫游中</div>
  </aside>
  <div class="content-shell">
   <header class="topbar">
-   <div class="top-left"><button class="mobile-logo" data-action="navigate" data-view="discover">✳</button><div class="breadcrumbs"><span>WONDER ATLAS</span><b id="pageCrumb">发现广场</b></div><span class="live-dot">ONLINE · 共享数据库</span></div>
-   <div class="top-right"><button id="loginTop" class="top-login" data-action="login">登录 / 注册</button><button class="cta" data-action="new">＋ 发布新发现</button></div>
+   <div class="top-left"><button class="mobile-logo" data-action="navigate" data-view="discover">✳</button><div class="breadcrumbs"><span>WONDER ATLAS</span><b id="pageCrumb">发现广场</b></div><span class="live-dot">本机预览 · 暂未公开发布</span></div>
+   <div class="top-right"><button class="top-find" data-action="navigate" data-view="catalog">⌕ 找功能</button><button id="loginTop" class="top-login" data-action="login">登录 / 注册</button><button class="cta" data-action="new">＋ 发布新发现</button></div>
   </header>
   <main id="main" tabindex="-1"><div class="loading">正在连接万物博物馆…</div></main>
-  <footer class="footer"><span>✳ 万物博物馆 · WONDER ATLAS</span><span>一个由发现与好奇心建成的世界 · V37.0</span></footer>
+  <footer class="footer"><span>✳ 万物博物馆 · WONDER ATLAS</span><span>一个由发现与好奇心建成的世界 · V38.0</span></footer>
  </div>
 </div>
 <div id="modal" class="modal-layer hidden" aria-live="polite"></div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script src="/static/taxonomy.js" defer></script>
+<script src="/static/feature-map.js" defer></script>
 <script src="/static/app.js" defer></script>
 <script src="/static/connections.js" defer></script>
 <script src="/static/cosmos.js" defer></script>
