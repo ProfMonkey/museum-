@@ -62,3 +62,6 @@
 @media(max-width:1100px){.feature-map-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:800px){.top-find{padding:8px 9px;font-size:11px}.feature-map-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.feature-map-card{padding:13px;gap:10px}.feature-map-icon{flex-basis:34px;width:34px;height:34px}}
 @media(max-width:590px){.feature-map-grid{grid-template-columns:1fr}.feature-map-hero{padding:23px}.feature-map-card{min-height:0}.feature-map-search{margin:14px 0 20px}.feature-map-search small{display:none}}
+
+@media(max-width:700px){.mobile-nav{justify-content:space-around}.mobile-nav button{flex:1 1 0;min-width:0}.mobile-nav button span{font-size:19px}}
+@media(max-width:590px){.top-find{display:none}}
