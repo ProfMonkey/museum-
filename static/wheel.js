@@ -89,7 +89,7 @@ async function verifyGuestSources(){
  }
  if(hidden||revised.join('\n')!==W.guest.labels.join('\n')){
   W.guest.labels=revised;W.guest.sourceIds=newIds;W.guest.last=null;
-  W.guest.history=[];if(W.result?.exhibit_id&&!known.has(W.result.exhibit_id))W.result=null;W.sourceWarning=hidden?'有 '+hidden+' 件原始馆藏已撤回或不再公开，已移除其缓存标题及抽取记录。':'已同步最新的公开馆藏名称。';
+  W.guest.history=[];if(W.result?.exhibit_id&&!known.has(W.result.exhibit_id))W.result=null;if(hidden)W.notice='相关原始馆藏已经撤回，旧选择与结果已安全隐藏。';W.sourceWarning=hidden?'有 '+hidden+' 件原始馆藏已撤回或不再公开，已移除其缓存标题及抽取记录。':'已同步最新的公开馆藏名称。';
   localSave();
  }
 }
