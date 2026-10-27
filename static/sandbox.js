@@ -85,14 +85,14 @@ function circuitStats(d){
 }
 function circuitControls(config,inEditor=false){
  const base=inEditor?'sb-edit-circuit':'sb-preview-circuit';
- return '<form id="'+base+'" class="sb-controls"><div class="sb-inputs"><label>连接方式<select name="mode">'+
+ return (inEditor?'<div class="sb-controls">':'<form id="'+base+'" class="sb-controls">')+'<div class="sb-inputs"><label>连接方式<select name="mode">'+
  ['series','parallel'].map(k=>'<option value="'+k+'" '+(config.mode===k?'selected':'')+'>'+(k==='series'?'串联':'并联')+'</option>').join('')+'</select></label>'+
  '<label>电源电压（0.1–24V）<input name="voltage" type="number" min=".1" max="24" step=".1" value="'+config.voltage+'" required></label>'+
  config.resistors.map((v,i)=>'<label>R'+(i+1)+' 电阻（1–1000Ω）<input name="r'+i+'" type="number" step=".1" min="1" max="1000" value="'+v+'" required></label>').join('')+
  '</div><div class="sb-actions">'+(inEditor?
  btn('add-r','＋ 电阻块',''+(config.resistors.length>=4?'disabled':''))+
  btn('remove-r','− 移除一个',''+(config.resistors.length<=2?'disabled':''))+'<span class="sb-muted">修改并保存后才会影响作品。</span>':
- '<button class="sb-primary" type="submit">⚡ 运行模型</button>')+'</div></form>';
+ '<button class="sb-primary" type="submit">⚡ 运行模型</button>')+'</div>'+(inEditor?'</div>':'</form>');
 }
 function circuitPlay(d){
  return '<div class="sb-sub"><span class="sb-kicker">OHM’S LAW · IDEAL DC CIRCUIT</span>'+
