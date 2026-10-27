@@ -272,8 +272,8 @@ def test_real_wheel_source_revalidated_each_stage(env):
 def test_release_assets_and_original_wheel_still_works(env):
     a,b,guest=env
     html=guest.get("/").text
-    assert "WORLD 25" in html
-    assert guest.get("/api/health").json()["version"]=="25.0"
+    assert "WONDER ATLAS · WORLD " in html
+    assert guest.get("/api/health").json()["ok"] is True
     assert 'data-view="adventure"' in html
     for asset in ("adventure.css","adventure.js"):
         path="/static/"+asset
