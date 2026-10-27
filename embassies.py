@@ -100,6 +100,17 @@ def mount_embassies(app, db, require_user, maybe_user, now, fail):
           created_at TEXT NOT NULL
         );
         CREATE INDEX IF NOT EXISTS ix_embassy_letters ON embassy_letters(embassy_id,id);
+        CREATE TABLE IF NOT EXISTS embassy_source_epochs(
+          civ_id INTEGER PRIMARY KEY REFERENCES civ_civilizations(id) ON DELETE CASCADE,
+          epoch INTEGER NOT NULL DEFAULT 0
+        );
+        CREATE TRIGGER IF NOT EXISTS embassy_v34_changed
+          AFTER UPDATE ON civ_civilizations
+          BEGIN
+            INSERT INTO embassy_source_epochs(civ_id,epoch)
+            VALUES(NEW.id,1)
+            ON CONFLICT(civ_id) DO UPDATE SET epoch=epoch+1;
+          END;
         """)
 
     def src(c, eid):
@@ -136,7 +147,10 @@ def mount_embassies(app, db, require_user, maybe_user, now, fail):
                 if x is None:
                     return None
                 foreign.append([x["id"],x["title"]])
-        fingerprint = {"civ":[r["id"],r["name"],r["charter"],r["world_revision"]],
+        epoch = c.execute("""SELECT epoch FROM embassy_source_epochs WHERE civ_id=?""",
+                          (cid,)).fetchone()
+        fingerprint = {"civ":[r["id"],r["name"],r["charter"],r["world_revision"],
+                               epoch["epoch"] if epoch else 0],
             "world":[w["id"],w["revision"],w["law"],w["title"]],
             "left":[left["id"],left["title"]],
             "right":[right["id"],right["title"]],
