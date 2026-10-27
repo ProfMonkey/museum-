@@ -208,9 +208,10 @@ def mount_discovery_missions(app,db,require_user,now,fail):
         with db() as c:
             owned(c,card_id,user)
             stage_list=stage_rows(c,card_id)
-            live=live_exhibits(c,[s["chosen_exhibit_id"] for s in stage_list])
             visit_rows=c.execute("""SELECT step_number,exhibit_id,visited_at FROM wonder_adventure_visits
                 WHERE adventure_id=?""",(card_id,)).fetchall()
+            live=live_exhibits(c,[s["chosen_exhibit_id"] for s in stage_list]+
+                                  [r["exhibit_id"] for r in visit_rows])
             visits={r["step_number"]:r for r in visit_rows}
             result=[stage_view(c,card_id,row,live,visits)
                     for row in stage_list]
