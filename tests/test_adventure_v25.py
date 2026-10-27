@@ -218,8 +218,9 @@ def test_mutations_are_owner_only_and_guest_read_share_only(env):
     assert a.get(f"/api/adventures/{cid}").status_code==200
 
 
-def test_html_share_card_escapes_user_authored_markup(env):
+def test_html_share_card_escapes_user_authored_markup(env,monkeypatch):
     a,b,guest=env
+    monkeypatch.setattr(wheel_api.secrets,"randbelow",lambda n:0)
     m=make_wheel(a,"甜品选择",choices=("<img src=x onerror=alert(1)>","米线"))
     n=make_wheel(a,"今天学习","activity")
     cid=new_card(a,[m,n],title="<script>alert(1)</script>好奇旅行")
