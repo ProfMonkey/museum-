@@ -455,3 +455,7 @@ def mount_embassies(app, db, require_user, maybe_user, now, fail):
                  a_vote=0,b_vote=0,published_at=NULL,updated_at=? WHERE id=?""",
                  (now(),embassy_id))
             return {"ok":True,"state":"closed"}
+
+    # V36 shares the EXACT same visibility/consent predicate instead of
+    # independently recreating V35's origin version fingerprints.
+    app.state.embassy_public_validator = can_publish

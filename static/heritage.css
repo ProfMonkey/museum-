@@ -1,0 +1,70 @@
+/* V36 · Heritage exchange: restrained black jade, gold, twin-archive layout. */
+.hg-root{max-width:1460px;margin:0 auto 38px;color:#e8e9e4}
+.hg-eyebrow{font-size:10px;font-weight:800;letter-spacing:.17em;color:#e3c28c;line-height:1.8}
+.hg-hero{position:relative;isolation:isolate;overflow:hidden;border:1px solid #e1bd835f;border-radius:24px;padding:clamp(27px,5vw,53px);min-height:285px;margin-bottom:18px;background:radial-gradient(ellipse at 83% 20%,#99704745,transparent 37%),radial-gradient(ellipse at 11% 96%,#31727345,transparent 49%),linear-gradient(125deg,#0c2733,#132036)}
+.hg-hero h1{font:500 clamp(30px,4.8vw,56px)/1.3 Georgia,"Noto Serif SC",serif;color:#faf0dc;margin:17px 0 14px}
+.hg-hero h1 em{font-style:normal;color:#ecc789}
+.hg-hero>p{font-size:12px;line-height:2;max-width:740px;color:#c3d4d5}
+.hg-orbit{position:absolute;z-index:-1;pointer-events:none;width:340px;height:340px;right:9%;top:-60px;border-radius:50%;border:2px solid #e9c28764;box-shadow:0 0 0 43px #d7c08b12,0 0 0 93px #d9a9790e;transform:rotate(26deg)}
+.hg-orbit:before{content:'✧';position:absolute;inset:44px;display:grid;place-items:center;border-radius:50%;border:1px dashed #d2bd8a67;font:80px Georgia,serif;color:#eac3915f}
+.hg-badges{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}
+.hg-badges span{font-size:11px;color:#dce9e2;padding:8px 11px;border:1px solid #c8b58870;border-radius:24px;background:#132f3ed9}
+.hg-panel{border:1px solid #c6b38758;border-radius:18px;background:linear-gradient(148deg,#182d3d,#0f1d2d);padding:clamp(17px,3vw,26px);margin-bottom:18px}
+.hg-panel h2{font:500 clamp(20px,2.5vw,27px)/1.45 Georgia,"Noto Serif SC",serif;color:#edd4a3;margin:9px 0}
+.hg-panel>p{color:#adc6ce;font-size:12px;line-height:1.9}
+.hg-root button{cursor:pointer;transition:transform .15s}
+.hg-root button:hover:not(:disabled){transform:translateY(-1px)}
+.hg-root button:focus-visible{outline:2px solid #f2d9a0;outline-offset:3px}
+.hg-root button:disabled{opacity:.5;cursor:wait}
+.hg-primary{border:1px solid #f2dcaa;border-radius:10px;background:linear-gradient(120deg,#eed3a4,#b99866);padding:10px 14px;font-weight:800;color:#1b2938;font-size:12px}
+.hg-outline{border:1px solid #b5b59a8c;border-radius:9px;background:#20384b;padding:9px 12px;color:#e9d2ab;font-size:11px}
+.hg-danger{border:1px solid #c88f98a8;border-radius:10px;background:#4a303c;padding:9px 12px;color:#f6c8c7;font-size:11px}
+.hg-empty{border:1px dashed #b8b18d70;padding:24px 17px;border-radius:12px;background:#122b3a;color:#c1c8c7;font-size:12px;line-height:1.9}
+.hg-alert{border:1px solid #c3b58a85;border-radius:10px;background:#33413f;padding:12px 16px;color:#ebd9ad;font-size:12px;line-height:1.85}
+.hg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.hg-card{border:1px solid #cfb7846c;border-radius:15px;background:radial-gradient(circle at 70% 7%,#4c7a795a,transparent 51%),#102735;padding:20px;display:flex;flex-direction:column;gap:11px;min-width:0}
+.hg-card h3{font:500 19px/1.6 Georgia,"Noto Serif SC",serif;color:#f1d9aa;overflow-wrap:anywhere;margin:0}
+.hg-card small{color:#adc1ca;font-size:10px}
+.hg-card .hg-primary{width:100%;margin-top:auto}
+.hg-mini-pair{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:11px;color:#d9e5d7}
+.hg-mini-pair span{border:1px solid #bcae7c70;padding:7px 10px;border-radius:15px;overflow-wrap:anywhere}
+.hg-mini-pair b{color:#eac897}
+.hg-head{display:flex;align-items:start;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.hg-head p{color:#b4c7cc;font-size:11px}
+.hg-actions{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}
+.hg-premise{border:1px solid #baac8a60;border-radius:12px;background:#0f2736;color:#e9dbc5;font:400 clamp(15px,2vw,22px)/1.85 Georgia,"Noto Serif SC",serif;padding:22px;margin:16px 0 20px;white-space:pre-wrap;overflow-wrap:anywhere}
+.hg-exchange{display:grid;grid-template-columns:minmax(0,1fr) 105px minmax(0,1fr);gap:12px;align-items:center}
+.hg-gift{background:#0d2432;border:1px solid #bfb09165;border-radius:14px;padding:17px;min-width:0}
+.hg-gift-head{color:#d9bc91;font-size:10px;letter-spacing:.11em;margin-bottom:14px}
+.hg-gift-content{display:flex;gap:13px;align-items:center;min-width:0}
+.hg-gift-content img,.hg-gift-icon{width:70px;height:70px;flex:0 0 70px;border:1px solid #c2b48945;border-radius:11px;object-fit:cover;display:grid;place-items:center;font:37px Georgia,serif;background:#2b4954;color:#d9be82}
+.hg-gift-content>div{min-width:0}
+.hg-gift strong{color:#f4e3c4;font-size:16px;display:block;overflow-wrap:anywhere;line-height:1.55}
+.hg-gift small{color:#a6c1c9;font-size:11px;line-height:1.65;display:block}
+.hg-gift>button{margin-top:15px}
+.hg-gateway{text-align:center;color:#e5c48e}
+.hg-gateway span{font:49px Georgia,serif;display:block;line-height:1.3}
+.hg-gateway b,.hg-gateway small{display:block;font-size:11px;margin-top:7px}
+.hg-gateway small{font-size:10px;color:#a6bbc7}
+.hg-interpretations{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:19px}
+.hg-interpretations article{min-width:0;padding:18px;border:1px solid #b0c7ae55;border-radius:13px;background:#183646}
+.hg-interpretations article>span{font-size:10px;letter-spacing:.09em;color:#e9c88d}
+.hg-interpretations p{color:#e0e7dc;font-size:13px;line-height:2;min-height:90px;white-space:pre-wrap;overflow-wrap:anywhere}
+.hg-sign{border-top:1px solid #b2b19f60;margin-top:10px;padding-top:12px;color:#a8d5c0;font-size:11px}
+.hg-participant{border:1px solid #bbad8261;border-radius:12px;padding:19px;background:#142f40;margin-top:21px}
+.hg-participant h3,.hg-passport h3{font:500 21px Georgia,"Noto Serif SC",serif;color:#efd5a2;margin:9px 0}
+.hg-participant p{font-size:11px;line-height:1.8;color:#b7cbd0}
+.hg-panel label{display:grid;gap:7px;color:#c2d3d6;font-size:12px;margin:13px 0}
+.hg-panel input,.hg-panel select,.hg-panel textarea{width:100%;min-width:0;border:1px solid #c5b18f93;border-radius:9px;background:#0d2132;color:#f4e9d4;font:inherit;padding:11px 13px}
+.hg-panel textarea{min-height:95px;resize:vertical}
+.hg-panel input:focus,.hg-panel textarea:focus,.hg-panel select:focus{outline:2px solid #e9ca9377}
+.hg-passport{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:16px;border-radius:14px;border:1px solid #c2b48488;background:linear-gradient(100deg,#25453d,#21313e);margin-top:18px}
+.hg-passport p{font-size:11px;color:#c4dacb}
+.hg-guest{font-size:11px;color:#b1c9c8}
+.hg-notice,.hg-footer{font-size:11px;color:#a3bbc3;line-height:1.9;margin-top:17px}
+.hg-form-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.hg-mine-heading{font-size:17px;color:#f2d6a3;margin-top:27px}
+.hg-mine{display:flex;flex-wrap:wrap;gap:9px}
+.hg-locked p{color:#b5cbd0;font-size:12px}
+@media(max-width:1040px){.hg-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.hg-grid,.hg-exchange,.hg-interpretations,.hg-form-pair{grid-template-columns:1fr}.hg-hero{padding:25px}.hg-panel{padding:16px}.hg-gateway{padding:0 14px}.hg-gateway span{font-size:35px}.hg-orbit{right:-100px;opacity:.45}}
