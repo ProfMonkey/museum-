@@ -107,7 +107,7 @@ function relaysView(){
  '<label>两件事物为什么有关联？<textarea name="reason" minlength="8" maxlength="280" rows="3" required placeholder="这是一条启发性的创意联想，并非必然的科学因果。"></textarea></label>'+
  '<label>来源网址（仅来源线索填写 HTTPS）<input name="source_url" maxlength="320" placeholder="https://..."></label>'+
  '<button class="pl-primary" type="submit" '+(!P.selected||P.relay.count>=12?'disabled':'')+'>🔗 我来接力下一站</button>'+
- '<p class="pl-warning">每条路线最多 12 站，每位馆长最多参与 3 站；来源线索需要提供 HTTPS 参考链接，但本站不会自动认定其正确性。</p></form>':'')+
+ '<p class="pl-warning">每条路线最多 12 站，每位馆长最多参与 3 站；来源线索需要提供 HTTPS 参考链接，但本站不会自动认定其正确性。</p></form>':'')
  )+'</section></div>';
 }
 async function render(){
