@@ -23,7 +23,7 @@ function myControls(d){
  if(!d.is_member)return '';
  let controls='';
  if(d.state==='pending')controls=d.my_role==='b'?
- btn('accept','✓ 接受外交邀请','class="eb-gold"')+btn('decline','婉拒邀请','class="eb-danger"'):
+ btn('accept','✓ 接受外交邀请','class="eb-gold" '+(!d.available?'disabled':''))+btn('decline','婉拒邀请','class="eb-danger"'):
  btn('cancel','撤回邀请','class="eb-quiet"');
  if(d.state==='accepted'||d.state==='public'){
   const myApprove=d.approved?.[d.my_role];
@@ -81,7 +81,6 @@ async function render(){
   if(logged())my=await api('/embassies/mine');
  }catch(err){return '<div class="eb-root"><h2>文明大使馆暂时不可用</h2><p>'+esc(err.message)+'</p></div>'}
  const myItems=my.items||[],pubItems=publicData.items||[];
- if(E.focus&&!myItems.some(x=>x.id===E.focus)&&!pubItems.some(x=>x.id===E.focus))E.focus=0;
  if(!E.focus)E.focus=myItems[0]?.id||pubItems[0]?.id||0;
  let detail=null;
  if(E.focus){
