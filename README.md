@@ -17,6 +17,8 @@ V32 将原创馆长的藏品想象力变成真正的可操作游戏：**真实�
 
 **节省 GitHub Actions 额度**：已关闭仓库 push/PR 自动触发，保留仅手动触发入口。本版不使用 Actions，也不声称尚未执行的自动测试已经通过。
 
+手动本地验证（不消耗任何 Actions 额度）：`python scripts/check_local.py --quick`（V32 回归与 JS 语法）；`python scripts/check_local.py`（全部 Python 测试与 JS 语法）。命令需要本机安装项目依赖及 pytest，有 Node.js 时自动执行 `node --check`。
+
 ## 🌱 V31.0 万物活体博物馆：每一次变化，都值得收藏
 
 V30 让不同馆长共建展厅；V31 则让一件展品不再停留在发布时的静态状态。现在进入「🌱 万物活体博物馆」，每个真实馆长都能为**自己的原始藏品**不断追加观察年轮。
