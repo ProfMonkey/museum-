@@ -1,0 +1,66 @@
+/* V35 – Observatory / twin-carved diplomatic halls */
+.eb-root{max-width:1450px;color:#ede7df;margin:0 auto 38px}
+.eb-overline{font-size:10px;letter-spacing:.17em;font-weight:800;color:#e6c899}
+.eb-hero{position:relative;isolation:isolate;overflow:hidden;min-height:315px;padding:clamp(28px,5vw,58px);border:1px solid #d1b6896b;border-radius:25px;background:radial-gradient(ellipse at 80% 12%,#6e6c8e66,transparent 41%),radial-gradient(ellipse at 16% 90%,#29748244,transparent 42%),linear-gradient(133deg,#1a3045,#0b192b)}
+.eb-orbits{position:absolute;z-index:-1;right:13%;top:-13%;width:315px;height:315px;border:1px solid #d3c29266;border-radius:50%;box-shadow:0 0 0 52px #d8c58d11,0 0 0 111px #d8c58d0c;transform:rotate(-20deg)}
+.eb-orbits:before{content:'✧';position:absolute;inset:53px;display:grid;place-items:center;border-radius:50%;border:1px solid #d5bd8288;color:#cabc9999;font:80px Georgia,serif}
+.eb-hero h1{font:500 clamp(30px,4.9vw,55px)/1.32 Georgia,"Noto Serif SC",serif;color:#fff0da;margin:20px 0}
+.eb-hero h1 em{font-style:normal;color:#f2ca93}
+.eb-hero>p{max-width:745px;font-size:13px;color:#c4d4df;line-height:1.9}
+.eb-tags{display:flex;gap:9px;flex-wrap:wrap;margin-top:21px}
+.eb-tags span{font-size:11px;border:1px solid #ebce9d55;background:#203848ad;color:#d9dfd8;border-radius:19px;padding:9px 12px}
+.eb-panel{border:1px solid #c0b18f56;border-radius:18px;background:linear-gradient(139deg,#172c40,#0e1b2c);padding:clamp(15px,2.7vw,26px);margin:17px 0;min-width:0}
+.eb-panel>h2,.eb-panel h2{font:500 24px/1.5 Georgia,"Noto Serif SC",serif;color:#f3d5a7;margin:9px 0 15px}
+.eb-panel>p{color:#a9bfce;font-size:12px;line-height:1.9}
+.eb-two{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+.eb-gold{border:1px solid #f6dbb0;border-radius:10px;color:#182c3e;background:linear-gradient(118deg,#f2d49d,#cda06c);padding:11px 15px;font-size:12px;font-weight:800}
+.eb-quiet{border:1px solid #c4b0887a;color:#e8d5b6;background:#253e52;border-radius:9px;padding:9px 12px;font-size:11px}
+.eb-danger{border:1px solid #e1aaaa8a;color:#f1b6b5;background:#4d303b;border-radius:9px;padding:9px 12px;font-size:11px}
+.eb-root button{cursor:pointer;transition:transform .15s,border-color .15s}
+.eb-root button:hover:not(:disabled){transform:translateY(-1px)}
+.eb-root button:focus-visible{outline:2px solid #f0d2a1;outline-offset:2px}
+.eb-root button:disabled{opacity:.54;cursor:default}
+.eb-form{display:grid;gap:12px;margin:16px 0;padding:15px;border:1px solid #dfc39b37;border-radius:13px;background:#0b1f31}
+.eb-form label{font-size:12px;color:#bacbd7;display:grid;gap:7px}
+.eb-form input,.eb-form select,.eb-form textarea{border:1px solid #b7c0be75;border-radius:9px;padding:11px 12px;background:#102235;color:#f4e8d8;font:inherit;min-width:0;width:100%}
+.eb-form textarea{min-height:100px;resize:vertical}
+.eb-form input:focus,.eb-form select:focus,.eb-form textarea:focus{outline:2px solid #f2d09282}
+.eb-empty{border:1px dashed #cdb99871;background:#102334b3;color:#b3c6d1;padding:21px 15px;border-radius:12px;font-size:12px;line-height:1.85}
+.eb-invitations{display:grid;gap:9px;max-height:550px;overflow-y:auto;padding-right:3px}
+.eb-invitations button,.eb-public button{display:grid;gap:7px;text-align:left;background:#152c3e;color:#f4e1be;border:1px solid #c5b18c5c;border-radius:11px;padding:13px;min-width:0}
+.eb-invitations button.active,.eb-public button.active{background:#2d4055;border-color:#f0d7aa}
+.eb-invitations button strong,.eb-public button strong{font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+.eb-invitations button small,.eb-public button small{font-size:10px;color:#aabdc8;line-height:1.6}
+.eb-public{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.eb-state{border:1px solid #ddba8670;background:#354357;border-radius:14px;color:#e7d1ac;padding:12px;font-size:12px}
+.eb-state.public{border-color:#89bfb88c;background:#2351485e;color:#b4e9c4}
+.eb-show{padding:clamp(17px,3vw,30px);background:radial-gradient(ellipse at 82% 1%,#4d5e7950,transparent 45%),#142539}
+.eb-show-header{display:flex;justify-content:space-between;align-items:start;gap:18px;flex-wrap:wrap}
+.eb-show-header p{max-width:860px;white-space:pre-wrap;color:#c2ced6;line-height:1.95;font-size:13px}
+.eb-civs{display:grid;grid-template-columns:minmax(0,1fr) 100px minmax(0,1fr);gap:12px;margin:24px 0;align-items:stretch}
+.eb-civ{border:1px solid #c9b58c64;background:linear-gradient(135deg,#253e4f,#10243a);padding:20px;border-radius:16px;text-align:center}
+.eb-civ-glyph{margin:13px 0;font:43px Georgia,serif;color:#f0cb8f}
+.eb-civ h3{font:500 21px/1.6 Georgia,"Noto Serif SC",serif;color:#f2dcac;margin:8px 0;overflow-wrap:anywhere}
+.eb-civ p{font-size:12px;color:#c3ced8}
+.eb-civ small{display:block;color:#a2c8cb;font-size:11px;margin:12px 0}
+.eb-bridge{display:grid;place-content:center;gap:9px;font-size:35px;text-align:center;color:#f3d9a7}
+.eb-bridge span{font-size:10px;line-height:1.6;color:#c7cbd0}
+.eb-scroll{border-top:1px solid #c6ba9f5c;padding-top:21px}
+.eb-scroll h3{font-size:20px;color:#f2d7a1}
+.eb-letter{position:relative;border:1px solid #c6b48d69;background:linear-gradient(116deg,#172d3e,#202c3d);border-radius:13px;padding:18px;margin:14px 0}
+.eb-letter-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;color:#d4c39c;font-size:10px;letter-spacing:.06em}
+.eb-letter h4{color:#f5dbaf;font:500 19px/1.5 Georgia,"Noto Serif SC",serif;margin:13px 0}
+.eb-letter p{font-size:13px;line-height:2;color:#c8d5d8;white-space:pre-wrap;overflow-wrap:anywhere}
+.eb-letter-bottom{display:flex;gap:14px;justify-content:space-between;align-items:center;flex-wrap:wrap;color:#aabcc6;font-size:10px}
+.eb-author{border-top:1px solid #bdaf8a71;margin-top:27px;padding-top:24px}
+.eb-author h3{color:#eed2a2;font-size:20px}
+.eb-votes{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:15px 0}
+.eb-votes>div{padding:14px;background:#1e3140;border:1px solid #a0bac45c;color:#b4c9d2;border-radius:11px;font-size:12px}
+.eb-votes>div.yes{border-color:#9acfb28f;color:#b6eccd;background:#1d463c}
+.eb-actions{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0}
+.eb-instruction,.eb-finished{font-size:11px;color:#aabeca;line-height:1.9}
+.eb-warning,.eb-hidden{border:1px dashed #d3a99d8b;padding:17px;border-radius:12px;background:#462f37;color:#f5c1b8;font-size:12px;line-height:1.9;margin:14px 0}
+.eb-notice{border:1px solid #adc8a78b;border-radius:12px;background:#21413d;color:#e3f1d7;padding:13px;margin:15px 0;font-size:12px;line-height:1.8}
+.eb-disclaimer,.eb-footer{color:#9cbdc3;font-size:11px;line-height:1.8;margin:15px 0}
+@media(max-width:1000px){.eb-two{grid-template-columns:1fr}.eb-public{grid-template-columns:1fr 1fr}}
+@media(max-width:650px){.eb-hero{padding:27px}.eb-public,.eb-votes{grid-template-columns:1fr}.eb-civs{grid-template-columns:1fr}.eb-bridge{font-size:25px;display:flex;align-items:center;justify-content:center}.eb-civ{padding:16px}}

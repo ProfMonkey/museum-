@@ -34,7 +34,7 @@ DATABASE = DATA / "wonder.db"
 IS_SECURE = os.getenv("WONDER_COOKIE_SECURE", "0") == "1"
 SESSION_SECONDS = 60 * 60 * 24 * 21
 
-app = FastAPI(title="万物博物馆 API", version="34.0", docs_url="/api/docs", redoc_url=None)
+app = FastAPI(title="万物博物馆 API", version="35.0", docs_url="/api/docs", redoc_url=None)
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 app.mount("/media", StaticFiles(directory=MEDIA), name="media")
 
@@ -929,3 +929,7 @@ mount_collision_universes(app, db, require_user, maybe_user, now, fail)
 # V34: finite creator-curated civilization chronicles with read-only alternative histories.
 from civilization_lab import mount_civilization_lab
 mount_civilization_lab(app, db, require_user, maybe_user, now, fail)
+
+# V35: real two-curator embassies that require consent and current public origin worlds.
+from embassies import mount_embassies
+mount_embassies(app, db, require_user, maybe_user, now, fail)
