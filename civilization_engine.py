@@ -10,6 +10,8 @@ MODEL_VERSION = 1
 STAT_KEYS = ("knowledge", "supplies", "ecology", "cohesion", "culture")
 STAT_NAMES = {"knowledge":"知识","supplies":"物资","ecology":"生态","cohesion":"凝聚","culture":"文化"}
 INITIAL = {key: 50 for key in STAT_KEYS}
+# Optional foreign-object impact. Fixed toy model; not a scientific causal claim.
+ANOMALY_EFFECT = {"knowledge": 5, "culture": 4, "cohesion": -3}
 
 POLICIES = {
     "research": {
@@ -54,7 +56,7 @@ def clamp(n: int) -> int:
     return min(100, max(0, n))
 
 
-def apply_turn(before: dict, policy: str, world_law: str) -> dict:
+def apply_turn(before: dict, policy: str, world_law: str, anomaly: bool = False) -> dict:
     """Pure deterministic transition. Both deltas and resulting state are returned.
 
     Numeric deltas are measured *after* 0..100 capping, so the explanation
@@ -64,6 +66,9 @@ def apply_turn(before: dict, policy: str, world_law: str) -> dict:
         raise ValueError("unknown civilization policy")
     old = {k: clamp(int(before[k])) for k in STAT_KEYS}
     base = dict(POLICIES[policy]["delta"])
+    if anomaly:
+        for stat,shift in ANOMALY_EFFECT.items():
+            base[stat] += shift
     modifier = LAW_EFFECT.get(world_law, {}).get(policy)
     bonus = None
     if modifier:
@@ -84,7 +89,10 @@ def apply_turn(before: dict, policy: str, world_law: str) -> dict:
     else:
         event = "虚构文明进入新的抉择年代"
         mood = "steady"
+    if anomaly:
+        event += " · 异世界物件介入"
     return {"before":old,"after":after,"delta":delta,"modifier":bonus,
+            "anomaly":anomaly,"anomaly_effect":dict(ANOMALY_EFFECT) if anomaly else None,
             "event":event,"mood":mood,
             "policy":policy,"policy_label":POLICIES[policy]["label"],
             "model_version":MODEL_VERSION}
