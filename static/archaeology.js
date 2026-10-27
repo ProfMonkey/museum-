@@ -2,7 +2,7 @@
 (() => {
 'use strict';
 const A={focus:0,civ:0,source:0,query:'',role:'memory',era:1,edit:0,notice:'',layers:{},detailRevision:0,echoes:null};
-const h=x=>String(x??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&gt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const h=x=>String(x??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const btn=(cmd,text,opts='')=>'<button type="button" data-arch="'+cmd+'" '+opts+'>'+text+'</button>';
 const user=()=>Boolean(window.S?.user);
 const names=['','🔍 第一层 · 表层痕迹','📜 第二层 · 深层碑文','🪐 第三层 · 馆长最终假说'];
