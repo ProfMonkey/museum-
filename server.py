@@ -34,7 +34,7 @@ DATABASE = DATA / "wonder.db"
 IS_SECURE = os.getenv("WONDER_COOKIE_SECURE", "0") == "1"
 SESSION_SECONDS = 60 * 60 * 24 * 21
 
-app = FastAPI(title="万物博物馆 API", version="30.0", docs_url="/api/docs", redoc_url=None)
+app = FastAPI(title="万物博物馆 API", version="31.0", docs_url="/api/docs", redoc_url=None)
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 app.mount("/media", StaticFiles(directory=MEDIA), name="media")
 
@@ -913,3 +913,7 @@ mount_parallel_universes(app, db, require_user, now, fail)
 # V30: collaboratively curated, dual-approved real museum shows with visitor stamps.
 from coexhibitions import mount_coexhibitions
 mount_coexhibitions(app, db, require_user, maybe_user, now, fail)
+
+# V31: provenance-labeled user-maintained changes, follow list, pulse and dual timelines.
+from living_museum import mount_living_museum
+mount_living_museum(app, db, require_user, maybe_user, now, fail)
