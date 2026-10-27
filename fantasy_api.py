@@ -233,6 +233,10 @@ def mount_fantasy(app, db, require_user, maybe_user, now, fail):
                 # Reopening never silently republishes consented content.
                 if c.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='fantasy_civilizations'").fetchone():
                     c.execute("UPDATE fantasy_civilizations SET visibility='private' WHERE world_id=?", (world_id,))
+                # Revocation is persistent: reopening never republishes evolution archives.
+                if c.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='fantasy_evolution_timelines'").fetchone():
+                    c.execute("""UPDATE fantasy_evolution_timelines SET visibility='private'
+                        WHERE civilization_id IN (SELECT id FROM fantasy_civilizations WHERE world_id=?)""", (world_id,))
                 if c.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='fantasy_encounters'").fetchone():
                     c.execute("UPDATE fantasy_encounters SET status='withdrawn',updated_at=? WHERE status IN ('pending','accepted') AND (from_world_id=? OR to_world_id=?)",(now(),world_id,world_id))
         return {'visibility':draft.visibility, 'notice':'世界关闭时已同步隐藏全部奇物；重新开放世界不会自动公开奇物'}
