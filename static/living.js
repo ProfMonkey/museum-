@@ -25,7 +25,7 @@ function detailPane(d,ownList){
  return '<section class="lv-panel lv-detail"><div class="lv-label">04 / PERSONAL TIME RING</div>'+
  '<div class="lv-heading"><div><h2>✧ '+esc(x.title)+'</h2><p>由 @'+esc(x.curator)+' 持续记录 · '+d.entries.length+' 条有效年轮</p></div>'+
  '<div class="lv-toolkit">'+button('source','原始藏品 ↗','data-id="'+x.id+'" class="lv-quiet"')+
- (window.S?.user?button('watch',d.watching?'♡ 取消关注':'♡ 关注变化','data-id="'+x.id+'" class="lv-outline"'):'')+
+ (window.S?.user?button(d.watching?'unwatch':'watch',d.watching?'♡ 取消关注':'♡ 关注变化','data-id="'+x.id+'" class="lv-outline"'):'')+
  (d.watching&&d.unread?button('seen','✓ 标记本展品已阅','data-id="'+x.id+'" class="lv-outline"'):'')+
  '</div></div>'+
  (d.is_owner?'<div class="lv-author"><div><strong>✍️ 馆长的观察档案</strong><p>为你的藏品追加变化记录。没有外部来源时明确标注自述；不可把未发生的事件记作事实。</p></div>'+
@@ -63,6 +63,10 @@ async function render(){
   catch(e){M.msg=e.message}
  }
  const museum=mine||[], news=feed.items||[], watchlist=watches?.items||[];
+ if(M.compare){
+  try{M.compare=await api('/living/compare?left_id='+M.left+'&right_id='+M.right)}
+  catch(err){M.compare=null;M.msg='一件对照藏品已撤回公开，旧时间线已隐藏。'}
+ }
  if(!M.focus)M.focus=museum[0]?.id||watchlist.find(x=>x.available)?.exhibit_id||news[0]?.exhibit.id||0;
  let d=null;
  if(M.focus){try{d=await api('/living/exhibits/'+M.focus)}
