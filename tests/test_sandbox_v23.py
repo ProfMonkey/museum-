@@ -71,7 +71,7 @@ def test_circuit_bounds_and_script_payload_are_rejected(env):
         circuit(voltage=0),circuit(voltage=50),
         circuit(resistors=[10]),circuit(resistors=[10]*5),
         circuit(resistors=[0,10]),circuit(resistors=[10,1001]),
-        circuit(resistors=[10,float("nan")]),
+        circuit(resistors=[10,"NaN"]),
         {**circuit(),"unknownCode":"eval('bad')"},
         {**circuit(),"mode":"short"},
     ]
