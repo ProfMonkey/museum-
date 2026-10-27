@@ -459,3 +459,7 @@ def mount_embassies(app, db, require_user, maybe_user, now, fail):
     # V36 shares the EXACT same visibility/consent predicate instead of
     # independently recreating V35's origin version fingerprints.
     app.state.embassy_public_validator = can_publish
+
+    # V37 reuses V35's exact V34 world/source content digest and visibility,
+    # including epochs for changes to original source exhibits.
+    app.state.archaeology_civ_validator = civ

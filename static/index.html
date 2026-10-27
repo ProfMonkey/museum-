@@ -33,6 +33,7 @@
 <link rel="stylesheet" href="/static/civilizations.css" />
 <link rel="stylesheet" href="/static/embassies.css" />
 <link rel="stylesheet" href="/static/heritage.css" />
+<link rel="stylesheet" href="/static/archaeology.css" />
 <link rel="stylesheet" href="/static/wonder-discovery.css" />
 <link rel="stylesheet" href="/static/atlas.css" />
 <link rel="stylesheet" href="/static/culture.css" />
@@ -44,7 +45,7 @@
 <body>
 <div class="app-shell">
  <aside class="sidebar">
-  <button class="brand" data-action="navigate" data-view="discover" aria-label="回到探索大厅"><span class="brandmark">✳</span><span><strong>万物博物馆</strong><small>WONDER ATLAS · WORLD 36</small></span></button>
+  <button class="brand" data-action="navigate" data-view="discover" aria-label="回到探索大厅"><span class="brandmark">✳</span><span><strong>万物博物馆</strong><small>WONDER ATLAS · WORLD 37</small></span></button>
   <div class="nav-cap">探索世界 <span>01 / 16</span></div>
   <nav class="nav" aria-label="主导航">
    <button class="active" data-action="navigate" data-view="discover"><span>⌁</span> 发现广场</button>
@@ -70,6 +71,7 @@
    <button data-action="navigate" data-view="civilizations"><span>🏛️</span> 万物文明演化实验室</button>
    <button data-action="navigate" data-view="embassies"><span>🤝</span> 万界文明大使馆</button>
    <button data-action="navigate" data-view="heritage"><span>🎁</span> 万界遗产交换站</button>
+   <button data-action="navigate" data-view="archaeology"><span>⛏</span> 万物文明考古局</button>
    <button data-action="navigate" data-view="memories"><span>♫</span> 回忆剧场</button>
   </nav>
   <div class="nav-cap space-top">馆务与互动</div>
@@ -84,7 +86,7 @@
    <div class="top-right"><button id="loginTop" class="top-login" data-action="login">登录 / 注册</button><button class="cta" data-action="new">＋ 发布新发现</button></div>
   </header>
   <main id="main" tabindex="-1"><div class="loading">正在连接万物博物馆…</div></main>
-  <footer class="footer"><span>✳ 万物博物馆 · WONDER ATLAS</span><span>一个由发现与好奇心建成的世界 · V36.0</span></footer>
+  <footer class="footer"><span>✳ 万物博物馆 · WONDER ATLAS</span><span>一个由发现与好奇心建成的世界 · V37.0</span></footer>
  </div>
 </div>
 <div id="modal" class="modal-layer hidden" aria-live="polite"></div>
@@ -123,6 +125,7 @@
 <script src="/static/civilizations.js" defer></script>
 <script src="/static/embassies.js" defer></script>
 <script src="/static/heritage.js" defer></script>
+<script src="/static/archaeology.js" defer></script>
 <script src="/static/atlas.js" defer></script>
 <script src="/static/culture.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" defer></script>

@@ -210,7 +210,7 @@ def test_parent_studio_visibility_must_be_public(env):
 
 def test_v29_assets_version_and_navigation(env):
     alice, bob, guest = env
-    assert guest.get("/api/health").json()["version"] == "36.0"
+    assert guest.get("/api/health").json()["version"] == "37.0"
     html = guest.get("/").text
     assert "万物平行宇宙" in html
     assert "WONDER ATLAS · WORLD " in html
