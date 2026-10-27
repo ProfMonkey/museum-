@@ -1,0 +1,98 @@
+/* V34 · Civilization Laboratory: lapis-celestial bronze, scroll history, dual futures */
+.cv-root{color:#eee5d8;max-width:1460px;margin:0 auto 36px}
+.cv-overline{font-size:10px;letter-spacing:.18em;color:#e9c58d;font-weight:800;line-height:1.9}
+.cv-hero{position:relative;overflow:hidden;isolation:isolate;margin-bottom:20px;min-height:290px;border-radius:24px;border:1px solid #d2ae7861;padding:clamp(27px,5vw,56px);background:radial-gradient(ellipse at 85% 24%,#b57b4255,transparent 35%),radial-gradient(ellipse at 15% 90%,#3c66824b,transparent 42%),linear-gradient(112deg,#1d3043,#0a1428)}
+.cv-hero h1{font:500 clamp(33px,5vw,55px)/1.34 Georgia,"Noto Serif SC",serif;color:#f7eada;letter-spacing:.015em;margin:20px 0}
+.cv-hero h1 em{color:#e9c48c;font-style:normal}
+.cv-hero>p{font-size:13px;line-height:1.95;color:#c3d2d9;max-width:740px}
+.cv-planet{position:absolute;z-index:-1;width:320px;height:320px;right:8%;top:-36px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#deb37a8c,#92664a77 25%,#394c7059 58%,#101c313d 74%);box-shadow:0 0 0 36px #e2ca8d17,0 0 0 115px #dbc4880e,0 0 120px #d7bc8350;animation:cvOrbit 18s ease-in-out infinite}
+@keyframes cvOrbit{50%{transform:rotate(7deg) translateY(9px)}}
+.cv-hero-pills{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}
+.cv-hero-pills>span{padding:8px 12px;color:#e6e8dd;background:#122a3ec4;border:1px solid #dfc8966b;border-radius:19px;font-size:11px}
+.cv-panel{margin:0 0 19px;border:1px solid #c3ac8a55;border-radius:19px;background:linear-gradient(138deg,#1b2d40,#0e192a);padding:clamp(16px,3vw,27px);min-width:0}
+.cv-panel h2{color:#f2d6a8;font:500 25px/1.45 Georgia,"Noto Serif SC",serif;margin:10px 0 15px}
+.cv-panel>p{color:#b0c9d2;font-size:12px;line-height:1.9}
+.cv-root button{cursor:pointer;transition:transform .15s,border-color .15s}
+.cv-root button:hover:not(:disabled){transform:translateY(-1px)}
+.cv-root button:disabled{opacity:.5;cursor:wait}
+.cv-root button:focus-visible{outline:2px solid #ebce9d;outline-offset:3px}
+.cv-primary{border:1px solid #f6d9a1;border-radius:9px;padding:10px 15px;background:linear-gradient(110deg,#ecd3a3,#b9915a);color:#17273a;font-size:12px;font-weight:800}
+.cv-muted{border:1px solid #bfb39693;border-radius:9px;padding:9px 12px;background:#1c3548;color:#f0d9b6;font-size:11px}
+.cv-danger{border:1px solid #d79a9a9e;border-radius:9px;padding:9px 13px;background:#53323b;color:#f7c9c6;font-size:11px}
+.cv-empty{border:1px dashed #b3afa075;border-radius:12px;padding:19px 16px;background:#1023367d;color:#b8cad3;font-size:12px;line-height:1.9}
+.cv-alert{padding:14px 16px;border-radius:12px;border:1px solid #9cc9c18a;background:#1e4246;color:#d8eada;font-size:12px;line-height:1.85}
+.cv-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.cv-cards article{min-width:0;border-radius:14px;border:1px solid #baae9861;padding:18px;background:radial-gradient(circle at 80% 14%,#8c744945,transparent 48%),#122638;display:flex;flex-direction:column;align-items:flex-start;gap:11px}
+.cv-cards h3{color:#f2dfbb;font:500 19px/1.5 Georgia,"Noto Serif SC",serif;overflow-wrap:anywhere}
+.cv-cards small{color:#b5cad3;font-size:11px;line-height:1.6;flex:1}
+.cv-cards button{margin-top:7px}
+.cv-show{background:radial-gradient(ellipse at 88% 3%,#445f6b2f,transparent 50%),#101e30}
+.cv-show-heading{display:flex;justify-content:space-between;gap:17px;align-items:start;flex-wrap:wrap}
+.cv-show-heading h2{font-size:clamp(26px,3.7vw,41px)}
+.cv-show-heading p{color:#a5c1cd;font-size:12px}
+.cv-age{color:#e1c58c;font-size:11px;letter-spacing:.08em;text-align:right}
+.cv-age strong{display:block;font:34px Georgia,serif;margin:7px 0}
+.cv-charter{color:#e9d7b7;font:400 clamp(15px,2vw,20px)/1.9 Georgia,"Noto Serif SC",serif;padding:19px 23px;border-radius:12px;border-left:3px solid #d8b777;background:#1b3143;margin:19px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.cv-sources{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:23px}
+.cv-sources>div{border:1px solid #9db4a757;border-radius:11px;background:#142638;padding:15px}
+.cv-sources>div>small{display:block;color:#bdc9cb;font-size:10px;letter-spacing:.1em;margin-bottom:8px}
+.cv-sources>div>b{display:block;color:#e5c993;font-size:14px;margin:10px 0 15px}
+.cv-source{display:flex;gap:10px;align-items:center;min-width:0}
+.cv-source img,.cv-source>span{flex-shrink:0;width:49px;height:49px;border-radius:10px;background:#3b5362;object-fit:cover;display:grid;place-items:center;font:27px Georgia,serif;color:#e6c48d}
+.cv-source>div{min-width:0;flex:1}
+.cv-source b{display:block;color:#f1ddbf;font-size:12px;overflow-wrap:anywhere}
+.cv-source small{color:#a8c1c9;font-size:10px;line-height:1.5}
+.cv-source button{border:1px solid #acbbac76;background:#264050;border-radius:7px;color:#e7d1a3;padding:7px 9px}
+.cv-stats-shell{border:1px solid #cab38978;border-radius:16px;background:#132c3e;padding:19px}
+.cv-stats-shell h3{color:#f0d8b0;font-size:19px;font-weight:600}
+.cv-stats{display:grid;gap:13px}
+.cv-stat-label{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#c5d8d9;margin-bottom:6px}
+.cv-stat-label b{color:#edd29d}
+.cv-meter{height:9px;border-radius:12px;background:#31465a;overflow:hidden}
+.cv-meter>i{display:block;height:100%;border-radius:12px;transition:width .45s}
+.cv-history{margin:24px 0}
+.cv-history h3{color:#eed6a7;font-size:20px;margin-bottom:17px}
+.cv-chapter{position:relative;margin:0 0 12px 13px;padding:16px 19px;background:#152b3d;border:1px solid #b5af9966;border-left:2px solid #d6bb8c;border-radius:12px}
+.cv-chapter:before{content:'✦';position:absolute;left:-21px;top:18px;color:#ebc896}
+.cv-chapter-index{display:flex;gap:13px;align-items:center;flex-wrap:wrap}
+.cv-chapter-index span{color:#eac485;font-size:10px;letter-spacing:.16em}
+.cv-chapter-index b{font-size:11px;color:#b0e0d6}
+.cv-chapter h4{font:500 17px/1.5 Georgia,"Noto Serif SC",serif;color:#f5deba;margin:12px 0 7px}
+.cv-chapter p{white-space:pre-wrap;overflow-wrap:anywhere;color:#c2d2d6;font-size:12px;line-height:1.9}
+.cv-chapter-footer{display:grid;gap:7px;margin-top:12px;color:#ebd0a1;font-size:11px}
+.cv-chapter-footer small{color:#a6c6d1;line-height:1.8}
+.cv-counter{border-radius:16px;border:1px solid #cbb58b89;background:#192d40;padding:19px;margin:24px 0}
+.cv-counter h3{font:500 22px Georgia,"Noto Serif SC",serif;color:#f7e1b4;margin:10px 0}
+.cv-counter>p{color:#b8ccd1;font-size:12px;line-height:1.8}
+.cv-compare-form{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
+.cv-root label{display:grid;gap:8px;color:#c4d5d5;font-size:12px;margin:12px 0}
+.cv-root select,.cv-root input,.cv-root textarea{background:#0e2234;border:1px solid #b7b49e82;border-radius:9px;padding:12px;color:#f3e3c9;min-width:0;width:100%;font:inherit}
+.cv-root textarea{min-height:95px;resize:vertical}
+.cv-root input:focus,.cv-root select:focus,.cv-root textarea:focus{outline:2px solid #e7c78e}
+.cv-compare-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-top:23px}
+.cv-compare-grid article{border:1px solid #acb6a75d;border-radius:12px;background:#0e2435;padding:16px}
+.cv-compare-grid h4{font-size:14px;color:#f0d5a2}
+.cv-difference{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:15px 0}
+.cv-difference b{font-size:12px;color:#eacfa4}
+.cv-difference span{padding:7px 10px;border:1px solid #b5baa66c;border-radius:22px;font-size:11px;color:#d7e2d9}
+.cv-alternative-list{display:grid;gap:7px}
+.cv-alternative-list>div{display:flex;justify-content:space-between;gap:12px;border:1px solid #afa58d51;padding:10px 12px;border-radius:8px;font-size:11px}
+.cv-alternative-list b{color:#e9c98d}
+.cv-alternative-list span{color:#bbd1d5}
+.cv-disclaimer{font-size:11px;color:#9cb6bf;line-height:2}
+.cv-author{border-top:1px solid #cab38e65;margin-top:25px;padding-top:18px}
+.cv-author h3{font-size:21px;color:#e9d09e;margin-bottom:9px}
+.cv-author p{font-size:12px;color:#bdd0d4;line-height:1.8}
+.cv-toolrow{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+.cv-form{border:1px solid #b9ad8d5b;border-radius:14px;background:#112538;padding:18px;margin:17px 0}
+.cv-form h4{font-size:16px;color:#ead3a4}
+.cv-worlds{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}
+.cv-world-card{border:1px solid #baa98a5c;background:#132b3a;border-radius:12px;padding:15px}
+.cv-world-card>b{color:#e7d0a5;font-size:13px;display:block}
+.cv-world-card>small{display:block;font-size:11px;color:#b1c5ca;margin:9px 0}
+.cv-world-card>div{display:grid;gap:8px}
+.cv-mine-title{border-top:1px solid #cab49258;padding-top:19px;color:#efd5a7}
+.cv-personal{display:flex;flex-wrap:wrap;gap:9px}
+.cv-personal>div{display:flex;gap:5px}
+@media(max-width:1120px){.cv-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.cv-compare-form{grid-template-columns:1fr 1fr}.cv-compare-form button{grid-column:1/-1}}
+@media(max-width:760px){.cv-cards,.cv-sources,.cv-compare-grid,.cv-worlds{grid-template-columns:1fr}.cv-hero{padding:26px}.cv-planet{right:-40%;opacity:.7}.cv-compare-form{grid-template-columns:1fr}.cv-panel{padding:17px}.cv-chapter{margin-left:13px}.cv-hero h1{font-size:31px}}
