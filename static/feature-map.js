@@ -32,9 +32,13 @@ const ITEMS=[
 {group:"个人与系统",view:"notifications",icon:"✉",title:"通知中心",desc:"查看点赞、评论、关注等站内通知。",keywords:"消息 未读 点赞 评论 关注"}
 ];
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+const RECENT_KEY='wonder-feature-recent-v39';
+function recents(){try{const x=JSON.parse(localStorage.getItem(RECENT_KEY)||'[]');return Array.isArray(x)?x.filter(k=>ITEMS.some(v=>v.view===k)).slice(0,6):[]}catch(e){return []}}
+function remember(view){if(view==='catalog'||!ITEMS.some(x=>x.view===view))return;try{const values=[view,...recents().filter(k=>k!==view)].slice(0,6);localStorage.setItem(RECENT_KEY,JSON.stringify(values))}catch(e){}}
 function render(){
 var groups=[];ITEMS.forEach(function(x){if(groups.indexOf(x.group)<0)groups.push(x.group)});
 var html='<div class="feature-map-page"><section class="feature-map-hero"><div class="eyebrow">WONDER ATLAS · FIND YOUR WAY</div><h1>想做什么？<br>从这里开始。</h1><p>功能很多，但你不应该靠记忆找入口。搜一个词，或按用途浏览。核心馆藏放在最前面，专题玩法按类别整理。</p><div class="hero-buttons"><button class="primary" data-action="navigate" data-view="discover">⌁ 逛藏品</button><button class="ghost" data-action="navigate" data-view="wheels">🍜 今天吃什么</button><button class="ghost" data-action="new">＋ 发布新发现</button></div></section>';
+const recent=recents();if(recent.length){html+='<section class="feature-map-group feature-map-recents" id="featureRecent"><h2>↶ 最近打开 <small>仅保存在这台设备，不上传浏览记录</small></h2><div class="feature-map-grid">';recent.forEach(function(key){var x=ITEMS.find(item=>item.view===key);if(x)html+='<button class="feature-map-card" data-action="navigate" data-view="'+esc(x.view)+'"><span class="feature-map-icon">'+x.icon+'</span><span class="feature-map-card-copy"><strong>'+esc(x.title)+'</strong><p>'+esc(x.desc)+'</p></span></button>'});html+='</div></section>'}
 html+='<label class="feature-map-search"><span>⌕</span><input id="featureSearch" placeholder="搜功能：美食、上传、文明、谜题、时间线……" autocomplete="off" aria-label="搜索功能入口"><small>支持功能名与用途</small></label><div id="featureMapResults">';
 groups.forEach(function(group){
 var items=ITEMS.filter(function(x){return x.group===group});
@@ -56,7 +60,7 @@ var match=!q||(card.getAttribute("data-feature-search")||"").toLocaleLowerCase()
 card.hidden=!match;if(match)count++;
 });
 document.querySelectorAll("[data-feature-group]").forEach(function(group){group.hidden=!group.querySelector("[data-feature-card]:not([hidden])")});
-var empty=document.getElementById("featureNoResults");if(empty)empty.hidden=count>0;
+var empty=document.getElementById("featureNoResults");if(empty)empty.hidden=count>0;var recent=document.getElementById('featureRecent');if(recent)recent.hidden=Boolean(q);
 });
-window.WonderFeatureMap={render:render};
+window.WonderFeatureMap={render:render,remember:remember};
 })();
