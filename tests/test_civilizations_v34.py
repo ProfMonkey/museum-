@@ -336,7 +336,7 @@ def test_withdrawn_or_deleted_foreign_artifact_invalidates_public_civilization(e
 
 def test_v34_frontend_assets_and_version(env):
     alice,bob,guest=env
-    assert guest.get("/api/health").json()["version"]=="35.0"
+    assert guest.get("/api/health").json()["version"]=="36.0"
     html=guest.get("/").text
     assert "WONDER ATLAS · WORLD " in html
     assert "万物文明演化实验室" in html
