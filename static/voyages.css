@@ -1,0 +1,47 @@
+/* V28 · Quiet golden starlanes, companion to the V27 constellation UI. */
+.cv-root{margin:26px 0 12px;padding:clamp(16px,3vw,28px);border:1px solid #c8a86a42;border-radius:23px;background:radial-gradient(ellipse at 92% 3%,#39758629,transparent 38%),linear-gradient(145deg,#121e30,#0b1523);color:#e6edf4}
+.cv-heading{display:flex;justify-content:space-between;gap:18px;align-items:center;flex-wrap:wrap;margin-bottom:22px}
+.cv-heading h2{font:500 clamp(24px,3vw,33px)/1.3 Georgia,"Noto Serif SC",serif;color:#f1d4a1;margin:8px 0}
+.cv-heading p{color:#bdcad9;font-size:12px;line-height:1.9;max-width:710px;margin:0}
+.cv-heading strong{color:#f3d49e}
+.cv-count{border:1px solid #cba97855;border-radius:30px;color:#e7c68d;background:#0b1827;padding:10px 17px;font-size:11px;white-space:nowrap}
+.cv-grid{display:grid;grid-template-columns:minmax(240px,.82fr) minmax(0,1.18fr);gap:18px;align-items:start}
+.cv-card{background:#101c2cdd;border:1px solid #ddbe8531;border-radius:17px;padding:19px}
+.cv-card h3{font-size:16px;color:#f1d6a4;margin:0 0 16px;font-weight:650}
+.cv-card form{display:grid;gap:11px}
+.cv-card label{display:grid;gap:7px;font-size:12px;color:#becbd8}
+.cv-card select,.cv-card input{background:#0b1626;border:1px solid #b3bacc50;border-radius:9px;padding:11px 12px;color:#f2eee5;width:100%;min-width:0;font:inherit}
+.cv-card select:focus,.cv-card input:focus{outline:2px solid #d4bb7952;outline-offset:1px;border-color:#cfb47a}
+.cv-card button{cursor:pointer;transition:transform .16s,border-color .16s}
+.cv-card button:focus-visible{outline:2px solid #ead5ad;outline-offset:2px}
+.cv-card button:disabled{opacity:.54;cursor:wait}
+.cv-primary{border:1px solid #e5d0a6;border-radius:10px;background:linear-gradient(120deg,#e9c88a,#baa16f);padding:11px 13px;color:#152136;font-weight:750;font-size:12px}
+.cv-primary:hover{transform:translateY(-1px)}
+.cv-saved{display:grid;gap:6px}
+.cv-saved>button{display:flex;flex-direction:column;gap:4px;text-align:left;background:#111f32;border:1px solid #ddc18b28;color:#dde7ed;padding:10px 12px;border-radius:10px;line-height:1.5}
+.cv-saved>button.active{border-color:#e4c891;background:#263747}
+.cv-saved small{font-size:10px;color:#9daec2}
+.cv-delete{border:1px solid #b88e7359;border-radius:9px;color:#cda997;background:transparent;margin-top:12px;padding:8px 10px;font-size:11px}
+.cv-muted{color:#aabacc;font-size:11px;line-height:1.8}
+.cv-journey-head{display:flex;justify-content:space-between;align-items:center;gap:9px}
+.cv-journey-head h3{margin-bottom:12px}
+.cv-journey-head span{font-size:9px;letter-spacing:.15em;color:#93c5be}
+.cv-path{display:grid;gap:0;margin:6px 0}
+.cv-stop{display:flex;align-items:center;gap:10px;border:1px solid #dfc18c36;background:linear-gradient(110deg,#1d3041,#172334);border-radius:12px;padding:12px 13px;min-height:66px}
+.cv-stop-order{background:#c8a87622;border:1px solid #e1bf7959;border-radius:50%;height:30px;min-width:30px;display:grid;place-items:center;color:#f1d59a;font:15px Georgia,serif}
+.cv-stop-body{flex:1;min-width:0}
+.cv-stop-name{font-size:13px;color:#e8dcc1;overflow-wrap:anywhere;font-weight:700}
+.cv-stop-body .cv-muted{margin-top:2px}
+.cv-stop button{padding:8px 9px;background:transparent;border:1px solid #c5b38a66;border-radius:9px;color:#d8c39d;font-size:10px;max-width:110px}
+.cv-stop button.cv-done{color:#ade1c7;border-color:#8dcaae8c;background:#26796225}
+.cv-leg{margin-left:27px;padding:7px 8px 7px 21px;border-left:1px dashed #c4ae795c;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.cv-leg span{font-size:11px;color:#e0c188}
+.cv-leg small{font-size:10px;color:#a6b9c8;overflow-wrap:anywhere}
+.cv-notice{border-top:1px solid #ffffff15;padding-top:12px;margin-top:15px}
+.cv-save{border-top:1px solid #dcc18d39;margin-top:13px;padding-top:15px}
+.cv-unreachable{background:#1c2835;border:1px dashed #c8ad7b5b;color:#d9c19a;padding:24px;border-radius:13px;text-align:center}
+.cv-unreachable p{color:#aebccc;margin-bottom:0;font-size:11px}
+.cv-error{border:1px solid #b7827999;color:#f4b8ad;border-radius:9px;padding:10px 12px;font-size:11px}
+.cv-footnote{font-size:10px;color:#8ca6b8;line-height:1.9;margin:15px 2px 0}
+@media(max-width:800px){.cv-grid{grid-template-columns:1fr}.cv-card{padding:15px}}
+@media(max-width:430px){.cv-stop{gap:6px;padding:10px 8px}.cv-stop button{font-size:9px}.cv-stop-name{font-size:12px}.cv-heading{align-items:flex-start}}

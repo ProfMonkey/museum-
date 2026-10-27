@@ -34,7 +34,7 @@ DATABASE = DATA / "wonder.db"
 IS_SECURE = os.getenv("WONDER_COOKIE_SECURE", "0") == "1"
 SESSION_SECONDS = 60 * 60 * 24 * 21
 
-app = FastAPI(title="万物博物馆 API", version="27.0", docs_url="/api/docs", redoc_url=None)
+app = FastAPI(title="万物博物馆 API", version="28.0", docs_url="/api/docs", redoc_url=None)
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 app.mount("/media", StaticFiles(directory=MEDIA), name="media")
 
@@ -901,3 +901,7 @@ mount_discovery_missions(app, db, require_user, now, fail)
 # V27: private personal knowledge constellation with opt-in imports and explicit links.
 from constellation_api import mount_constellation
 mount_constellation(app, db, read_exhibit, require_user, now, fail)
+
+# V28: private shortest-path voyages based only on existing personal edges.
+from constellation_voyages import mount_constellation_voyages
+mount_constellation_voyages(app, db, require_user, now, fail)

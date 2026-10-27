@@ -432,3 +432,6 @@ def mount_constellation(app, db, read_exhibit, require_user, now, fail):
                 counts[origin] = counts.get(origin, 0) + 1
             return {"added": added, "skipped": skipped, "by_source": counts,
                     "notice": "只导入你自己的藏品、心动收藏、本人自标记的参观，以及已主动启用的浏览历史；星图仍只对你可见。"}
+
+    # V28 uses the same live, per-user privacy checks as the star map itself.
+    app.state.constellation_graph = graph_payload

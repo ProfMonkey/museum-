@@ -124,7 +124,8 @@ async function render(){
  return '<div class="ct-root">'+hero()+
  (C.error?'<p class="ct-error">'+esc(C.error)+'</p>':'')+
  '<div class="ct-layout"><div>'+graphMarkup()+suggestions()+'</div><div>'+selectedPanel()+toolsPanel()+'</div></div>'+
- '<p class="ct-footnote">'+esc(C.graph.notice)+'</p></div>';
+ '<p class="ct-footnote">'+esc(C.graph.notice)+'</p>'+
+ (window.WonderVoyages?await WonderVoyages.render(C.graph):'')+'</div>';
 }
 async function refresh(){if(window.S?.view==='constellation'){const main=document.querySelector('#main');if(main)main.innerHTML=await render();}}
 document.addEventListener('click',async e=>{
