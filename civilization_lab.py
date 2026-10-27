@@ -15,7 +15,7 @@ from fastapi import Depends, Query
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from civilization_engine import (
-    MODEL_VERSION, STAT_KEYS, STAT_NAMES, INITIAL, POLICIES, LAW_EFFECT, apply_turn,
+    MODEL_VERSION, STAT_KEYS, STAT_NAMES, INITIAL, POLICIES, LAW_EFFECT, ANOMALY_EFFECT, apply_turn,
 )
 from parallel_universes import PUBLIC_SCOPE
 
@@ -57,6 +57,7 @@ class CivilizationEdit(BaseModel):
 class TurnIn(BaseModel):
     model_config = ConfigDict(extra="forbid")
     policy: str = Field(min_length=3, max_length=40)
+    anomaly_exhibit_id: int | None = Field(default=None, ge=1)
     chapter: str = Field(min_length=3, max_length=90)
     narrative: str = Field(min_length=12, max_length=620)
 
@@ -96,6 +97,8 @@ def mount_civilization_lab(app, db, require_user, maybe_user, now, fail):
           policy TEXT NOT NULL,
           chapter TEXT NOT NULL,
           narrative TEXT NOT NULL,
+          anomaly_exhibit_id INTEGER REFERENCES exhibits(id) ON DELETE SET NULL,
+          has_anomaly INTEGER NOT NULL DEFAULT 0 CHECK(has_anomaly IN (0,1)),
           after_json TEXT NOT NULL,
           created_at TEXT NOT NULL,
           UNIQUE(civ_id,turn_index)
@@ -148,6 +151,14 @@ def mount_civilization_lab(app, db, require_user, maybe_user, now, fail):
         seed = source(c,civ["seed_exhibit_id"])
         if seed is None or seed["id"] not in (both[0]["id"],both[1]["id"]):
             return None
+        # Every foreign artifact ever included in this civilization's history
+        # must also remain public. Deleted artifacts are NULL with a persistent
+        # has_anomaly flag so the entire fictional narrative gets withdrawn.
+        shocks=c.execute("""SELECT anomaly_exhibit_id FROM civ_turns
+            WHERE civ_id=? AND has_anomaly=1""",(civ["id"],)).fetchall()
+        if any(x["anomaly_exhibit_id"] is None or
+               source(c,x["anomaly_exhibit_id"]) is None for x in shocks):
+            return None
         return w, both, seed
 
     def events(c,civ_id):
@@ -158,7 +169,7 @@ def mount_civilization_lab(app, db, require_user, maybe_user, now, fail):
         return json.loads(turns[-1]["after_json"]) if turns else dict(INITIAL)
 
     def turn_view(c, row, world_law, before):
-        rule = apply_turn(before,row["policy"],world_law)
+        rule = apply_turn(before,row["policy"],world_law,bool(row["has_anomaly"]))
         # The rules are immutable under model_version 1; preserve recorded values
         # and make deterministic deltas auditable by every visitor.
         after = json.loads(row["after_json"])
@@ -169,7 +180,10 @@ def mount_civilization_lab(app, db, require_user, maybe_user, now, fail):
                 "narrative":row["narrative"],"event":rule["event"],
                 "mood":rule["mood"],"before":rule["before"],
                 "after":rule["after"],"delta":rule["delta"],
-                "modifier":rule["modifier"],"created_at":row["created_at"]}
+                "modifier":rule["modifier"],
+                "anomaly":card(source(c,row["anomaly_exhibit_id"])) if row["has_anomaly"] else None,
+                "anomaly_effect":rule["anomaly_effect"],
+                "created_at":row["created_at"]}
 
     def trace(c,civ,law):
         rows=events(c,civ["id"])
@@ -222,9 +236,27 @@ def mount_civilization_lab(app, db, require_user, maybe_user, now, fail):
                 "policies":[{"id":key,"label":rule["label"],"caption":rule["caption"],
                     "delta":dict(rule["delta"])} for key,rule in POLICIES.items()],
                 "law_effects":LAW_EFFECT,
+                "anomaly_effect":dict(ANOMALY_EFFECT),
+                "anomaly_notice":"异世界物件进入一轮决策时，额外固定增加知识5、文化4、降低凝聚3。仅为显式虚构游戏效果。",
                 "limits":{"per_world":MAX_CIVS_PER_WORLD,"max_turns":MAX_TURNS,
                           "min_publish_turns":MIN_PUBLISH_TURNS},
                 "notice":"公开的有限规则玩具模型；每项数值都不是现实文明的发展定律。"}
+
+    @app.get("/api/civilizations/relics")
+    def foreign_relics(q:str=""):
+        keyword=q.strip()[:60]
+        with db() as c:
+            query=PUBLIC_SCOPE
+            args=[]
+            if keyword:
+                query+=" AND (e.title LIKE ? OR e.tags LIKE ? OR e.category LIKE ?)"
+                args.extend(["%"+keyword+"%"]*3)
+            rows=c.execute("""SELECT e.id,e.title,e.user_id,e.domain,e.category,
+                  e.image_url,u.username AS curator FROM exhibits e
+                  JOIN users u ON u.id=e.user_id
+                  WHERE """+query+" ORDER BY e.id DESC LIMIT 40",args).fetchall()
+            return {"items":[card(x) for x in rows],
+                    "notice":"这里只能选用当下真正公开的真实藏品作为纯虚构外来物件冲击。"}
 
     @app.get("/api/civilizations/worlds")
     def eligible_worlds(user=Depends(require_user)):
@@ -317,12 +349,20 @@ def mount_civilization_lab(app, db, require_user, maybe_user, now, fail):
             if context is None:fail(409,"原始世界或文明种子已失效，不能继续演化")
             rows=events(c,civ_id)
             if len(rows)>=MAX_TURNS:fail(409,"单个文明最多经历八轮重大抉择")
-            w,_,_=context
-            result=apply_turn(state_from(rows),payload.policy,w["law"])
+            w,pair,_=context
+            exotic=payload.anomaly_exhibit_id
+            if exotic is not None:
+                if exotic in (pair[0]["id"],pair[1]["id"]):
+                    fail(422,"异世界物件必须来自本世界两件基础藏品之外")
+                if source(c,exotic) is None:
+                    fail(404,"外来物件必须是一件当前真实公开的其他藏品")
+            result=apply_turn(state_from(rows),payload.policy,w["law"],exotic is not None)
             c.execute("""INSERT INTO civ_turns(
-                civ_id,turn_index,policy,chapter,narrative,after_json,created_at)
-                VALUES(?,?,?,?,?,?,?)""",
+                civ_id,turn_index,policy,chapter,narrative,
+                anomaly_exhibit_id,has_anomaly,after_json,created_at)
+                VALUES(?,?,?,?,?,?,?,?,?)""",
                 (civ_id,len(rows)+1,payload.policy,payload.chapter,payload.narrative,
+                 exotic,int(exotic is not None),
                  json.dumps(result["after"],ensure_ascii=False,sort_keys=True),now()))
             # Appending a turn makes a previously published chronicle private;
             # author must manually approve the complete updated storyline.
@@ -396,8 +436,10 @@ def mount_civilization_lab(app, db, require_user, maybe_user, now, fail):
             before=start
             for index in range(turn-1,len(original)):
                 p=policy if index==turn-1 else original[index]["policy"]
-                result=apply_turn(before,p,world_row["law"])
+                shock=bool(original[index]["anomaly"])
+                result=apply_turn(before,p,world_row["law"],shock)
                 alt.append({"turn":index+1,"policy":p,
+                            "anomaly":original[index]["anomaly"],
                             "policy_label":result["policy_label"],
                             "after":result["after"],"delta":result["delta"],
                             "event":result["event"],"mood":result["mood"]})
