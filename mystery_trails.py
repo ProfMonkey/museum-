@@ -258,6 +258,22 @@ def mount_mystery_trails(app, db, require_user, maybe_user, now, fail):
                     return status_view(c,row)
             return {"trail":None,"notice":"目前没有可用的真实公开谜案，不会制造虚假的推荐。"}
 
+    @app.get("/api/mysteries/sources")
+    def search_sources(q:str=""):
+        keyword=q.strip()[:60]
+        with db() as c:
+            where=PUBLIC_SCOPE
+            args=[]
+            if keyword:
+                where+=" AND (e.title LIKE ? OR e.category LIKE ? OR e.tags LIKE ?)"
+                args.extend(["%"+keyword+"%"]*3)
+            rows=c.execute("""SELECT e.id,e.user_id,e.title,e.domain,e.category,
+                 e.time_bucket,e.image_url,u.username AS curator
+                 FROM exhibits e JOIN users u ON u.id=e.user_id
+                 WHERE """+where+" ORDER BY e.id DESC LIMIT 24",args).fetchall()
+            return {"items":[exhibit_card(x) for x in rows],
+                    "notice":"仅检索仍然公开的真实藏品；这些选项由作者主动筛选成谜题，没有系统伪造的其他用户。"}
+
     @app.get("/api/mysteries/mine")
     def my_mysteries(user=Depends(require_user)):
         with db() as c:
