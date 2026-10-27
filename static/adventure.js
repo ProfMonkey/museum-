@@ -231,9 +231,10 @@ document.addEventListener('submit',async e=>{
   await rerender();
  }catch(err){friendlyError(err.message||'不能创建奇遇');}
 },true);
-window.WonderAdventure={render:async()=>{await load();return '<div class="dr-root">'+intro()+
+async function render(){await load();return '<div class="dr-root">'+intro()+
  (A.notice?'<div class="dr-notice">'+esc(A.notice)+'</div>':'')+
  (A.error?'<div class="dr-error">'+esc(A.error)+'</div>':'')+
  '<div class="dr-layout"><div>'+collection()+'</div><div>'+routeCard()+shareInfo()+'</div></div>'+
- '<p class="dr-footer">随机选择不是现实建议；请结合自身实际情况决策。用户内容未经本站事实认证。</p></div>';},stop:()=>{A.drawing++;}};
+ '<p class="dr-footer">随机选择不是现实建议；请结合自身实际情况决策。用户内容未经本站事实认证。</p></div>';}
+window.WonderAdventure={render,stop:()=>{A.drawing++;}};
 })();
