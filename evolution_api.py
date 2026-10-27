@@ -46,6 +46,7 @@ class NewTimeline(BaseModel):
 
 class Advance(BaseModel):
     policy: Literal["开垦", "求知", "守护", "通商"]
+    relation_id: int | None = Field(default=None, ge=1)
 
 
 class Fork(BaseModel):
@@ -66,7 +67,7 @@ def bounded(value):
     return max(0, min(100, int(value)))
 
 
-def evolve(old, policy, law, timeline_id, year):
+def evolve(old, policy, law, timeline_id, year, influence=None):
     """Pure function: identical snapshot, policy, law, identity and year => identical year."""
     value = dict(old)
     for key, delta in POLICIES[policy].items():
@@ -97,6 +98,10 @@ def evolve(old, policy, law, timeline_id, year):
         for key, delta in changes.items():
             value[key] += delta
         event = {"name": label, "description": description}
+    # Only an explicitly selected, accepted relation adds a bounded fictional effect.
+    if influence:
+        for key,delta in influence.items():
+            value[key] += delta
     for key in INITIAL:
         if key != "population":
             value[key] = bounded(value[key])
@@ -133,6 +138,10 @@ def mount_evolution(app, db, require_user, maybe_user, now, fail):
         );
         CREATE INDEX IF NOT EXISTS ix_evolution_year ON fantasy_evolution_years(timeline_id,year);
         """)
+        # Upgrade pre-existing V18 archives safely without resetting their history.
+        columns={row["name"] for row in c.execute("PRAGMA table_info(fantasy_evolution_years)")}
+        if "influence_kind" not in columns:
+            c.execute("ALTER TABLE fantasy_evolution_years ADD COLUMN influence_kind TEXT")
 
     def civilization(c, civilization_id):
         return c.execute("""SELECT cv.id,cv.world_id,cv.user_id,cv.name,cv.style,
@@ -163,14 +172,14 @@ def mount_evolution(app, db, require_user, maybe_user, now, fail):
         return item, cv, owner, public
 
     def read_years(c, timeline_id):
-        rows = c.execute("""SELECT year,policy,state_json,event_name,event_text,created_at
+        rows = c.execute("""SELECT year,policy,state_json,event_name,event_text,influence_kind,created_at
             FROM fantasy_evolution_years WHERE timeline_id=? ORDER BY year ASC LIMIT 101""",
             (timeline_id,)).fetchall()
         return [{"year":row["year"],"policy":row["policy"],
                  "stats":json.loads(row["state_json"]),
                  "event":({"name":row["event_name"],"description":row["event_text"]}
                           if row["event_name"] else None),
-                 "created_at":row["created_at"]} for row in rows]
+                 "influence":row["influence_kind"],"created_at":row["created_at"]} for row in rows]
 
     def timeline_card(item, cv, owner, years=None):
         data = {"id":item["id"],"civilization_id":item["civilization_id"],"name":item["name"],
@@ -188,12 +197,12 @@ def mount_evolution(app, db, require_user, maybe_user, now, fail):
                      (civilization_id,)).fetchone()[0] >= 3:
             fail(429,"每个文明最多有三条命运支线")
 
-    def add_year(c, tid, year, policy, state, event):
+    def add_year(c, tid, year, policy, state, event, influence_kind=None):
         c.execute("""INSERT INTO fantasy_evolution_years
-            (timeline_id,year,policy,state_json,event_name,event_text,created_at)
-            VALUES(?,?,?,?,?,?,?)""",(tid,year,policy,json.dumps(state,ensure_ascii=False,sort_keys=True),
+            (timeline_id,year,policy,state_json,event_name,event_text,created_at,influence_kind)
+            VALUES(?,?,?,?,?,?,?,?)""",(tid,year,policy,json.dumps(state,ensure_ascii=False,sort_keys=True),
                         event["name"] if event else None,
-                        event["description"] if event else None,now()))
+                        event["description"] if event else None,now(),influence_kind))
 
     @app.get("/api/fantasy/evolution/config")
     def config():
@@ -259,9 +268,28 @@ def mount_evolution(app, db, require_user, maybe_user, now, fail):
             if not previous or previous["year"] >= 100:
                 fail(409,"该纪元已到达一百年上限")
             year=previous["year"]+1
-            state,event=evolve(json.loads(previous["state_json"]),draft.policy,cv["law"],timeline_id,year)
-            add_year(c,timeline_id,year,draft.policy,state,event)
-            return {"year":year,"stats":state,"policy":draft.policy,"event":event,
+            influence_kind=None
+            influence_effect=None
+            if draft.relation_id is not None:
+                from relations_api import KINDS
+                # Only the current owner may apply a tie to their own future year.
+                relation=c.execute("""SELECT r.*,a.visibility a_visible,b.visibility b_visible,
+                    wa.visibility a_world,wb.visibility b_world
+                    FROM fantasy_civilization_relations r
+                    JOIN fantasy_civilizations a ON a.id=r.source_id
+                    JOIN fantasy_civilizations b ON b.id=r.target_id
+                    JOIN fantasy_worlds wa ON wa.id=a.world_id
+                    JOIN fantasy_worlds wb ON wb.id=b.world_id
+                    WHERE r.id=?""",(draft.relation_id,)).fetchone()
+                if not relation or relation["status"]!="accepted" or \
+                   cv["id"] not in (relation["source_id"],relation["target_id"]) or \
+                   any(relation[k]!="public" for k in ("a_visible","b_visible","a_world","b_world")):
+                    fail(409,"该文明关系无效、已撤回或未获双方公开同意")
+                influence_kind=relation["kind"]
+                influence_effect=KINDS[influence_kind]
+            state,event=evolve(json.loads(previous["state_json"]),draft.policy,cv["law"],timeline_id,year,influence_effect)
+            add_year(c,timeline_id,year,draft.policy,state,event,influence_kind)
+            return {"year":year,"stats":state,"policy":draft.policy,"event":event,"influence":influence_kind,
                     "fictional":True,"notice":NOTICE}
 
     @app.post("/api/fantasy/evolution/timelines/{timeline_id}/fork",status_code=201)
