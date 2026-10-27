@@ -74,7 +74,7 @@ def test_recipient_must_consent_choose_owned_public_cannot_be_forged(env):
     assert bridge["status"] == "accepted"
     assert bridge["sender_exhibit"]["title"] == "甲的公开藏品"
     assert bridge["recipient_exhibit"]["title"] == "乙的公开藏品"
-    assert bridge["clue"] is None
+    assert "共同标签" in bridge["clue"]  # Both test exhibits share default tags
     assert accept(bob, iid, b).status_code == 409
     assert len(overview(alice).json()["bridges"]) == 1
     assert len(overview(bob).json()["bridges"]) == 1
@@ -142,7 +142,9 @@ def test_privacy_revocation_redacts_both_endpoints_and_progress(env):
         assert "被撤回的甲方标题" not in str(v)
         assert "乙方仍公开的标题" not in str(v)
         assert "被撤回的甲方标题" not in str(overview(client).json())
-        assert "乙方仍公开的标题" not in str(overview(client).json())
+        # The receiver's own genuinely public exhibit remains in their personal
+        # source selector; only the revoked bridge must redact both captions.
+        assert "乙方仍公开的标题" not in str(overview(client).json()["bridges"])
     assert bob.put(f"/api/parallel/bridges/{iid}/mark").status_code == 409
     assert bob.delete(f"/api/parallel/bridges/{iid}/mark").status_code == 200
     restored = alice.patch(f"/api/exhibits/{a}", json=item(
