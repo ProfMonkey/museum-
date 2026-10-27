@@ -1,0 +1,92 @@
+/* V27 · Personal Constellation — midnight, antique gold, and quiet cosmic depth. */
+.ct-root{max-width:1480px;margin:0 auto;padding-bottom:28px}
+.ct-hero{position:relative;isolation:isolate;overflow:hidden;border:1px solid #c8a96d35;border-radius:24px;padding:clamp(23px,4vw,45px);margin-bottom:20px;background:radial-gradient(ellipse at 82% 40%,#4c638a4d,transparent 38%),radial-gradient(ellipse at 14% 100%,#246e6b36,transparent 45%),linear-gradient(135deg,#111d30,#0a1422 72%);min-height:260px}
+.ct-hero h1{font:500 clamp(30px,4.2vw,48px)/1.35 Georgia,"Noto Serif SC",serif;letter-spacing:.02em;margin:14px 0;color:#fff4db;max-width:700px}
+.ct-hero h1 em{font-style:normal;color:#edc987}
+.ct-hero>p{max-width:680px;color:#b6c5d5;font-size:13px;line-height:2}
+.ct-eyebrow{font-size:10px;letter-spacing:.16em;color:#c8aa76;font-weight:800}
+.ct-stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.ct-stats span{padding:7px 12px;border:1px solid #d8c18d30;background:#0b16258c;border-radius:30px;color:#b9c6d4;font-size:11px}
+.ct-stats b{color:#f0d29b;font-size:15px;margin-right:3px}
+.ct-orbit{position:absolute;border:1px solid #d6bb7c1a;border-radius:50%;pointer-events:none;z-index:-1}
+.ct-orbit-one{width:320px;height:320px;right:5%;top:-80px}
+.ct-orbit-two{width:430px;height:430px;right:1%;top:-135px}
+.ct-layout{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(320px,.82fr);gap:17px;align-items:start}
+.ct-panel{border:1px solid #cdb6812e;background:linear-gradient(145deg,#121f30,#0c1624);border-radius:18px;padding:20px;margin:16px 0}
+.ct-graph-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;padding:14px 16px;border:1px solid #c7aa7233;border-radius:13px 13px 0 0;background:#101c2b}
+.ct-graph-head span{font-size:10px;letter-spacing:.12em;color:#d8bd86;font-weight:800}
+.ct-graph-head small{font-size:10px;color:#94a9bc}
+.ct-graph-stage{height:430px;position:relative;overflow:hidden;border:1px solid #c7aa7224;border-top:0;border-radius:0 0 13px 13px;background:radial-gradient(ellipse at 50% 50%,#32435b65,transparent 50%),radial-gradient(circle at 25% 18%,#fff7d914 0 1px,transparent 2px),radial-gradient(circle at 70% 60%,#fff7d918 0 1px,transparent 2px),#091321}
+.ct-graph-stage:before,.ct-graph-stage:after{content:"";position:absolute;left:50%;top:50%;border:1px solid #c7b27b13;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}
+.ct-graph-stage:before{width:46%;height:46%}.ct-graph-stage:after{width:80%;height:80%}
+.ct-lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.ct-line{stroke:#e1c38b;stroke-width:1.5;stroke-opacity:.72;filter:drop-shadow(0 0 3px #d4b87966)}
+.ct-point{position:absolute;z-index:2;transform:translate(-50%,-50%);display:flex;align-items:center;gap:6px;max-width:158px;min-width:74px;padding:7px 9px;border:1px solid #9eabc04a;border-radius:30px;background:#14243aee;color:#dce5ed;box-shadow:0 5px 18px #0005;transition:border-color .15s,background .15s,transform .15s;font-size:10px;white-space:normal}
+.ct-point:hover,.ct-point.selected{border-color:#f0cf8d;background:#31465c;transform:translate(-50%,-50%) scale(1.04)}
+.ct-point.selected{box-shadow:0 0 0 2px #e8c9842c,0 5px 18px #0005}
+.ct-point-star{color:#f2d291;font-size:15px;flex-shrink:0}
+.ct-point.idea .ct-point-star{color:#a6d8d0}
+.ct-point-title{overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-align:left;overflow-wrap:anywhere}
+.ct-graph-core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:9px/1.6 Georgia,serif;text-align:center;letter-spacing:.18em;color:#c8ad7a5c;pointer-events:none}
+.ct-node-list{display:flex;gap:7px;flex-wrap:wrap;padding:13px 0}
+.ct-node-list button{display:flex;align-items:center;gap:8px;text-align:left;padding:8px 11px;border-radius:10px;border:1px solid #9eabc02b;background:#101b2a;color:#d8e1e9;min-width:0;max-width:100%}
+.ct-node-list button.active{border-color:#d9b979;background:#26354a}
+.ct-node-list b{font-size:11px;display:block;overflow-wrap:anywhere}
+.ct-node-list small{font-size:9px;display:block;color:#8da0b5}
+.ct-list-symbol{color:#e9ca8d;font-size:15px}
+.ct-section-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.ct-section-head h2,.ct-panel h2{font:500 22px/1.45 Georgia,"Noto Serif SC",serif;color:#f1d8a9;margin:7px 0 10px}
+.ct-panel h3{font-size:13px;color:#e8d5b4;margin:13px 0 9px}
+.ct-count{display:inline-flex;min-width:28px;height:28px;align-items:center;justify-content:center;border-radius:50%;background:#d8bd8620;color:#edcf93;font-size:11px}
+.ct-muted,.ct-footnote{font-size:11px;line-height:1.9;color:#92a5b8}
+.ct-footnote{margin:17px 4px}
+.ct-detail-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin:10px 0}
+.ct-detail-top h2{font-size:25px;overflow-wrap:anywhere}
+.ct-kind{font-size:9px;color:#a8d6cf;border:1px solid #91c9bd4b;background:#24504b4a;padding:4px 8px;border-radius:20px}
+.ct-note{font-size:12px;line-height:1.9;color:#b3c3d0;overflow-wrap:anywhere}
+.ct-meta,.ct-tags{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
+.ct-meta span,.ct-tags span{font-size:9px;border:1px solid #9daab92a;padding:4px 8px;border-radius:20px;color:#aab8c7}
+.ct-tags span{color:#d8c08c}
+.ct-divider{height:1px;background:#ffffff13;margin:17px 0}
+.ct-panel form label{display:block;font-size:10px;color:#aebed0;margin:10px 0}
+.ct-panel input,.ct-panel textarea,.ct-panel select{display:block;width:100%;margin-top:6px;background:#0a1422;border:1px solid #9aaec033;border-radius:9px;padding:10px 11px;color:#f1eee7;font-size:11px}
+.ct-panel textarea{min-height:76px;resize:vertical}
+.ct-panel input::placeholder,.ct-panel textarea::placeholder{color:#677e93}
+.ct-primary,.ct-secondary,.ct-actions button,.ct-import button,.ct-suggestion-nodes+ p+small+button{border:1px solid #d3b67a75;background:#cbb077;color:#172235;border-radius:9px;padding:9px 13px;font-size:11px;font-weight:800}
+.ct-secondary{background:#22364b;color:#d9c99e;border-color:#c6b07745}
+.ct-danger{background:#492c35!important;border:1px solid #c87f8466!important;color:#ffd5ce!important;border-radius:8px;padding:7px 9px;font-size:10px}
+.ct-panel form button{margin-top:7px}
+.ct-edge-list{display:grid;gap:8px;margin-top:10px}
+.ct-edge-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;border:1px solid #aab7c01c;border-radius:10px;background:#0b1522}
+.ct-edge-row b{display:block;font-size:11px;color:#e5d4b3}
+.ct-edge-row small{display:block;font-size:10px;color:#92a5b8;line-height:1.8;overflow-wrap:anywhere}
+.ct-suggestions{display:grid;gap:10px;margin-top:13px}
+.ct-suggestions article{border:1px solid #c3ad7a33;border-radius:12px;padding:12px;background:#0c1827}
+.ct-suggestion-nodes{display:flex;gap:8px;align-items:center;justify-content:space-between}
+.ct-suggestion-nodes b{font-size:11px;color:#ebd8b3;overflow-wrap:anywhere}
+.ct-suggestion-nodes span{color:#c8a968;flex-shrink:0}
+.ct-suggestions article p{font-size:10px;color:#c3b28e;line-height:1.8;margin:8px 0}
+.ct-suggestions article small{display:block;color:#8da2b6;font-size:9px;margin-bottom:10px}
+.ct-suggestions article button{border:1px solid #c9ad7550;background:#20364a;color:#e5d3ac;border-radius:8px;padding:7px 10px;font-size:10px}
+.ct-empty,.ct-empty-small{text-align:center;padding:30px 15px;border:1px dashed #bba16b46;border-radius:15px;background:#0c1725}
+.ct-empty h3{color:#e9d5ad;font:500 19px Georgia,"Noto Serif SC",serif}
+.ct-empty p{font-size:11px;color:#91a5b8;line-height:1.9;max-width:480px;margin:0 auto 16px}
+.ct-empty-star{font-size:34px;color:#e8c88a}
+.ct-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.ct-empty-small{padding:16px;color:#92a5b8;font-size:11px}
+.ct-tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ct-tool-grid form{border:1px solid #9aafc124;background:#0b1624;border-radius:12px;padding:13px;min-width:0}
+.ct-tool-grid form h3{margin:0 0 10px;color:#e6d0a5}
+.ct-search-results{display:grid;gap:7px;margin-top:12px}
+.ct-search-results article{padding:10px;border:1px solid #a5b2c01d;border-radius:9px}
+.ct-search-results b{display:block;color:#e7d5b7;font-size:11px;overflow-wrap:anywhere}
+.ct-search-results small{display:block;color:#8fa3b8;font-size:9px;margin:4px 0 8px}
+.ct-search-results article div{display:flex;gap:6px;flex-wrap:wrap}
+.ct-search-results button{font-size:10px;padding:6px 9px}
+.ct-import{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border:1px solid #d0b57b3b;background:#142338;border-radius:12px;padding:14px;margin-top:13px}
+.ct-import b{font-size:11px;color:#ecd4a6}
+.ct-import p{font-size:10px;line-height:1.8;color:#8ea3b7;margin:4px 0 0}
+.ct-error{border:1px solid #cb8585;color:#f1c5c5;padding:10px;border-radius:10px}
+@media(max-width:1100px){.ct-layout{grid-template-columns:1fr}.ct-graph-stage{height:390px}}
+@media(max-width:650px){.ct-hero{border-radius:17px}.ct-graph-stage{height:330px}.ct-point{max-width:112px;padding:6px 7px;font-size:9px}.ct-point-star{font-size:12px}.ct-tool-grid{grid-template-columns:1fr}.ct-panel{padding:15px}.ct-graph-head small{width:100%}.ct-stats{gap:6px}.ct-stats span{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.ct-point{transition:none}}
