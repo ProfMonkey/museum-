@@ -5,7 +5,7 @@
 'use strict';
 const W={config:null,wheels:[],wheelId:0,detail:null,guest:null,pending:null,
  search:'',sources:[],notice:'',error:'',busy:false,rotation:0,animation:0,
- result:null,guestIndex:null,history:[],spinTimer:0,guestByTopic:{},sourceWarning:''};
+ result:null,guestIndex:null,history:[],spinTimer:0,guestByTopic:{},sourceWarning:'',sourceBlocked:false};
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"\'":'&#39;'}[c]));
 const logged=()=>Boolean(window.S?.user);
 const button=(action,text,attr='')=>'<button type="button" data-wheel="'+action+'" '+attr+'>'+text+'</button>';
@@ -108,7 +108,7 @@ async function ensureWheel(topic){
 }
 
 async function load(){
- W.error='';localLoad();
+ W.error='';W.sourceBlocked=false;localLoad();
  try{
   if(!W.config)W.config=await api('/wheels/config');
   if(logged()){
@@ -144,7 +144,9 @@ async function load(){
   }
   if(!logged())await verifyGuestSources();
   if(W.search)W.sources=(await api('/wheels/sources?q='+encodeURIComponent(W.search))).items||[];
- }catch(err){W.error=err.message||'无法连接万物转盘';}
+ }catch(err){W.error=err.message||'无法连接万物转盘';
+  if(!logged()&&Object.keys(W.guest?.sourceIds||{}).length)W.sourceBlocked=true;
+ }
 }
 function svgWheel(items,theme){
  const n=items.length;
@@ -257,7 +259,9 @@ function history(){
  '<div class="ww-empty">转盘还没有记录，试试第一次抽取吧 ✨</div>')+'</section>';
 }
 async function render(){
- await load();return '<div class="ww-root">'+hero()+sceneButtons()+
+ await load();
+ if(W.sourceBlocked)return '<div class="ww-root"><section class="ww-panel"><h2>🔒 暂时无法核验公开藏品</h2><p>当前连接无法验证临时转盘引用的原始展品是否仍可公开。为了不泄露已撤回来源，暂不展示这些缓存标题或执行抽取。</p>'+button('reload','↻ 重新连接检查','class="ww-primary"')+'</section></div>';
+ return '<div class="ww-root">'+hero()+sceneButtons()+
  (W.notice?'<div class="ww-notice">'+esc(W.notice)+'</div>':'')+
  (W.error?'<div class="ww-error">'+esc(W.error)+'</div>':'')+
  (W.sourceWarning?'<div class="ww-notice" role="status">'+esc(W.sourceWarning)+'</div>':'')+
@@ -348,6 +352,7 @@ document.addEventListener('click',async ev=>{
  ev.preventDefault();ev.stopImmediatePropagation();
  const act=b.dataset.wheel,id=Number(b.dataset.id||0);
  try{
+  if(act==='reload'){await redraw();return;}
   if(act==='spin'){await spin();return;}
   if(act==='destiny'){await navigate('adventure');return;}
   if(W.busy)return;
