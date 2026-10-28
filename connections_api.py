@@ -11,6 +11,7 @@ from typing import Literal
 
 from fastapi import Depends, Query
 from pydantic import BaseModel, Field
+from parallel_universes import PUBLIC_SCOPE
 
 LINK_KINDS = {
     "same_topic": "主题相近",
@@ -98,6 +99,13 @@ def mount_connections(app, db, read_exhibit, maybe_user, require_user, now, fail
             JOIN users u ON u.id=e.user_id WHERE e.id=?""", (eid,)).fetchone()
         if not accessible(row, user):
             return None
+        if not (user and row["user_id"] == user["id"]):
+            # A public exhibit nested inside a withdrawn private studio/world
+            # is no longer public, even though e.visibility still says public.
+            legal = c.execute("SELECT 1 FROM exhibits e WHERE e.id=? AND " + PUBLIC_SCOPE,
+                              (eid,)).fetchone()
+            if not legal:
+                return None
         result = node(row)
         result["is_mine"] = bool(user and user["id"] == row["user_id"])
         return result
@@ -145,7 +153,7 @@ def mount_connections(app, db, read_exhibit, maybe_user, require_user, now, fail
                 if len(nodes) < MAX_NODES:
                     sample = c.execute("""SELECT e.*,u.username owner FROM exhibits e
                         JOIN users u ON u.id=e.user_id
-                        WHERE e.visibility='public' OR e.user_id=?
+                        WHERE (""" + PUBLIC_SCOPE + """) OR e.user_id=?
                         ORDER BY e.created_at DESC LIMIT 450""", (viewer,)).fetchall()
                     suggestions = []
                     for raw in sample:
@@ -189,7 +197,8 @@ def mount_connections(app, db, read_exhibit, maybe_user, require_user, now, fail
             source = read_exhibit(c, exhibit_id, user)
             if source["user_id"] != user["id"]:
                 fail(403, "只有起点展品的馆长可以创建关联")
-            read_exhibit(c, data.target_id, user)
+            if item_row(c, data.target_id, user) is None:
+                fail(404, "目标展品不存在或尚未公开")
             existing = c.execute("SELECT COUNT(*) FROM exhibit_links WHERE from_id=?", (exhibit_id,)).fetchone()[0]
             if existing >= 60:
                 fail(400, "一件展品最多添加 60 条手动关联")
