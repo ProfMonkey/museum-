@@ -442,7 +442,7 @@ def my_exhibits(user=Depends(require_user)):
 @app.get("/api/my/saved")
 def saved(user=Depends(require_user)):
     with db() as c:
-        rows = c.execute(item_select(user["id"]) + " JOIN bookmarks b ON b.exhibit_id=e.id WHERE b.user_id=? AND (e.visibility='public' OR e.user_id=?) ORDER BY e.created_at DESC", (user["id"], user["id"], user["id"], user["id"])).fetchall()
+        rows = c.execute(item_select(user["id"]) + " JOIN bookmarks b ON b.exhibit_id=e.id WHERE b.user_id=? AND ((" + PUBLIC_SCOPE + ") OR e.user_id=?) ORDER BY e.created_at DESC", (user["id"], user["id"], user["id"], user["id"])).fetchall()
     return [item_dict(r) for r in rows]
 
 
@@ -579,7 +579,7 @@ def read_hall(c,id,user):
     hall = c.execute("SELECT h.*,u.username owner FROM halls h JOIN users u ON u.id=h.user_id WHERE h.id=?",(id,)).fetchone()
     if not hall or (hall["visibility"] != "public" and (not user or hall["user_id"] != user["id"])):
         fail(404,"展厅不存在或没有访问权限")
-    clause = "" if user and user["id"] == hall["user_id"] else " AND e.visibility='public'"
+    clause = "" if user and user["id"] == hall["user_id"] else " AND " + PUBLIC_SCOPE
     items = c.execute(item_select(user["id"] if user else 0) + " JOIN hall_items hi ON hi.exhibit_id=e.id WHERE hi.hall_id=?" + clause + " ORDER BY hi.pos_y, hi.pos_x", (user["id"] if user else 0,user["id"] if user else 0,id)).fetchall()
     return {"hall": plain_row(hall), "items": [{**item_dict(item), **plain_row(c.execute("SELECT pos_x AS x,pos_y AS y,width FROM hall_items WHERE hall_id=? AND exhibit_id=?",(id,item["id"])).fetchone())} for item in items]}
 
