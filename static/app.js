@@ -118,6 +118,13 @@ async function exportMine(){let out=await api('/my/backup');let blob=new Blob([J
 // Global click handling avoids binding duplicate button implementations across screens.
 document.addEventListener('click',async e=>{let b=e.target.closest('[data-action]');if(!b)return;if(b.closest('.card')&&b!==b.closest('.card')&&b.dataset.action==='detail')return;let a=b.dataset.action,id=Number(b.dataset.id||0);try{
 if(a==='navigate')await navigate(b.dataset.view);
+else if(a==='navBack')await navBack();
+else if(a==='taxonomyDomain'){S.q='';S.cat='全部';S.domain=b.dataset.value;S.series='全部';S.timeBucket='全部';S.following=false;S.page=1;await navigate('discover');}
+else if(a==='taxonomyCategory'){S.q='';S.cat=b.dataset.value;S.domain=b.dataset.domain||'全部';S.series='全部';S.timeBucket='全部';S.following=false;S.page=1;await navigate('discover');}
+else if(a==='taxonomyTime'){S.q='';S.cat='全部';S.domain='全部';S.series='全部';S.timeBucket=b.dataset.value;S.following=false;S.page=1;await navigate('discover');}
+else if(a==='taxonomySeries'){S.q='';S.cat='全部';S.domain='全部';S.series=b.dataset.value;S.timeBucket='全部';S.following=false;S.page=1;await navigate('discover');}
+else if(a==='taxonomyClear'){S.q='';S.cat='全部';S.domain='全部';S.series='全部';S.timeBucket='全部';S.following=false;S.page=1;if(S.view==='discover')await render();else await navigate('discover');}
+else if(a==='filterDomain'||a==='filterCategory'||a==='filterTime'||a==='filterSeries'){const action=a,value=b.dataset.value,domain=b.dataset.domain;if(!$('#modal').classList.contains('hidden'))close();if(action==='filterDomain'){S.domain=value;S.cat='全部';}else if(action==='filterCategory'){S.cat=value;S.domain=domain||S.domain;}else if(action==='filterTime')S.timeBucket=value;else if(action==='filterSeries')S.series=value;S.q='';S.following=false;S.page=1;if(S.view==='discover')await render();else await navigate('discover');}
 else if(a==='category'){S.cat=b.dataset.cat;S.page=1;await render()}
 else if(a==='series'){S.series=b.dataset.series||'全部';S.page=1;await render()}
 else if(a==='following'){if(!mustLogin())return;S.following=!S.following;S.page=1;await render()}
