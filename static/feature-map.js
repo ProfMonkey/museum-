@@ -2,6 +2,7 @@
 (function(){
 'use strict';
 const ITEMS=[
+{group:"发现与检索",view:"search",icon:"⌕",title:"搜索万物",desc:"不必先选分类，跨领域检索当前公开的社区藏品。",keywords:"搜索 藏品 标签 分类 关键词 馆长 全站 查找"},
 {group:"发现与检索",view:"discover",icon:"⌁",title:"发现广场",desc:"浏览真实公开的用户藏品，搜索、筛选并进入藏品档案。",keywords:"首页 推荐 展品 藏品 搜索 最新 分类"},
 {group:"发现与检索",view:"world-museums",icon:"♜",title:"世界名馆",desc:"探索开放馆藏中的真实艺术品与文化遗产。",keywords:"艺术 博物馆 真实馆藏 大都会 芝加哥"},
 {group:"收藏与创作",view:"saved",icon:"♡",title:"心动收藏",desc:"找回你收藏过、想继续看的藏品。",keywords:"收藏 书签 喜欢 稍后看"},
@@ -37,7 +38,7 @@ const RECENT_KEY='wonder-feature-recent-v40',LEGACY_RECENT_KEY='wonder-feature-r
 function recents(){try{let raw=localStorage.getItem(RECENT_KEY);if(!raw){raw=localStorage.getItem(LEGACY_RECENT_KEY);if(raw)localStorage.setItem(RECENT_KEY,raw)}const x=JSON.parse(raw||'[]');return Array.isArray(x)?x.filter(k=>ITEMS.some(v=>v.view===k)).slice(0,6):[]}catch(e){return []}}
 function remember(view){if(view==='catalog'||!ITEMS.some(x=>x.view===view))return;try{const values=[view,...recents().filter(k=>k!==view)].slice(0,6);localStorage.setItem(RECENT_KEY,JSON.stringify(values))}catch(e){}}
 const INTENTS=[
-{view:"discover",icon:"⌕",title:"找一件藏品",desc:"按关键词、领域、类别和年代筛选真实展品"},
+{view:"search",icon:"⌕",title:"找一件藏品",desc:"按关键词、领域、类别和年代筛选真实展品"},
 {view:"cosmos",icon:"⏳",title:"按时间探索",desc:"从远古、历史到此刻，沿时间线查找"},
 {view:"wonder-radar",icon:"✧",title:"发现新奇事物",desc:"科技、太空、数码与互联网奇物"},
 {view:"museum",icon:"▦",title:"整理我的收藏",desc:"管理藏品、个人展厅和私藏内容"},
@@ -46,6 +47,7 @@ const INTENTS=[
 {view:"coexhibitions",icon:"🤝",title:"与别人合作",desc:"共同策展、交换故事、建立联系"}
 ];
 const RELATIONSHIPS={
+ search:[["discover","返回发现广场"],["cosmos","按年代继续探索"],["world-museums","浏览世界名馆开放馆藏"]],
  discover:[["world-museums","看真实开放馆藏"],["cosmos","按年代继续探索"],["wonder-radar","发现当代新领域"]],
  "world-museums":[["discover","回到社区藏品"],["cosmos","按时间寻找关联"],["saved","收入心动收藏"]],
  saved:[["constellation","整理收藏之间的关系"],["museum","管理自己的馆藏"],["discover","继续发现新内容"]],
@@ -74,7 +76,7 @@ const RELATIONSHIPS={
  insights:[["catalog","从功能地图寻找功能"],["discover","回到真实内容"],["wheels","体验转盘互动"]],
  notifications:[["profile","查看馆长主页"],["museum","管理自己的博物馆"],["discover","继续探索"]],
  profile:[["museum","管理自己的馆藏"],["saved","查看心动收藏"],["discover","浏览公开藏品"]],
- catalog:[["discover","查找真实藏品"],["wheels","使用万物转盘"],["museum","管理个人展馆"]]
+ catalog:[["search","查找真实藏品"],["wheels","使用万物转盘"],["museum","管理个人展馆"]]
 };
 function taskShortcuts(){
  return '<section class="feature-intents"><div class="feature-intents-heading"><h2>先说你想做什么</h2><p>不用记住功能名，直接按目的进入。</p></div><div class="feature-intents-grid">'+INTENTS.map(x=>
