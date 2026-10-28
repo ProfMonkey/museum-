@@ -33,8 +33,8 @@ const ITEMS=[
 {group:"个人与系统",view:"profile",icon:"♙",title:"馆长主页",desc:"查看一位馆长公开的个人介绍、藏品与展厅。",keywords:"用户 主页 馆长 作者 个人资料 关注"}
 ];
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
-const RECENT_KEY='wonder-feature-recent-v40';
-function recents(){try{const x=JSON.parse(localStorage.getItem(RECENT_KEY)||'[]');return Array.isArray(x)?x.filter(k=>ITEMS.some(v=>v.view===k)).slice(0,6):[]}catch(e){return []}}
+const RECENT_KEY='wonder-feature-recent-v40',LEGACY_RECENT_KEY='wonder-feature-recent-v39';
+function recents(){try{let raw=localStorage.getItem(RECENT_KEY);if(!raw){raw=localStorage.getItem(LEGACY_RECENT_KEY);if(raw)localStorage.setItem(RECENT_KEY,raw)}const x=JSON.parse(raw||'[]');return Array.isArray(x)?x.filter(k=>ITEMS.some(v=>v.view===k)).slice(0,6):[]}catch(e){return []}}
 function remember(view){if(view==='catalog'||!ITEMS.some(x=>x.view===view))return;try{const values=[view,...recents().filter(k=>k!==view)].slice(0,6);localStorage.setItem(RECENT_KEY,JSON.stringify(values))}catch(e){}}
 const INTENTS=[
 {view:"discover",icon:"⌕",title:"找一件藏品",desc:"按关键词、领域、类别和年代筛选真实展品"},
