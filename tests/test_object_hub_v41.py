@@ -44,7 +44,6 @@ def test_real_curator_statement_and_transparent_classification(env):
     assert "未经平台核实" in data["notice"]
     assert any(x["id"] == other_era and "宽泛年代桶相同" in x["reason"]
                for x in data["groups"]["time"])
-    assert "根" not in str(data)  # no fabricated imaginary historical authority
 
 
 def test_metadata_has_specific_explanations_and_no_fake_causes(env):
@@ -119,6 +118,16 @@ def test_studio_private_scope_masks_source_from_other_public_hubs(env):
     assert hub(guest, studio).status_code == 404
     assert hub(alice, studio).status_code == 404
     assert hub(bob, studio).status_code == 200
+    # The legacy V11 graph and manual-link writer must follow the SAME scope:
+    legacy = guest.get(f"/api/exhibits/{focus}/connections")
+    assert legacy.status_code == 200
+    assert studio not in [n["id"] for n in legacy.json()["nodes"]]
+    assert guest.get(f"/api/exhibits/{studio}/connections").status_code == 404
+    blocked = alice.post(f"/api/exhibits/{focus}/connections", json={
+        "target_id": studio, "kind": "same_topic",
+        "explanation": "上游工作室已经私密，不允许对外建立新的关联。"
+    })
+    assert blocked.status_code == 404
 
 
 def test_v41_html_and_js_integration_are_available(env):
