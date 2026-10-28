@@ -47,7 +47,7 @@
    '<div class="oh-heading"><div><span class="eyebrow">OBJECT-CENTERED EXPLORATION · V41</span>'+
    '<h2>🌌 以这件藏品为中心</h2><p>先看它属于哪里，再看它与什么有关。每条关联都说明为什么出现。</p></div>'+
    '<span class="oh-count">'+all+' 条当前可见线索</span></div>'+
-   '<div class="oh-trail" role="group" aria-label="藏品探索路径">'+breadcrumbs(r)+'</div>'+
+   '<div class="oh-trail" role="group" aria-label="藏品探索路径">'+breadcrumbs(r)+(r.is_public?'<button class="oh-copy" data-action="copyExhibit" data-id="'+r.id+'" title="复制可打开的原始藏品链接">🔗 复制这件藏品的链接</button>':'')+'</div>'+
    '<div class="oh-paths"><button data-action="filterDomain" data-value="'+esc(r.domain||'其他')+'"><span>所属领域</span><b>'+esc(r.domain||'其他')+'</b><i>查看同领域 ↗</i></button>'+
    '<button data-action="filterCategory" data-value="'+esc(r.category||'其他')+'" data-domain="'+esc(r.domain||'其他')+'"><span>细分类别</span><b>'+esc(r.category||'其他')+'</b><i>查看同细类 ↗</i></button>'+
    '<button data-action="filterTime" data-value="'+esc(r.time_bucket||'时间不详')+'"><span>时间范围</span><b>'+esc(r.time_bucket||'时间不详')+'</b><i>按年代继续 ↗</i></button></div>'+
