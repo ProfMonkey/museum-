@@ -205,9 +205,9 @@ def test_parent_creator_studio_privacy_blocks_current_public_archaeology(env):
 
 def test_v37_assets_and_version(env):
     alice,bob,guest=env
-    assert guest.get("/api/health").json()["version"]=="39.0"
+    assert guest.get("/api/health").json()["version"]=="40.0"
     html=guest.get("/").text
-    assert "WORLD 39" in html
+    assert "WORLD 40" in html
     assert "万物文明考古局" in html
     for asset in ("archaeology.js","archaeology.css"):
         assert f"/static/{asset}" in html

@@ -213,7 +213,7 @@ def test_assets_and_version_are_integrated(env):
     alice,bob,guest=env
     html=guest.get("/").text
     assert "万物星图" in html
-    assert guest.get("/api/health").json()["version"]=="39.0"
+    assert guest.get("/api/health").json()["version"]=="40.0"
     for asset in ("constellation.css","constellation.js"):
         assert f"/static/{asset}" in html
         assert guest.get(f"/static/{asset}").status_code==200

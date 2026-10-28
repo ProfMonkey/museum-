@@ -215,7 +215,7 @@ def test_studio_parent_private_hides_collision_and_candidates(env):
 
 def test_v33_assets_navigation_version_and_manual_only_actions(env):
     alice,bob,guest=env
-    assert guest.get("/api/health").json()["version"]=="39.0"
+    assert guest.get("/api/health").json()["version"]=="40.0"
     html=guest.get("/").text
     assert "万物碰撞机" in html
     assert "WONDER ATLAS · WORLD " in html

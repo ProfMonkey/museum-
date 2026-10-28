@@ -24,13 +24,13 @@ def run(cmd: list[str]) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Test Wonder Atlas locally. Never uses GitHub Actions.")
-    parser.add_argument("--quick", action="store_true", help="Run focused V24 and V32–V39 navigation/interactive modules.")
+    parser.add_argument("--quick", action="store_true", help="Run focused V24 and V32–V40 navigation, taxonomy and interactive modules.")
     parser.add_argument("--js-only", action="store_true", help="Skip Python tests and only check JS syntax.")
     args = parser.parse_args()
 
     failed = False
     if not args.js_only:
-        tests = ["tests/test_wheel_v24.py", "tests/test_mysteries_v32.py", "tests/test_collision_v33.py", "tests/test_civilizations_v34.py", "tests/test_embassies_v35.py", "tests/test_heritage_v36.py", "tests/test_archaeology_v37.py", "tests/test_v38_navigation.py", "tests/test_v39_wheels.py"] if args.quick else ["tests"]
+        tests = ["tests/test_wheel_v24.py", "tests/test_mysteries_v32.py", "tests/test_collision_v33.py", "tests/test_civilizations_v34.py", "tests/test_embassies_v35.py", "tests/test_heritage_v36.py", "tests/test_archaeology_v37.py", "tests/test_v40_navigation.py", "tests/test_v39_wheels.py"] if args.quick else ["tests"]
         failed |= run([sys.executable, "-m", "pytest", "-q", *tests]) != 0
     node = shutil.which("node")
     if node:

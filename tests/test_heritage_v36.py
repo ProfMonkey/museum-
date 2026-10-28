@@ -190,10 +190,10 @@ def test_cancelling_exchange_preserves_both_real_source_exhibits(env):
 
 def test_v36_frontend_and_version_with_no_automatic_actions(env):
     alice,bob,guest=env
-    assert guest.get("/api/health").json()["version"]=="39.0"
+    assert guest.get("/api/health").json()["version"]=="40.0"
     html=guest.get("/").text
     assert "万界遗产交换站" in html
-    assert "WORLD 39" in html
+    assert "WORLD 40" in html
     for f in ("heritage.js","heritage.css"):
         assert f"/static/{f}" in html
         assert guest.get(f"/static/{f}").status_code==200

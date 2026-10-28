@@ -5,6 +5,7 @@ The time bucket records a broad filter; time_note preserves the curator's exact 
 """
 from __future__ import annotations
 
+# "民间奇趣" is retained as a stored/API compatibility value; the UI labels it "用户上传系列".
 SERIES = ("藏品系列", "民间奇趣")
 TIME_BUCKETS = (
     "亿年前", "百万年前", "远古与史前", "千年至万年前", "近千年",
