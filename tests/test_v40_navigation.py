@@ -34,6 +34,8 @@ def test_feature_map_is_task_first_and_exposes_the_controlled_taxonomy():
     assert "window.WonderTaxonomy" in catalog
     assert "timeBuckets" in taxonomy and "groups" in taxonomy
     assert '"用户上传系列"' in taxonomy
+    assert 'series: ["藏品系列","民间奇趣"]' in taxonomy
+    assert 'TAX.seriesLabels?.[v]||v' in app
     assert "用户上传系列" in catalog and "用户上传系列" in app
     assert "LEGACY_RECENT_KEY" in catalog
     for action in ("taxonomyDomain", "taxonomyCategory", "taxonomyTime", "taxonomySeries", "taxonomyClear"):
