@@ -150,7 +150,7 @@ else if(a==='close')close();
 else if(a==='reload')await init();
 else if(a==='new')await openEditor();
 else if(a==='detail'){window.WonderObjectHub?.reset();trackUsage('discover','detail');await openDetail(id);}
-else if(a==='hubDetail'){const from=S.detail;if(!from)return;if(!Number.isSafeInteger(id)||id<1||id===from.id)return;await openDetail(id);window.WonderObjectHub?.push(from.id,from.title);await openDetail(id);}
+else if(a==='hubDetail'){const from=S.detail;if(!from)return;if(!Number.isSafeInteger(id)||id<1||id===from.id)return;window.WonderObjectHub?.push(from.id,from.title);try{await openDetail(id)}catch(err){window.WonderObjectHub?.pop();throw err}}
 else if(a==='hubBack'){const prev=window.WonderObjectHub?.pop();if(prev)await openDetail(prev.id);}
 else if(a==='edit')await openEditor(id);
 else if(a==='like'||a==='bookmark'){if(!mustLogin())return;await api('/exhibits/'+id+'/'+a,{method:'POST'});trackUsage('discover',a==='like'?'like':'save');await openDetail(id)}
