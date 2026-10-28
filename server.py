@@ -35,7 +35,7 @@ DATABASE = DATA / "wonder.db"
 IS_SECURE = os.getenv("WONDER_COOKIE_SECURE", "0") == "1"
 SESSION_SECONDS = 60 * 60 * 24 * 21
 
-app = FastAPI(title="万物博物馆 API", version="41.0", docs_url="/api/docs", redoc_url=None)
+app = FastAPI(title="万物博物馆 API", version="42.0", docs_url="/api/docs", redoc_url=None)
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 app.mount("/media", StaticFiles(directory=MEDIA), name="media")
 
@@ -388,6 +388,102 @@ def read_exhibit(c, id, user, public_only=False):
         if not public:
             fail(404, "展品不存在或没有访问权限")
     return item_dict(row)
+
+
+# V42: one searchable index over REAL, currently public community exhibits.
+# This route does not claim to search remote world-museum catalogues or private work.
+SEARCH_FIELDS = ("e.title", "e.tags", "e.category", "e.domain",
+                 "e.description", "e.story", "u.username")
+
+
+def search_terms(q: str):
+    # Whitespace-separated tokens are ANDed; punctuation such as % and _ is
+    # matched literally with instr() rather than becoming a SQL LIKE wildcard.
+    return q.strip()[:80].split()[:6]
+
+
+@app.get("/api/search")
+def unified_search(q: str = "", domain: str = "", category: str = "",
+                   series: str = "", time_bucket: str = "",
+                   sort: Literal["relevance", "latest", "popular"] = "relevance",
+                   page: int = 1, user=Depends(maybe_user)):
+    for value, allowed, label in ((domain, DOMAINS, "领域"),
+                                  (series, SERIES, "系列"),
+                                  (time_bucket, TIME_BUCKETS, "年代")):
+        if value and value != "全部" and value not in allowed:
+            fail(400, "未知" + label + "分类")
+    page = max(1, min(page, 9999))
+    terms = search_terms(q)
+    from_clause = " FROM exhibits e JOIN users u ON u.id=e.user_id WHERE "
+    predicate = PUBLIC_SCOPE
+    term_sql = (" AND " + " AND ".join(
+        "(" + " OR ".join("instr(lower(" + field + "),lower(?))>0"
+                        for field in SEARCH_FIELDS) + ")" for _ in terms)) if terms else ""
+    term_args = [term for term in terms for _ in SEARCH_FIELDS]
+    base = from_clause + predicate + term_sql
+
+    filtered_predicate = predicate + term_sql
+    filter_args = []
+    for column, value, max_len in (("domain", domain, 32), ("category", category, 48),
+                                   ("series", series, 24), ("time_bucket", time_bucket, 24)):
+        if value and value != "全部":
+            filtered_predicate += " AND e." + column + "=?"
+            filter_args.append(value[:max_len])
+
+    if sort == "popular":
+        ordering = "likes_count DESC, e.created_at DESC, e.id DESC"
+        order_args = []
+    elif sort == "latest" or not terms:
+        ordering = "e.created_at DESC, e.id DESC"
+        order_args = []
+    else:
+        # Stable, explainable navigation weights; NOT a truth or causality score.
+        phrase = " ".join(terms)
+        ordering = """CASE
+          WHEN lower(e.title)=lower(?) THEN 8
+          WHEN instr(lower(e.title),lower(?))=1 THEN 7
+          WHEN instr(lower(e.title),lower(?))>0 THEN 6
+          WHEN instr(lower(e.tags),lower(?))>0 THEN 5
+          WHEN instr(lower(e.category),lower(?))>0 THEN 4
+          WHEN instr(lower(e.domain),lower(?))>0 THEN 3
+          WHEN instr(lower(e.description),lower(?))>0 THEN 2
+          WHEN instr(lower(e.story),lower(?))>0 THEN 1
+          ELSE 0 END DESC, likes_count DESC, e.created_at DESC, e.id DESC"""
+        order_args = [phrase] * 8
+
+    with db() as c:
+        total = c.execute("SELECT COUNT(*)" + from_clause + filtered_predicate, term_args + filter_args).fetchone()[0]
+        # Facet counts reflect the keyword-matched PUBLIC corpus, before the
+        # selected filters. Each facet is derived from current rows, not guesses.
+        facets = {}
+        for col in ("domain", "category", "series", "time_bucket"):
+            rows = c.execute("SELECT e." + col + " AS value, COUNT(*) AS count" +
+                             base + " GROUP BY e." + col +
+                             " ORDER BY count DESC, value ASC", term_args).fetchall()
+            facets[col] = [plain_row(row) for row in rows]
+        rows = c.execute(item_select(user["id"] if user else 0) +
+                         " WHERE " + filtered_predicate +
+                         " ORDER BY " + ordering + " LIMIT 16 OFFSET ?",
+                         [user["id"] if user else 0] * 2 + term_args + filter_args +
+                         order_args + [(page-1)*16]).fetchall()
+    items = []
+    for row in rows:
+        item = item_dict(row)
+        if terms:
+            fields = (("标题", item["title"]), ("标签", ",".join(item["tags"])),
+                      ("分类", item["category"]), ("领域", item["domain"]),
+                      ("简介", item["description"]), ("正文", item["story"]),
+                      ("馆长", item["owner"]))
+            item["matched_in"] = [label for label, value in fields
+                                  if any(term.casefold() in (value or "").casefold()
+                                         for term in terms)][:4]
+        else:
+            item["matched_in"] = []
+        items.append(item)
+    return {"items": items, "total": total, "page": page, "per_page": 16,
+            "has_more": page*16 < total, "facets": facets,
+            "query": " ".join(terms),
+            "scope": "当前公开的社区藏品（不含外部世界名馆数据库）"}
 
 
 @app.get("/api/feed")
