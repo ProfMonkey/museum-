@@ -37,6 +37,8 @@
   const legacy = ["科学","技术","艺术","生活","自然","故事","奇怪知识","游戏","古董与珠宝","古币与钱币","古代文明","雕塑与宗教艺术","陶瓷与器物","古籍与手稿","历史文物","科技与发明","AI与机器人","航天与宇宙","自然与化石","矿物与宝石","建筑与设计","摄影与影像","互联网奇物","流行文化","生活发现","原创理论"];
   window.WonderTaxonomy = {
     series: ["藏品系列","民间奇趣"],
+    // Keep legacy stored/API values stable while presenting the curator-facing label clearly.
+    seriesLabels: {"藏品系列":"藏品系列","民间奇趣":"用户上传系列"},
     domains: Object.keys(groups),
     groups,
     allCategories: [...new Set([...Object.values(groups).flat(), ...legacy])],
