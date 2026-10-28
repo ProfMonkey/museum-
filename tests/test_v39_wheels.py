@@ -55,9 +55,9 @@ def test_wheel_regular_sources_still_guard_privacy_and_track_live_titles(env):
 
 def test_v39_ui_assets_and_every_genre_action(env):
     alice,bob,guest=env
-    assert guest.get("/api/health").json()["version"]=="40.0"
+    assert guest.get("/api/health").json()["version"]=="41.0"
     html=guest.get("/").text
-    assert "WORLD 40" in html
+    assert "WORLD 41" in html
     assert 'data-view="wheels"><span>🎡</span> 万物转盘' in html
     app=guest.get("/static/app.js").text
     wheel=guest.get("/static/wheel.js").text
