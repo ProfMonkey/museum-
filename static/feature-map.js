@@ -85,10 +85,12 @@ function taxonomyBrowser(){
  const T=window.WonderTaxonomy;if(!T)return '';
  const series=['藏品系列','民间奇趣'];
  const time=(T.timeBuckets||[]).map(x=>'<button class="taxonomy-chip" data-action="taxonomyTime" data-value="'+esc(x)+'" title="'+esc(T.timeDescriptions?.[x]||'')+'">'+esc(x)+'</button>').join('');
+ const groupedCats=new Set(Object.values(T.groups||{}).flat());
+ const legacyCats=(T.allCategories||[]).filter(cat=>!groupedCats.has(cat));
  const domains=Object.entries(T.groups||{}).map(([domain,cats])=>
  '<details class="taxonomy-domain"><summary><span>'+esc(domain)+'</span><small>'+cats.length+' 个细类</small></summary><div class="taxonomy-domain-actions"><button class="taxonomy-chip taxonomy-domain-main" data-action="taxonomyDomain" data-value="'+esc(domain)+'">查看整个领域 ↗</button>'+cats.map(cat=>
  '<button class="taxonomy-chip" data-action="taxonomyCategory" data-value="'+esc(cat)+'" data-domain="'+esc(domain)+'">'+esc(cat)+'</button>'
- ).join('')+'</div></details>').join('');
+ ).join('')+'</div></details>').join('')+(legacyCats.length?'<details class="taxonomy-domain taxonomy-legacy"><summary><span>历史兼容分类</span><small>'+legacyCats.length+' 个旧标签</small></summary><p class="taxonomy-footnote">这些名称来自旧版本，暂未归入新的标准领域；仍可用于检索历史藏品。</p><div class="taxonomy-domain-actions">'+legacyCats.map(cat=>'<button class="taxonomy-chip" data-action="taxonomyCategory" data-value="'+esc(cat)+'" data-domain="">'+esc(cat)+'</button>').join('')+'</div></details>':'');
  return '<section class="feature-taxonomy"><div class="feature-taxonomy-heading"><div><div class="eyebrow">COLLECTION TAXONOMY</div><h2>按分类找藏品</h2><p>系列、领域、细类和年代是不同的筛选维度。点击任意项，就会带着筛选条件打开发现广场。</p></div><button class="ghost" data-action="taxonomyClear">清除筛选</button></div>'+
  '<div class="taxonomy-dimension"><h3>① 内容系列</h3><div class="taxonomy-chip-row"><button class="taxonomy-chip" data-action="taxonomySeries" data-value="全部">全部系列</button>'+series.map(x=>'<button class="taxonomy-chip" data-action="taxonomySeries" data-value="'+x+'">'+x+'</button>').join('')+'</div></div>'+
  '<div class="taxonomy-dimension"><h3>② 按年代</h3><div class="taxonomy-chip-row">'+time+'</div></div>'+
