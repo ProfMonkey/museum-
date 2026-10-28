@@ -164,7 +164,7 @@ def test_other_users_nodes_are_unreachable_and_bad_requests_rejected(env):
 
 def test_v28_static_assets_server_version_and_nav(env):
     alice, bob, guest = env
-    assert guest.get("/api/health").json()["version"] == "40.0"
+    assert guest.get("/api/health").json()["version"] == "41.0"
     home = guest.get("/").text
     assert "万物星图" in home
     for asset in ("voyages.js", "voyages.css"):
