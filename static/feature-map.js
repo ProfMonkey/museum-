@@ -94,7 +94,7 @@ function taxonomyBrowser(){
  return '<section class="feature-taxonomy"><div class="feature-taxonomy-heading"><div><div class="eyebrow">COLLECTION TAXONOMY</div><h2>按分类找藏品</h2><p>系列、领域、细类和年代是不同的筛选维度。点击任意项，就会带着筛选条件打开发现广场。</p></div><button class="ghost" data-action="taxonomyClear">清除筛选</button></div>'+
  '<div class="taxonomy-dimension"><h3>① 内容系列</h3><div class="taxonomy-chip-row"><button class="taxonomy-chip" data-action="taxonomySeries" data-value="全部">全部系列</button>'+series.map(x=>'<button class="taxonomy-chip" data-action="taxonomySeries" data-value="'+x+'">'+x+'</button>').join('')+'</div></div>'+
  '<div class="taxonomy-dimension"><h3>② 按年代</h3><div class="taxonomy-chip-row">'+time+'</div></div>'+
- '<details class="taxonomy-domain-browser"><summary>③ 按领域与细分类别浏览 <span>'+(T.domains||[]).length+' 个领域 · '+(T.allCategories||[]).length+' 个细类</span></summary><div class="taxonomy-domain-list">'+domains+'</div></details>'+
+ '<details class="taxonomy-domain-browser"><summary>③ 按领域与细分类别浏览 <span>'+(T.domains||[]).length+' 个领域 · '+(T.allCategories||[]).length+' 个分类标签</span></summary><div class="taxonomy-domain-list">'+domains+'</div></details>'+
  '<p class="taxonomy-footnote">同一件藏品可以同时属于一个领域、一个细类、一个宽泛年代和一个系列。虚构故事与真实藏品会在各自页面中明确区分。</p></section>';
 }
 function groupFor(view){return ITEMS.find(x=>x.view===view)?.group|| (view==='catalog'?'功能地图':'其他功能')}
