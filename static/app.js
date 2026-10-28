@@ -153,6 +153,7 @@ else if(a==='new')await openEditor();
 else if(a==='detail'){window.WonderObjectHub?.reset();trackUsage('discover','detail');await openDetail(id);}
 else if(a==='hubDetail'){const from=S.detail;if(!from)return;if(!Number.isSafeInteger(id)||id<1||id===from.id)return;window.WonderObjectHub?.push(from.id,from.title);try{await openDetail(id)}catch(err){window.WonderObjectHub?.pop();throw err}}
 else if(a==='hubBack'){const prev=window.WonderObjectHub?.pop();if(prev)await openDetail(prev.id);}
+else if(a==='copyExhibit'){if(S.detail?.id!==id)return;const url=new URL(window.location.href);url.search='';url.hash='';url.searchParams.set('source',String(id));if(navigator.clipboard?.writeText){try{await navigator.clipboard.writeText(url.href);toast('已复制原始藏品链接；公开状态变化后链接可能不可访问。')}catch(err){window.prompt('复制原始藏品链接',url.href)}}else window.prompt('复制原始藏品链接',url.href)}
 else if(a==='edit')await openEditor(id);
 else if(a==='like'||a==='bookmark'){if(!mustLogin())return;await api('/exhibits/'+id+'/'+a,{method:'POST'});trackUsage('discover',a==='like'?'like':'save');await openDetail(id)}
 else if(a==='delete'){if(!confirm('确定要永久删除这件展品吗？'))return;await api('/exhibits/'+id,{method:'DELETE'});close();toast('展品已删除');await render()}
