@@ -102,10 +102,10 @@ function nextSteps(view){
  }).filter(Boolean);
 }
 function render(){
-var groups=[];ITEMS.forEach(function(x){if(groups.indexOf(x.group)<0)groups.push(x.group)});
+var GROUP_ORDER=["发现与检索","分类与关联探索","收藏与创作","互动与体验","世界与故事","合作与交流","个人与系统"];var groups=GROUP_ORDER.filter(function(g){return ITEMS.some(function(x){return x.group===g})});
 var html='<div class="feature-map-page"><section class="feature-map-hero"><div class="eyebrow">WONDER ATLAS · FIND YOUR WAY</div><h1>想做什么？<br>从这里开始。</h1><p>功能很多，但你不应该靠记忆找入口。搜一个词，或按用途浏览。核心馆藏放在最前面，专题玩法按类别整理。</p><div class="hero-buttons"><button class="primary" data-action="navigate" data-view="discover">⌁ 逛藏品</button><button class="ghost" data-action="navigate" data-view="wheels">🎡 万物转盘</button><button class="ghost" data-action="new">＋ 发布新发现</button></div></section>';
-html+=taskShortcuts()+taxonomyBrowser();
 const recent=recents();if(recent.length){html+='<section class="feature-map-group feature-map-recents" id="featureRecent"><h2>↶ 最近打开 <small>仅保存在这台设备，不上传浏览记录</small></h2><div class="feature-map-grid">';recent.forEach(function(key){var x=ITEMS.find(item=>item.view===key);if(x)html+='<button class="feature-map-card" data-action="navigate" data-view="'+esc(x.view)+'"><span class="feature-map-icon">'+x.icon+'</span><span class="feature-map-card-copy"><strong>'+esc(x.title)+'</strong><p>'+esc(x.desc)+'</p></span></button>'});html+='</div></section>'}
+html+=taskShortcuts()+taxonomyBrowser();
 html+='<label class="feature-map-search"><span>⌕</span><input id="featureSearch" placeholder="搜功能：美食、上传、文明、谜题、时间线……" autocomplete="off" aria-label="搜索功能入口"><small>支持功能名与用途</small></label><div id="featureMapResults">';
 groups.forEach(function(group){
 var items=ITEMS.filter(function(x){return x.group===group});
