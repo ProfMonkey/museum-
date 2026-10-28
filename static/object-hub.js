@@ -12,14 +12,15 @@
  function push(id,title){
   if(!Number.isSafeInteger(Number(id))||Number(id)<1)return;
   if(trail[trail.length-1]?.id===Number(id))return;
-  trail.push({id:Number(id),title:String(title||'上一件藏品').slice(0,120)});
+  // Remember IDs, not title snapshots: a source can be withdrawn later.
+  trail.push({id:Number(id)});
   if(trail.length>35)trail.shift();
  }
  function pop(){return trail.pop()||null}
  function breadcrumbs(root){
   if(!trail.length)return '<span class="oh-trip-hint">从这件藏品开始自由探索</span>';
   const previous=trail[trail.length-1];
-  return '<button class="oh-back" data-action="hubBack">← 返回「'+esc(previous.title)+'」</button>'+
+  return '<button class="oh-back" data-action="hubBack">← 返回上一件藏品</button>'+
    '<span class="oh-stops">已走过 '+trail.length+' 站 · 当前：'+esc(root.title)+'</span>';
  }
  function peer(item){
@@ -55,7 +56,7 @@
    '<div class="oh-next"><h3>或者，换一种探索方式</h3><div class="oh-next-actions">'+
    '<button data-action="cosmosFocus" data-id="'+r.id+'">⏳ 沿时间线看</button>'+
    '<button data-cx="open" data-id="'+r.id+'">⌁ 打开关联网络</button>'+
-   '<button data-action="atlasFrom" data-id="'+r.id+'">✧ 从这里随机探索</button>'+
+   (r.is_public?'<button data-action="atlasFrom" data-id="'+r.id+'">✧ 从这里随机探索</button>':'')+
    '<button data-action="constellationAdd" data-id="'+r.id+'">✦ 加入我的星图</button></div></div>'+
    '<p class="oh-warning">真实性说明：'+esc(hub.notice||'关联依据来自真实分类及作者声明，未经平台事实核验。')+'</p>'+
    '</section>';
