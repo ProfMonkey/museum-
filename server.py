@@ -35,7 +35,7 @@ DATABASE = DATA / "wonder.db"
 IS_SECURE = os.getenv("WONDER_COOKIE_SECURE", "0") == "1"
 SESSION_SECONDS = 60 * 60 * 24 * 21
 
-app = FastAPI(title="万物博物馆 API", version="41.0", docs_url="/api/docs", redoc_url=None)
+app = FastAPI(title="万物博物馆 API", version="42.0", docs_url="/api/docs", redoc_url=None)
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 app.mount("/media", StaticFiles(directory=MEDIA), name="media")
 
@@ -414,19 +414,20 @@ def unified_search(q: str = "", domain: str = "", category: str = "",
             fail(400, "未知" + label + "分类")
     page = max(1, min(page, 9999))
     terms = search_terms(q)
-    from_clause = " FROM exhibits e JOIN users u ON u.id=e.user_id WHERE " + PUBLIC_SCOPE
+    from_clause = " FROM exhibits e JOIN users u ON u.id=e.user_id WHERE "
+    predicate = PUBLIC_SCOPE
     term_sql = (" AND " + " AND ".join(
         "(" + " OR ".join("instr(lower(" + field + "),lower(?))>0"
                         for field in SEARCH_FIELDS) + ")" for _ in terms)) if terms else ""
     term_args = [term for term in terms for _ in SEARCH_FIELDS]
-    base = from_clause + term_sql
+    base = from_clause + predicate + term_sql
 
-    filtered = base
+    filtered_predicate = predicate + term_sql
     filter_args = []
     for column, value, max_len in (("domain", domain, 32), ("category", category, 48),
                                    ("series", series, 24), ("time_bucket", time_bucket, 24)):
         if value and value != "全部":
-            filtered += " AND e." + column + "=?"
+            filtered_predicate += " AND e." + column + "=?"
             filter_args.append(value[:max_len])
 
     if sort == "popular":
@@ -451,7 +452,7 @@ def unified_search(q: str = "", domain: str = "", category: str = "",
         order_args = [phrase] * 8
 
     with db() as c:
-        total = c.execute("SELECT COUNT(*)" + filtered, term_args + filter_args).fetchone()[0]
+        total = c.execute("SELECT COUNT(*)" + from_clause + filtered_predicate, term_args + filter_args).fetchone()[0]
         # Facet counts reflect the keyword-matched PUBLIC corpus, before the
         # selected filters. Each facet is derived from current rows, not guesses.
         facets = {}
@@ -461,7 +462,7 @@ def unified_search(q: str = "", domain: str = "", category: str = "",
                              " ORDER BY count DESC, value ASC", term_args).fetchall()
             facets[col] = [plain_row(row) for row in rows]
         rows = c.execute(item_select(user["id"] if user else 0) +
-                         filtered[len(" FROM exhibits e JOIN users u ON u.id=e.user_id"):] +
+                         " WHERE " + filtered_predicate +
                          " ORDER BY " + ordering + " LIMIT 16 OFFSET ?",
                          [user["id"] if user else 0] * 2 + term_args + filter_args +
                          order_args + [(page-1)*16]).fetchall()
