@@ -33,6 +33,8 @@ def test_feature_map_is_task_first_and_exposes_the_controlled_taxonomy():
     assert "const RELATIONSHIPS=" in catalog
     assert "window.WonderTaxonomy" in catalog
     assert "timeBuckets" in taxonomy and "groups" in taxonomy
+    assert '"用户上传系列"' in taxonomy
+    assert "用户上传系列" in catalog and "LEGACY_RECENT_KEY" in catalog or "用户上传系列" in app
     for action in ("taxonomyDomain", "taxonomyCategory", "taxonomyTime", "taxonomySeries", "taxonomyClear"):
         assert f'data-action="{action}"' in catalog
         assert f"else if(a==='{action}')" in app
