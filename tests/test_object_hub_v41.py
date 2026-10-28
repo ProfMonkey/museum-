@@ -101,6 +101,9 @@ def test_studio_private_scope_masks_source_from_other_public_hubs(env):
                    domain="自然史与化石", tags="化石,古海洋")
     studio = create(bob, "带有私密制作记录的化石", category="化石与古生物",
                     domain="自然史与化石", tags="化石,古海洋")
+    # A curator could have saved the item before the original author's
+    # container was withdrawn. It should disappear from the saved view too.
+    assert alice.post(f"/api/exhibits/{studio}/bookmark").status_code == 200
     # Directly set up an upstream private owner-controlled studio container.
     # The original exhibit itself remains marked public. PUBLIC_SCOPE must
     # still mask it from foreign callers and related results.
@@ -118,6 +121,13 @@ def test_studio_private_scope_masks_source_from_other_public_hubs(env):
     assert hub(guest, studio).status_code == 404
     assert hub(alice, studio).status_code == 404
     assert hub(bob, studio).status_code == 200
+    # Neither the source dialog, feed, creator profile, saved collection, nor
+    # classic quick recommendations can reveal a former public source.
+    assert guest.get(f"/api/exhibits/{studio}").status_code == 404
+    assert studio not in [x["id"] for x in guest.get("/api/feed").json()["items"]]
+    assert studio not in [x["id"] for x in guest.get("/api/users/Bob").json()["items"]]
+    assert studio not in [x["id"] for x in alice.get("/api/my/saved").json()]
+    assert studio not in [x["id"] for x in guest.get(f"/api/exhibits/{focus}/related").json()]
     # The legacy V11 graph and manual-link writer must follow the SAME scope:
     legacy = guest.get(f"/api/exhibits/{focus}/connections")
     assert legacy.status_code == 200
