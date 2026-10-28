@@ -1,0 +1,46 @@
+/* V41 — object-centered navigation, consistent with the dark-gold museum theme. */
+.oh-root{margin:24px 0;padding:21px;border:1px solid #dfbd7237;border-radius:17px;background:linear-gradient(145deg,#142235,#0c1725)}
+.oh-heading{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.oh-heading h2{font:500 24px/1.35 Georgia,"Songti SC",serif;color:#eedcaf;margin:7px 0}
+.oh-heading p{color:#b0bed1;font-size:12px;line-height:1.7;margin:0}
+.oh-count{white-space:nowrap;font-size:11px;color:#ecd09d;background:#d7b86c16;border:1px solid #d7b86c35;padding:5px 10px;border-radius:30px}
+.oh-trail{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:17px 0;padding:10px 12px;border-radius:11px;border:1px solid #8d9aab22;background:#ffffff05}
+.oh-back{font-size:12px;color:#f4d79b;background:#bd965823;border:1px solid #bd96585e;border-radius:8px;padding:7px 11px;max-width:100%;overflow-wrap:anywhere;text-align:left}
+.oh-trip-hint,.oh-stops{font-size:11px;color:#9eafc2}
+.oh-paths{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:15px 0}
+.oh-paths>button{display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:13px;min-width:0;gap:4px;border:1px solid #d1b77637;border-radius:11px;background:#ffffff05;color:#cbd6e2}
+.oh-paths>button:hover{background:#ddbd7512;border-color:#d1b7769e}
+.oh-paths span{font-size:10px;color:#9fabc0}
+.oh-paths b{font-size:13px;color:#f0dfb7;overflow-wrap:anywhere}
+.oh-paths i{font-size:10px;font-style:normal;color:#c6ad79;margin-top:auto}
+.oh-channels{display:grid;gap:10px}
+.oh-section{border:1px solid #ffffff17;background:#ffffff04;border-radius:12px;padding:0 12px}
+.oh-section>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;list-style:none;cursor:pointer;padding:14px 2px;color:#f1dbac;font-size:14px;font-weight:600}
+.oh-section>summary::-webkit-details-marker{display:none}
+.oh-section>summary:after{content:"＋";margin-left:auto;color:#d7b97d;font-size:17px}
+.oh-section[open]>summary:after{content:"−"}
+.oh-section>summary small{font-size:11px;color:#a8b8c8;font-weight:400}
+.oh-help{font-size:11px;color:#9eafc1;margin:0 0 12px;line-height:1.7}
+.oh-peer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:13px}
+.oh-peer{min-width:0;border-radius:11px;border:1px solid #ffffff18;background:#111f30;padding:12px 13px}
+.oh-peer-top,.oh-peer-bottom{display:flex;align-items:flex-start;flex-wrap:wrap;gap:7px;justify-content:space-between}
+.oh-peer-top small,.oh-peer-bottom{font-size:10px;color:#8fa2b6}
+.oh-peer-kind{font-size:10px;color:#e5ce93;border:1px solid #d7b36d58;border-radius:7px;padding:2px 7px}
+.oh-peer-title{font-size:14px;display:block;margin:10px 0 7px;padding:0;border:0;background:transparent;color:#f6e3bf;text-align:left;font-weight:650;overflow-wrap:anywhere}
+.oh-peer-title:hover{text-decoration:underline}
+.oh-peer-title span{color:#c5b38b;font-weight:400;margin-left:5px}
+.oh-peer-reason{font-size:11px;line-height:1.7;color:#c3cfdf;margin:6px 0 11px;overflow-wrap:anywhere}
+.oh-peer-bottom{border-top:1px solid #ffffff10;padding-top:9px}
+.oh-peer-bottom em{font-style:normal;color:#afc6b4}
+.oh-no-results{font-size:11px;color:#8496aa;padding:6px 0 13px;margin:0}
+.oh-next{margin-top:15px;padding:14px 0;border-top:1px solid #ffffff19}
+.oh-next h3{font-size:13px;color:#e8d3a3;margin:0 0 10px}
+.oh-next-actions{display:flex;gap:8px;flex-wrap:wrap}
+.oh-next-actions button{padding:9px 12px;border:1px solid #c6aa6e44;border-radius:9px;color:#e5d5ad;background:#e0bf7610;font-size:11px}
+.oh-next-actions button:hover{border-color:#e1c1829e}
+.oh-warning{font-size:10px;line-height:1.8;color:#9caec2;border-left:2px solid #d2b46b91;background:#ffffff04;padding:9px 12px;margin:7px 0 0}
+.detail-nav-advanced{width:100%;border-top:1px solid #ffffff18;padding:10px 0;margin-top:9px}
+.detail-nav-advanced>summary{font-size:12px;color:#eed9b3;cursor:pointer;padding:6px 0}
+.detail-nav-advanced>.row-actions{display:flex;flex-wrap:wrap;margin-top:11px}
+@media(max-width:760px){.oh-root{padding:13px;margin:18px 0}.oh-heading{flex-direction:column;gap:9px}.oh-heading h2{font-size:22px}.oh-peer-grid{grid-template-columns:minmax(0,1fr)}.oh-paths{grid-template-columns:minmax(0,1fr)}.oh-paths>button{padding:10px 12px}.oh-next-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.oh-next-actions button{text-align:left;min-width:0}}
+@media(prefers-reduced-motion:reduce){.oh-peer,.oh-back{transition:none}}
