@@ -26,6 +26,7 @@ from pydantic import BaseModel, Field, field_validator
 BASE = Path(__file__).resolve().parent
 import restore_assets  # Extract archived artwork when cloned from GitHub.
 from taxonomy import CATEGORY_TO_DOMAIN, DOMAINS, SERIES, TIME_BASES, TIME_BUCKETS
+from parallel_universes import PUBLIC_SCOPE
 DATA = Path(os.getenv("WONDER_DATA_DIR", str(BASE / "data")))
 DATA.mkdir(parents=True, exist_ok=True)
 MEDIA = DATA / "media"
@@ -376,15 +377,23 @@ def item_dict(row):
 
 def read_exhibit(c, id, user, public_only=False):
     row = c.execute(item_select(user["id"] if user else 0) + " WHERE e.id=?", (user["id"] if user else 0, user["id"] if user else 0, id)).fetchone()
-    if not row or (row["visibility"] == "private" and (public_only or not user or row["user_id"] != user["id"])):
+    if not row:
         fail(404, "展品不存在或没有访问权限")
+    owned = bool(user and row["user_id"] == user["id"])
+    # A formerly public exhibit can be withdrawn by its parent studio/world.
+    # e.visibility alone must never authorize a foreign visitor.
+    if public_only or not owned:
+        public = c.execute("SELECT 1 FROM exhibits e WHERE e.id=? AND " + PUBLIC_SCOPE,
+                           (id,)).fetchone()
+        if not public:
+            fail(404, "展品不存在或没有访问权限")
     return item_dict(row)
 
 
 @app.get("/api/feed")
 def feed(q: str = "", category: str = "", domain: str = "", series: str = "", time_bucket: str = "", sort: Literal["latest", "popular"] = "latest", page: int = 1, following: bool = False, user=Depends(maybe_user)):
     page = max(1, min(page, 9999))
-    sql = item_select(user["id"] if user else 0) + " WHERE e.visibility='public'"
+    sql = item_select(user["id"] if user else 0) + " WHERE " + PUBLIC_SCOPE
     args = [user["id"] if user else 0, user["id"] if user else 0]
     if following:
         if not user: fail(401, "查看关注动态请先登录")
@@ -419,7 +428,7 @@ def feed(q: str = "", category: str = "", domain: str = "", series: str = "", ti
 @app.get("/api/random")
 def random_exhibit(user=Depends(maybe_user)):
     with db() as c:
-        row = c.execute("SELECT id FROM exhibits WHERE visibility='public' ORDER BY RANDOM() LIMIT 1").fetchone()
+        row = c.execute("SELECT e.id FROM exhibits e WHERE " + PUBLIC_SCOPE + " ORDER BY RANDOM() LIMIT 1").fetchone()
         return read_exhibit(c, row["id"], user) if row else None
 
 
@@ -638,7 +647,7 @@ def profile(username:str,user=Depends(maybe_user)):
         owner=c.execute("SELECT id,username,bio,created_at FROM users WHERE username=?",(username,)).fetchone()
         if not owner:fail(404,"没有这个馆长")
         own=bool(user and user["id"]==owner["id"])
-        clause="" if own else " AND e.visibility='public'"
+        clause="" if own else " AND " + PUBLIC_SCOPE
         items=c.execute(item_select(user["id"] if user else 0) + " WHERE e.user_id=?"+clause+" ORDER BY e.created_at DESC LIMIT 100",(user["id"] if user else 0,user["id"] if user else 0,owner["id"])).fetchall()
         halls=c.execute("SELECT * FROM halls WHERE user_id=?"+("" if own else " AND visibility='public'")+" ORDER BY id",(owner["id"],)).fetchall()
         followers=c.execute("SELECT COUNT(*) FROM follows WHERE followee_id=?",(owner["id"],)).fetchone()[0]
@@ -734,7 +743,7 @@ def import_v1(payload: dict,user=Depends(require_user)):
 def related(id: int, user=Depends(maybe_user)):
     with db() as c:
         item=read_exhibit(c,id,user)
-        candidates=c.execute(item_select(user["id"] if user else 0) + " WHERE e.visibility='public' AND e.id<>? ORDER BY e.created_at DESC LIMIT 300",(user["id"] if user else 0,user["id"] if user else 0,id)).fetchall()
+        candidates=c.execute(item_select(user["id"] if user else 0) + " WHERE " + PUBLIC_SCOPE + " AND e.id<>? ORDER BY e.created_at DESC LIMIT 300",(user["id"] if user else 0,user["id"] if user else 0,id)).fetchall()
         tags=set(item["tags"])
         scores=[]
         for r in candidates:
