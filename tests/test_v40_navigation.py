@@ -17,7 +17,7 @@ def test_sidebar_and_breadcrumbs_have_clear_hierarchy():
     assert 'summary>世界与故事' in html
     assert 'summary>合作与交流' in html
     assert 'id="navBack"' in html and 'id="pageSection"' in html
-    assert "WORLD 40" in html
+    assert "WORLD 41" in html
     assert "本机预览 · 暂未公开发布" in html
     assert html.count('class="nav-group"') == 3
 
