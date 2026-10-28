@@ -1,4 +1,4 @@
-/* Wonder Atlas V10 — one navigation, one publish flow, one shared exhibit dialog.
+/* Wonder Atlas V40 — one navigation graph, clear taxonomy facets, and one shared exhibit dialog.
    Data lives in the server database; this file never fabricates community posts. */
 const S={user:null,view:'discover',q:'',cat:'全部',domain:'全部',series:'全部',timeBucket:'全部',sort:'latest',following:false,page:1,items:[],mine:[],halls:[],saved:[],profile:null,room:null,detail:null,journey:null,authMode:'login',editorId:null,editingRoom:null,navHistory:[]};
 window.S = S;
