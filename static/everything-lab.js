@@ -22,15 +22,15 @@ async function load(){
   }
   if(L.tab==='capsules')L.capsules=logged()?(await api('/lab/capsules')).items:[];
   if(L.tab==='passport')L.stamps=logged()?(await api('/lab/stamps')).items:[];
- }catch(e){L.error=e.message||'无法读取万物实验室';}
+ }catch(e){L.error=e.message||'无法读取互动实验';}
 }
 function header(){
  return '<div class="wl-hero"><div class="wl-eyebrow">WONDER ATLAS · V20 · THE EVERYTHING LAB</div>'+
- '<h1>世界万象，<br><em>皆可入馆。</em></h1><p>一件化石、一张照片、一段代码、一个奇怪的想法，甚至一整个原创文明。发现、收藏、编排，留下属于你的万物故事。</p>'+
+ '<h1>互动实验</h1><p>一件化石、一张照片、一段代码、一个奇怪的想法，甚至一整个原创文明。发现、收藏、编排，留下属于你的万物故事。</p>'+
  '<div class="wl-hero-note">✦ REAL DISCOVERY × FICTIONAL WORLDS × PERSONAL ARCHIVES</div></div>';
 }
 function tabs(){
- return '<div class="wl-tabs" role="tablist" aria-label="万物实验室">'+
+ return '<div class="wl-tabs" role="tablist" aria-label="互动实验">'+
  [['surprise','🎁 每日奇遇'],['albums','📚 万物图鉴'],['capsules','⏳ 时光胶囊'],['passport','🏅 奇遇护照']].map(([k,label])=>
  btn('tab',label,'data-tab="'+k+'" role="tab" aria-selected="'+(L.tab===k)+'" class="'+(L.tab===k?'active':'')+'"')).join('')+'</div>';
 }

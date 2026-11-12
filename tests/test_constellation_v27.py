@@ -212,8 +212,8 @@ def test_schema_validation_and_node_delete_permissions(env):
 def test_assets_and_version_are_integrated(env):
     alice,bob,guest=env
     html=guest.get("/").text
-    assert "万物星图" in html
-    assert guest.get("/api/health").json()["version"]=="41.0"
+    assert "藏品关系图" in html
+    assert guest.get("/api/health").json()["version"]=="42.0"
     for asset in ("constellation.css","constellation.js"):
         assert f"/static/{asset}" in html
         assert guest.get(f"/static/{asset}").status_code==200

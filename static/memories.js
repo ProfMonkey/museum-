@@ -39,7 +39,7 @@ function playMusic(){stopMusic();if(M.music==='silent')return;if(M.music==='cust
 }
 function saveUserSetting(flag){if(!S.user)return;localStorage.setItem(key(),flag?'1':'0');}
 function selected(){return M.items.filter(x=>M.selected.has(x.id));}
-function tabBar(){return `<div class="mem-subtabs" role="tablist"><button role="tab" aria-selected="${M.tab==='cinema'}" class="${M.tab==='cinema'?'active':''}" data-memory="switchTab" data-tab="cinema">♫ 回忆剧场</button><button role="tab" aria-selected="${M.tab==='growth'}" class="${M.tab==='growth'?'active':''}" data-memory="switchTab" data-tab="growth">✦ 我的世界成长史</button></div>`}
+function tabBar(){return `<div class="mem-subtabs" role="tablist"><button role="tab" aria-selected="${M.tab==='cinema'}" class="${M.tab==='cinema'?'active':''}" data-memory="switchTab" data-tab="cinema">♫ 浏览回忆</button><button role="tab" aria-selected="${M.tab==='growth'}" class="${M.tab==='growth'?'active':''}" data-memory="switchTab" data-tab="growth">✦ 我的世界成长史</button></div>`}
 async function render(){if(!S.user)return guest('你的回忆，等你点亮','登录后可以主动开启浏览足迹，再从看过的展品中剪辑回忆影片。');
   if(M.tab==='growth')return tabBar()+await WonderGrowth.render();
   const [hist,reels]=await Promise.all([api('/memories/history'),api('/memories/reels')]);M.items=hist.items;M.reels=reels;
@@ -47,7 +47,7 @@ async function render(){if(!S.user)return guest('你的回忆，等你点亮','�
   const possible=new Set(M.items.map(x=>x.id));M.selected=new Set([...M.selected].filter(id=>possible.has(id)));
   const dates=new Set(M.items.map(x=>day(x.last_seen_at)));const cats=new Set(M.items.map(x=>genre(x)));
   const visible=M.items.filter(x=>M.filter==='all'||genre(x)===M.filter);
-  return `${tabBar()}<section class="memory-hero"><span class="eyebrow">WONDER ATLAS · PRIVATE MEMORIES</span><h1>回忆，是时间留下的展品。</h1><p>把你曾经看过的奇物，重新编排成一场属于自己的电影。<br>选择配乐，进入剧场，让每一段好奇心再次闪光。</p>
+  return `${tabBar()}<section class="memory-hero"><span class="eyebrow">WONDER ATLAS · PRIVATE MEMORIES</span><h1>浏览回忆</h1><p>把你曾经看过的奇物，重新编排成一场属于自己的电影。<br>选择配乐，进入剧场，让每一段好奇心再次闪光。</p>
   <div class="mem-hero-actions"><button class="primary" data-memory="make" ${M.items.length?'':'disabled'}>▶ 从我的足迹放映</button><button class="ghost" data-memory="playAll" ${M.items.length?'':'disabled'}>✦ 播放全部回忆</button><button class="ghost" data-memory="revisit" ${M.items.length?'':'disabled'}>↻ 偶遇旧日奇物</button></div>
   <div class="mem-orbit">✧<i>✶</i><b>◌</b></div></section>
   <div class="memory-controls"><div><b>🔒 浏览足迹记录</b><p>默认关闭。开启之后，只有你点击进入展品详情时才会记录；别人看不到你的足迹。</p></div>
@@ -81,7 +81,7 @@ function pause(){M.playing=false;clearTimeout(M.timer);document.getElementById('
 function togglePlay(){M.playing=!M.playing;const b=document.getElementById('mem-play');if(b){b.textContent=M.playing?'Ⅱ 暂停':'▶ 播放';b.setAttribute('aria-label',M.playing?'暂停':'播放')}
   if(M.playing){playMusic();schedule()}else {clearTimeout(M.timer);stopMusic();}}
 function openFilm(items,title,music='piano'){if(!items.length)return toast('没有可播放的画面');stop();M.film=items;M.index=0;M.music=music;M.playing=false;
-  const root=document.createElement('div');root.id='memoryCinema';root.className='memory-cinema';root.setAttribute('role','dialog');root.setAttribute('aria-modal','true');root.setAttribute('aria-label','回忆剧场');
+  const root=document.createElement('div');root.id='memoryCinema';root.className='memory-cinema';root.setAttribute('role','dialog');root.setAttribute('aria-modal','true');root.setAttribute('aria-label','浏览回忆');
   root.innerHTML=`<div class="mem-cinema-top"><div class="mem-film-brand">✳ 万物博物馆 <span>MEMORY CINEMA</span></div><div class="mem-film-title">${e(title)}</div><button data-memory="exit" class="mem-exit" aria-label="关闭剧场">× 退出剧场</button></div>
     <div id="mem-screen" class="mem-film-stage" aria-live="polite"></div>
     <div class="mem-cinema-controls"><div class="mem-film-progress"><i id="mem-progress"></i></div><div class="mem-button-row"><button data-memory="prev" aria-label="上一幕">⟵ 上一幕</button><button data-memory="play" id="mem-play">▶ 播放</button><button data-memory="next" aria-label="下一幕">下一幕 ⟶</button><span id="mem-counter"></span></div>

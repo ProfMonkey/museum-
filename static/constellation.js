@@ -16,7 +16,7 @@ function hero(){
  const g=C.graph,n=g?.nodes||[],e=g?.edges||[];
  return '<section class="ct-hero"><div class="ct-orbit ct-orbit-one"></div><div class="ct-orbit ct-orbit-two"></div>'+
  '<div class="ct-eyebrow">WONDER ATLAS · V27 PERSONAL CONSTELLATION</div>'+
- '<h1>万物之间，<em>自有你的星图。</em></h1>'+
+ '<h1>藏品关系图</h1>'+
  '<p>一件收藏是一颗星，一个想法是另一颗星。你决定它们如何相连，系统只提供可解释的线索，不替你定义真相。</p>'+
  '<div class="ct-stats"><span><b>'+n.length+'</b> 颗星点</span><span><b>'+e.length+'</b> 条个人连线</span>'+
  '<span>🔒 默认仅自己可见</span></div></section>';
@@ -110,17 +110,17 @@ function toolsPanel(){
   const exists=(C.graph?.nodes||[]).some(n=>n.kind==='exhibit'&&n.exhibit_id===x.id);
   return '<article><b>'+esc(x.title)+'</b><small>'+esc(x.domain||x.category||'其他')+' · '+esc(x.owner||'')+'</small>'+
    '<div>'+btn('open-exhibit','查看','data-id="'+x.id+'"')+
-   btn('add-exhibit',exists?'已在星图中':'＋ 加入星图','data-id="'+x.id+'" '+(exists?'disabled':''))+'</div></article>';
+   btn('add-exhibit',exists?'已在星图中':'＋ 加入关系图','data-id="'+x.id+'" '+(exists?'disabled':''))+'</div></article>';
  }).join('')+'</div>':'')+'</form></div>'+
- '<div class="ct-import"><div><b>✦ 把已有的收藏带进来</b><p>仅导入你的藏品、心动收藏、自己标记参观的展品，以及已经主动启用的浏览历史。</p></div>'+
+ '<div class="ct-import"><div><b>✦ 把已有的收藏带进来</b><p>仅导入你的藏品、我的收藏、自己标记参观的展品，以及已经主动启用的浏览历史。</p></div>'+
  btn('import','导入我的世界')+'</div></section>';
 }
 async function render(){
- if(!logged())return '<section class="ct-hero"><div class="ct-eyebrow">WONDER ATLAS · V27</div><h1>建立你的第一张<em>万物星图。</em></h1>'+
+ if(!logged())return '<section class="ct-hero"><div class="ct-eyebrow">WONDER ATLAS · V27</div><h1>藏品关系图</h1>'+
  '<p>个人星图用于保存你自己的想法与关联。登录后可以开始构建，所有节点和连线默认仅你可见。</p>'+
  '<button class="ct-primary" data-action="login">登录 / 注册，开始建造</button></section>';
  await load();
- if(!C.graph)return '<section class="ct-hero"><h1>万物星图</h1><p>'+esc(C.error)+'</p><button class="ct-secondary" data-ct="reload">重新加载</button></section>';
+ if(!C.graph)return '<section class="ct-hero"><h1>藏品关系图</h1><p>'+esc(C.error)+'</p><button class="ct-secondary" data-ct="reload">重新加载</button></section>';
  return '<div class="ct-root">'+hero()+
  (C.error?'<p class="ct-error">'+esc(C.error)+'</p>':'')+
  '<div class="ct-layout"><div>'+graphMarkup()+suggestions()+'</div><div>'+selectedPanel()+toolsPanel()+'</div></div>'+

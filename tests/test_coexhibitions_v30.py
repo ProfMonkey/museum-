@@ -216,10 +216,10 @@ def test_invalid_inputs_limits_and_no_forged_foreign_exhibits(env):
 
 def test_assets_nav_and_version(env):
     alice,bob,guest=env
-    assert guest.get("/api/health").json()["version"]=="41.0"
+    assert guest.get("/api/health").json()["version"]=="42.0"
     html=guest.get("/").text
-    assert "万物联合展厅" in html
-    assert "WONDER ATLAS · WORLD " in html
+    assert "合作展厅" in html
+    assert "WONDER ATLAS" in html
     for f in ("coexhibitions.js","coexhibitions.css"):
         assert f"/static/{f}" in html
         assert guest.get(f"/static/{f}").status_code==200

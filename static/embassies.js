@@ -1,4 +1,4 @@
-/* V35 · 万界文明大使馆 · collaborative fiction with two real curators. */
+/* V35 · 合作写故事 · collaborative fiction with two real curators. */
 (() => {
 'use strict';
 const E={focus:0,note:'',edit:false,openLetter:false};
@@ -79,7 +79,7 @@ async function render(){
  let publicData,my={items:[],my_civilizations:[],other_civilizations:[]};
  try{publicData=await api('/embassies/public');
   if(logged())my=await api('/embassies/mine');
- }catch(err){return '<div class="eb-root"><h2>文明大使馆暂时不可用</h2><p>'+esc(err.message)+'</p></div>'}
+ }catch(err){return '<div class="eb-root"><h2>合作写故事暂时不可用</h2><p>'+esc(err.message)+'</p></div>'}
  const myItems=my.items||[],pubItems=publicData.items||[];
  if(!E.focus)E.focus=myItems[0]?.id||pubItems[0]?.id||0;
  let detail=null;
@@ -89,7 +89,7 @@ async function render(){
  }
  return '<div class="eb-root"><section class="eb-hero"><div class="eb-orbits"></div>'+
  '<div class="eb-overline">WONDER ATLAS · WORLD 35 · CIVILIZATION EMBASSIES</div>'+
- '<h1>让两个文明相遇，<br><em>让两位真实馆长共同书写历史。</em></h1>'+
+ '<h1>合作写故事</h1>'+
  '<p>不是机器人替他们谈判。这里的每次邀请、每封书信、每个公开许可，都由两位文明创作者亲自决定。</p>'+
  '<div class="eb-tags"><span>🤝 双向外交许可</span><span>✉️ 亲笔国书</span><span>🏛️ 联合世界纪事</span><span>🔐 版本双重批准</span></div></section>'+
  (E.note?'<div class="eb-notice">'+esc(E.note)+'</div>':'')+
@@ -105,7 +105,7 @@ async function render(){
  '<label>馆长 A 的邀请前言<textarea name="preface" minlength="15" maxlength="440" required placeholder="用架空故事介绍两座文明为何相遇。"></textarea></label>'+
  '<button class="eb-gold" type="submit">✉️ 发出私密外交邀请</button></form>':
  '<div class="eb-empty">暂缺两位来自不同真实账户、仍公开且全部来源有效的 V34 文明。可以先建设公开文明，或等待其他馆长创建自己的世界。</div>')+
- btn('goto-civs','🏛️ 前往文明演化实验室','class="eb-quiet"'):
+ btn('goto-civs','🏛️ 前往文明模拟实验室','class="eb-quiet"'):
  '<div class="eb-empty">登录后可以选择属于自己的公开 V34 文明发出外交邀请。游客无需登录也能浏览双方已批准的公开纪事。</div>'+
  btn('login','登录 / 注册','class="eb-gold"'))+'</section>'+
  '<section class="eb-panel"><div class="eb-overline">02 / YOUR EMISSARIES</div><h2>📨 我的使馆与来函</h2>'+

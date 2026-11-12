@@ -90,7 +90,7 @@ async function render(){
  try{gallery=await api('/mysteries');
  if(log())mine=await api('/mysteries/mine');
  if(log()&&X.manage)sources=await api('/mysteries/sources?q='+encodeURIComponent(X.query));
- }catch(e){return '<section class="mx-root mx-panel"><h2>谜案馆暂时不可用</h2><p>'+esc(e.message)+'</p></section>'}
+ }catch(e){return '<section class="mx-root mx-panel"><h2>藏品解谜暂时不可用</h2><p>'+esc(e.message)+'</p></section>'}
  const mineItems=mine.items||[];
  if(X.manage&&!mineItems.some(x=>x.id===X.manage)){X.manage=mineItems[0]?.id||0}
  if(!X.manage&&mineItems.length)X.manage=mineItems[0].id;
@@ -103,7 +103,7 @@ async function render(){
  }
  return '<div class="mx-root"><section class="mx-hero"><div class="mx-portal"></div>'+
  '<div class="mx-kicker">WONDER ATLAS · WORLD 32 · MYSTERY EXPEDITIONS</div>'+
- '<h1>万物皆有谜，<br><em>每件藏品都能成为一把钥匙。</em></h1>'+
+ '<h1>藏品解谜</h1>'+
  '<p>跨越真实馆藏的线索游戏：作者亲手布置谜题，玩家用藏品选项破解时空路线。不是虚构投稿，也不是假装机器知道所有答案。</p>'+
  '<div class="mx-hero-badges"><span>🗝️ 跨馆寻宝</span><span>🎭 双人故事与真人策展</span><span>📜 真实来源</span><span>✨ 隐藏结局</span></div></section>'+
  (X.alert?'<p class="mx-alert">'+esc(X.alert)+'</p>':'')+
@@ -111,7 +111,7 @@ async function render(){
  '<p>只展示拥有真实公开藏品选项、由真实馆长发布的完整寻宝路线。无内容时展示空状态。</p></div>'+
  btn('random','🎲 随机开启一道真实谜案','class="mx-gold"')+'</div>'+
  (publicItems.length?'<div class="mx-cards">'+publicItems.map(introCard).join('')+'</div>':
- '<div class="mx-empty">目前还没有可用的公开谜案。成为第一位谜案馆长，创作从真实藏品出发的跨时空寻宝之旅。</div>')+'</section>'+
+ '<div class="mx-empty">目前还没有可用的公开谜案。成为第一位藏品解谜长，创作从真实藏品出发的跨时空寻宝之旅。</div>')+'</section>'+
  (X.selected?(log()?stagePane(play):'<section class="mx-panel"><h2>🎮 解开这条真实谜案</h2><p>游客可以浏览谜案，登录后才会开始保存你的专属解谜路线和进度。</p>'+
  btn('login','登录 / 注册，开始探险','class="mx-gold"')+'</section>'):
  '')+

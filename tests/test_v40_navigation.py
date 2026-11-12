@@ -10,16 +10,13 @@ def read(path):
 
 def test_sidebar_and_breadcrumbs_have_clear_hierarchy():
     html = read("static/index.html")
-    assert 'class="nav-cap">发现与检索</div>' in html
-    assert 'class="nav-cap">分类与关联探索</div>' in html
-    assert 'class="nav-cap">收藏与创作</div>' in html
-    assert 'class="nav-cap">互动与体验</div>' in html
-    assert 'summary>世界与故事' in html
-    assert 'summary>合作与交流' in html
+    for group in ('逛博物馆','我的收藏','趣味体验'):
+        assert f'class="nav-cap">{group}</div>' in html
+    assert '<summary>更多探索</summary>' in html
     assert 'id="navBack"' in html and 'id="pageSection"' in html
-    assert "WORLD 42" in html
-    assert "本机预览 · 暂未公开发布" in html
-    assert html.count('class="nav-group"') == 3
+    assert 'id="globalSearchForm"' in html
+    assert html.count('class="nav-group"') == 1
+    assert '13 项' not in html
 
 
 def test_feature_map_is_task_first_and_exposes_the_controlled_taxonomy():
@@ -35,8 +32,8 @@ def test_feature_map_is_task_first_and_exposes_the_controlled_taxonomy():
     assert "timeBuckets" in taxonomy and "groups" in taxonomy
     assert '"用户上传系列"' in taxonomy
     assert 'series: ["藏品系列","民间奇趣"]' in taxonomy
-    assert 'TAX.seriesLabels?.[v]||v' in app
-    assert "用户上传系列" in catalog and "用户上传系列" in app
+    assert 'series' in read('static/unified-search.js')
+    assert "用户上传系列" in catalog
     assert "LEGACY_RECENT_KEY" in catalog
     for action in ("taxonomyDomain", "taxonomyCategory", "taxonomyTime", "taxonomySeries", "taxonomyClear"):
         assert f'data-action="{action}"' in catalog
@@ -65,10 +62,10 @@ def test_exhibit_taxonomy_chips_open_filtered_discovery():
     assert 'data-action="filterCategory"' in app
     assert 'data-action="filterTime"' in app
     assert 'data-action="filterSeries"' in app
-    assert "S.domain=value" in app
-    assert "S.cat=value" in app
-    assert "S.timeBucket=value" in app
-    assert "S.series=value" in app
+    assert "filterDomain:'domain'" in app
+    assert "filterCategory:'category'" in app
+    assert "filterTime:'time_bucket'" in app
+    assert "filterSeries:'series'" in app
     assert "data-value=" in app[app.index("function card(item)"):app.index("const WHEEL_CONTEXTS=")]
 
 

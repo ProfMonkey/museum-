@@ -24,7 +24,7 @@ async function load(){
 }
 function head(){
  return '<section class="pl-hero"><span>WONDER ATLAS · V21 · EVERYTHING IS INTERACTIVE</span>'+
-  '<h1>万物皆可玩。<br><em>让好奇心动起来。</em></h1>'+
+  '<h1>藏品小游戏</h1>'+
   '<p>改变参数，观察规律；沿着别人留下的奇妙线索，从化石走到芯片，从古画走到宇宙。你可以成为探索者，也可以成为下一站的建造者。</p>'+
   '<div class="pl-badges">✦ 互动科学 · 数学艺术 · 真实馆藏接力</div></section>';
 }

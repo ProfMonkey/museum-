@@ -173,9 +173,9 @@ function svgWheel(items,theme){
 }
 function hero(){
  return '<section class="ww-hero"><div class="ww-kicker">WONDER ATLAS · V39 · EIGHT DECISION WORLDS</div>'+
- '<h1>🎡 不止今天吃什么。<br><em>你收藏的万物，都可以成为下一次选择。</em></h1>'+
+ '<h1>万物转盘</h1>'+
  '<p>美食 · 旅行 · 影视 · 阅读 · 学习 · 运动 · 日常活动 · 自定义。八种场景各有自己的候选选项和历史，从展品一键加入，抽中后可回到原始馆藏。</p>'+
- '<div class="ww-labels">♡ 无付费 · ◌ 随机抽取 · ✦ 真正馆藏或自己的选项</div>'+button('destiny','✨ 不只抽一次：开启万物命运接力 ↗','class="ww-destiny-link"')+'</section>';
+ '<div class="ww-labels">♡ 无付费 · ◌ 随机抽取 · ✦ 真正馆藏或自己的选项</div>'+button('destiny','✨ 不只抽一次：开启探索任务 ↗','class="ww-destiny-link"')+'</section>';
 }
 function sceneButtons(){
  return '<div class="ww-scenes" role="group" aria-label="选择专属决策转盘">'+Object.entries(SCENES).map(([key,x])=>

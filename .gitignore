@@ -3,3 +3,7 @@ __pycache__/
 .pytest_cache/
 *.pyc
 .env
+.preview-data/
+static/qa-mobile.html
+static/assets/covers/
+static/assets/monkey/

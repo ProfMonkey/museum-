@@ -92,7 +92,7 @@ async function render(){
  let gallery,model,mine={items:[]},worlds={items:[]};
  try{[gallery,model]=await Promise.all([api('/civilizations'),api('/civilizations/policies')]);
  if(logged())[mine,worlds]=await Promise.all([api('/civilizations/mine'),api('/civilizations/worlds')]);}
- catch(e){return '<section class="cv-root cv-panel"><h2>文明演化实验室暂不可用</h2><p>'+esc(e.message)+'</p></section>';}
+ catch(e){return '<section class="cv-root cv-panel"><h2>文明模拟实验室暂不可用</h2><p>'+esc(e.message)+'</p></section>';}
  const all=[...mine.items,...gallery.items];
  if(!T.focus)T.focus=all.find(x=>x.available)?.id||0;
  let current=null,result=null,relics={items:[]};
@@ -114,7 +114,7 @@ async function render(){
  }
  return '<div class="cv-root"><section class="cv-hero"><div class="cv-planet"></div>'+
  '<div class="cv-overline">WONDER ATLAS · WORLD 34 · CIVILIZATION LABORATORY</div>'+
- '<h1>一件藏品，<br><em>能创造多少种文明？</em></h1>'+
+ '<h1>文明模拟</h1>'+
  '<p>让 V33 的一个公开碰撞世界孕育最多六个文明。你写下八个时代的抉择；游客再用「历史分岔显微镜」观察：如果曾经作出另一种选择，最终结局会有多大不同？</p>'+
  '<div class="cv-hero-pills"><span>🏛 文明创造</span><span>🌱 物件种子</span><span>⏳ 八轮历史</span><span>🔬 反事实显微镜</span><span>⚖️ 透明模拟规则</span><span>☄️ 异物冲击</span></div></section>'+
  (T.notice?'<p class="cv-alert">'+esc(T.notice)+'</p>':'')+
@@ -135,8 +135,8 @@ async function render(){
  '<label>文明宣言（至少20字）<textarea name="charter" required minlength="20" maxlength="580" placeholder="在这个虚构世界，文明从哪里来？最重要的信念是什么？"></textarea></label>'+
  '<button class="cv-primary">＋ 开辟一座私人文明</button></form>'+
  '<div class="cv-worlds">'+worlds.items.map(worldCard).join('')+'</div>':
- '<div class="cv-empty">还没有可用的本人公开 V33 碰撞世界。先去「万物碰撞机」选择两件公开藏品并发表一个原创世界，才能让文明诞生。</div>')+
- btn('goto-collision','⚗️ 前往万物碰撞机','class="cv-muted"')+
+ '<div class="cv-empty">还没有可用的本人公开 V33 碰撞世界。先去「藏品组合创作」选择两件公开藏品并发表一个原创世界，才能让文明诞生。</div>')+
+ btn('goto-collision','⚗️ 前往藏品组合创作','class="cv-muted"')+
  '<h3 class="cv-mine-title">我的文明档案</h3>'+
  (mine.items.length?'<div class="cv-personal">'+mine.items.map(x=>'<div>'+
  btn('select',esc(x.name)+' · '+(x.available?(x.status==='public'?'已公开':'私密草稿'):'🔒 来源已撤回'),

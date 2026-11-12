@@ -31,7 +31,7 @@ def test_no_fake_community_records_and_topics(env):
     alice,bob,guest=env
     cfg=guest.get("/api/wheels/config")
     assert cfg.status_code==200
-    assert {x["key"] for x in cfg.json()["topics"]}=={"food","travel","watch","activity","custom"}
+    assert {x["key"] for x in cfg.json()["topics"]}=={"food","travel","watch","activity","custom","read","study","exercise"}
     assert cfg.json()["max_items"]==24
     assert cfg.json()["max_wheels"]==12
     assert guest.get("/api/wheels/sources?q=牛排").json()["items"]==[]
@@ -239,7 +239,7 @@ def test_release_assets_and_old_play_features_survive(env):
     alice,bob,guest=env
     assert guest.get("/api/health").json()["ok"] is True
     html=guest.get("/").text
-    assert "WONDER ATLAS · WORLD " in html
+    assert "WONDER ATLAS" in html
     assert 'data-view="wheels"' in html
     for asset in ("/static/wheel.css","/static/wheel.js"):
         assert asset in html and guest.get(asset).status_code==200

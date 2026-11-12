@@ -1,4 +1,4 @@
-/* V28 · 万物星图航线 — live paths over explicitly saved personal links. */
+/* V28 · 藏品关系图航线 — live paths over explicitly saved personal links. */
 (() => {
 'use strict';
 const R={start:0,end:0,preview:null,selected:0,error:''};
@@ -48,9 +48,9 @@ async function render(graph){
  if(!list.items.length)R.selected=0;
  const active=R.preview||list.items.find(x=>x.id===R.selected);
  const opts=(selected)=>nodes.map(x=>'<option value="'+x.id+'" '+(x.id===selected?'selected':'')+'>'+escapeHtml(x.title)+'</option>').join('');
- return '<section class="cv-root" aria-label="万物星图航线">'+
+ return '<section class="cv-root" aria-label="藏品关系图航线">'+
  '<div class="cv-heading"><div><div class="ct-eyebrow">WONDER ATLAS · V28 / VOYAGES</div>'+
- '<h2>🌠 万物星图航线</h2><p>从一颗星抵达另一颗星。每一站都来自真实可访问的星点，每一步都必须沿你<strong>已经保存</strong>的连线前进。</p></div>'+
+ '<h2>🌠 藏品关系图航线</h2><p>从一颗星抵达另一颗星。每一站都来自真实可访问的星点，每一步都必须沿你<strong>已经保存</strong>的连线前进。</p></div>'+
  '<div class="cv-count">'+list.items.length+' / '+list.max_routes+' 条私密航线</div></div>'+
  (R.error?'<p class="cv-error">'+escapeHtml(R.error)+'</p>':'')+
  '<div class="cv-grid"><div class="cv-card"><h3>✦ 规划星际旅途</h3>'+

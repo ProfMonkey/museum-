@@ -78,7 +78,7 @@
     return '<section class="ev-panel"><div class="ev-head"><div><span class="ev-kicker">CIVILIZATION SELECTOR</span><h3>选择文明 · 打开年历</h3></div>'+
       '<div class="ev-segments">'+(mine()?control('scope','我的文明','data-scope="mine" class="'+(E.scope==='mine'?'active':'')+'"'):'')+
         control('scope','公开纪元','data-scope="public" class="'+(E.scope==='public'?'active':'')+'"')+'</div></div>'+
-      (!E.civilizations.length?'<div class="ev-empty">'+(E.scope==='mine'?'还没有自己的文明。先进入「万界会盟」为世界创建文明。':'暂时没有公开文明。这里不会伪造其他用户或文明热度。')+'</div>':
+      (!E.civilizations.length?'<div class="ev-empty">'+(E.scope==='mine'?'还没有自己的文明。先进入「世界合作故事」为世界创建文明。':'暂时没有公开文明。这里不会伪造其他用户或文明热度。')+'</div>':
       '<label class="ev-picker">探索的文明<select id="ev-civilization">'+E.civilizations.map(c=>'<option value="'+c.id+'" '+(c.id===E.civilizationId?'selected':'')+'>'+esc(c.name)+' · '+esc(c.world_name)+'</option>').join('')+'</select></label>'+
       '<div class="ev-timeline-cards">'+E.timelines.map(line=>control('select','<b>'+esc(line.name)+'</b><span>'+esc(line.world)+' · '+esc(line.visibility==='public'?'公开展出':'私人年历')+'</span><strong>进入纪元 ↗</strong>','data-id="'+line.id+'" class="'+(line.id===E.timelineId?'active':'')+'"')).join('')+'</div>'+
       (!E.timelines.length?'<p class="ev-empty">此文明尚未开始演化。第一位馆长还没写下它的第一年。</p>':'')+

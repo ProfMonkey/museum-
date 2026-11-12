@@ -48,7 +48,7 @@ document.addEventListener('click',async event=>{
    const music=document.getElementById('grow-music')?.value||'piano';
    await api('/memories/reels',{method:'POST',body:{title:`${G.year} · 我的世界回忆`,music,exhibit_ids:items.map(x=>x.id)}});
    window.WonderAnalytics?.track('memories','complete');
-   toast('年度影片已存入「回忆剧场」的私人片库');
+   toast('年度影片已存入「浏览回忆」的私人片库');
    await window.WonderMemories.switchTab('cinema');
   }
  }catch(err){toast(err.message||'操作失败')}

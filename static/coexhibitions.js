@@ -48,13 +48,13 @@ function editPanel(d,my){
  const sourceOptions=(my?.my_public_exhibits||[]).filter(x=>!d.items.some(y=>y.exhibit?.id===x.id));
  return '<div class="ce-editor">'+
  '<div class="ce-editor-head"><h3>🎨 两位馆长的策展工作台</h3><p>每次修改均撤销双方原有批准，只有共同批准同一版本，才能公开。</p></div>'+
- (!d.available?'<p class="ce-alert">一件来源展品已撤回或平行宇宙会合已失效；展览暂不公开。请各自处理源作品，或结束合作。</p>':'')+
+ (!d.available?'<p class="ce-alert">一件来源展品已撤回或假设故事会合已失效；展览暂不公开。请各自处理源作品，或结束合作。</p>':'')+
  approvals(d)+
  '<div class="ce-actions">'+
  (d.available?b('approve',d.approved[myRole(d)]?'✓ 我已批准当前版本':'✓ 批准当前版本','class="ce-primary" '+(d.approved[myRole(d)]?'disabled':'')):'')+
  b('retract','撤回批准 / 暂停公开','class="ce-muted-btn"')+
  b('toggle-edit',T.showEdit?'收起主题修改':'编辑展厅主题','class="ce-muted-btn"')+
- b('close','结束联合展厅','class="ce-danger"')+'</div>'+
+ b('close','结束合作展厅','class="ce-danger"')+'</div>'+
  (T.showEdit?'<form id="ceEditForm" class="ce-edit-form"><label>展览主题<input name="title" maxlength="80" minlength="2" required value="'+safe(d.title)+'"></label>'+
  '<label>联合策展前言<textarea name="introduction" maxlength="480">'+safe(d.introduction)+'</textarea></label>'+
  '<button class="ce-primary">保存修改并重新进入审批</button></form>':'')+
@@ -62,7 +62,7 @@ function editPanel(d,my){
  (sourceOptions.length?'<form id="ceAddForm"><label>选择本人公开展品<select name="exhibit_id">'+
  sourceOptions.map(x=>'<option value="'+x.id+'">'+safe(x.title)+'</option>').join('')+'</select></label>'+
  '<label>为什么它适合这个展览？<textarea name="commentary" minlength="8" maxlength="300" required placeholder="写下属于你自己的导览理由，不冒充平台事实核验。"></textarea></label>'+
- '<button class="ce-primary" '+(!d.available||d.items.length>=12?'disabled':'')+'>＋ 将这件藏品加入联合展厅</button></form>':
+ '<button class="ce-primary" '+(!d.available||d.items.length>=12?'disabled':'')+'>＋ 将这件藏品加入合作展厅</button></form>':
  '<p class="ce-disclaimer">暂无可添加的本人公开展品，或已经全部加入。</p>')+'</div></div>';
 }
 function showroom(d,my){
@@ -79,7 +79,7 @@ function showroom(d,my){
 }
 async function render(){
  let pub;
- try{pub=await api('/coexhibitions/public')}catch(e){return '<section class="ce-root"><h1>联合展厅暂时不可用</h1><p>'+safe(e.message)+'</p></section>'}
+ try{pub=await api('/coexhibitions/public')}catch(e){return '<section class="ce-root"><h1>合作展厅暂时不可用</h1><p>'+safe(e.message)+'</p></section>'}
  let my=null;
  if(logged()){try{my=await api('/coexhibitions/mine')}catch(e){T.notice=e.message}}
  const mine=my?.items||[],live=pub.items||[];
@@ -91,8 +91,8 @@ async function render(){
  }}
  const opts=my?.bridge_options||[];
  return '<div class="ce-root"><section class="ce-hero"><div class="ce-orbit"></div>'+
- '<div class="ce-kicker">WONDER ATLAS · WORLD 30 · CO-CURATION</div><h1>一座博物馆，<br><em>由两个世界共同建造。</em></h1>'+
- '<p>每件展品都是真实馆长亲自公开、亲自授权参与的收藏。只有两位馆长批准同一版本，联合展厅才会对游客开放。</p>'+
+ '<div class="ce-kicker">WONDER ATLAS · WORLD 30 · CO-CURATION</div><h1>合作展厅</h1>'+
+ '<p>每件展品都是真实馆长亲自公开、亲自授权参与的收藏。只有两位馆长批准同一版本，合作展厅才会对游客开放。</p>'+
  '<div class="ce-badges"><span>🤝 双人联合策展</span><span>✦ 真实公开藏品</span><span>🏵️ 参观纪念章</span><span>🐒 双馆故事漫游</span></div></section>'+
  (T.notice?'<div class="ce-alert">'+safe(T.notice)+'</div>':'')+
  '<div class="ce-overview"><section class="ce-panel"><div class="ce-kicker">01 / CURATOR STUDIO</div>'+
@@ -101,13 +101,13 @@ async function render(){
  b('login','登录 / 注册，成为馆长','class="ce-primary"'):
  (opts.length?'<form id="ceCreateForm"><label>基于哪次双方同意的会合？<select name="bridge_id">'+
  opts.map(x=>'<option value="'+x.id+'">'+safe(x.curators.join(' × '))+' · #'+x.id+'</option>').join('')+'</select></label>'+
- '<label>联合展厅名称<input name="title" minlength="2" maxlength="80" required placeholder="例如：从一碗米线到人类文明"></label>'+
+ '<label>合作展厅名称<input name="title" minlength="2" maxlength="80" required placeholder="例如：从一碗米线到人类文明"></label>'+
  '<label>一起策展的理由<textarea name="introduction" maxlength="480" placeholder="两位馆长希望向游客展示什么？"></textarea></label>'+
  '<button class="ce-primary">＋ 创建私人联合策展草稿</button></form>':
- '<div class="ce-empty">还没有可以发起展厅的有效双人会合。先在「万物平行宇宙」与另一位真实馆长建立双方同意的连接。</div>')+
- b('navigate-parallel','🌌 前往平行宇宙会合','class="ce-muted-btn"'))+
+ '<div class="ce-empty">还没有可以发起展厅的有效双人会合。先在「假设故事」与另一位真实馆长建立双方同意的连接。</div>')+
+ b('navigate-parallel','🌌 前往假设故事会合','class="ce-muted-btn"'))+
  '</section><section class="ce-panel"><div class="ce-kicker">02 / THE EXHIBITION REGISTER</div>'+
- '<h2>正在建造的联合展厅 <span class="ce-number">'+mine.length+'</span></h2>'+
+ '<h2>正在建造的合作展厅 <span class="ce-number">'+mine.length+'</span></h2>'+
  (mine.length?'<div class="ce-directory">'+mine.map(x=>b('select','<b>'+safe(x.title)+'</b><small>'+safe(x.curators.join(' × '))+
  ' · '+(x.state==='public'?'已公开':'待双方审批')+'</small>',
  'class="'+(T.selected===x.id?'active':'')+'" data-id="'+x.id+'"')).join('')+'</div>':
@@ -132,7 +132,7 @@ document.addEventListener('submit',async e=>{
  try{
   if(f.id==='ceCreateForm'){
    const r=await api('/coexhibitions',{method:'POST',body:{bridge_id:Number(d.bridge_id),title:d.title,introduction:d.introduction||''}});
-   T.selected=r.exhibition.id;T.tourIndex=0;toast('联合展厅草稿已建立');}
+   T.selected=r.exhibition.id;T.tourIndex=0;toast('合作展厅草稿已建立');}
   if(f.id==='ceEditForm'){
    await api('/coexhibitions/'+T.selected,{method:'PUT',body:{title:d.title,introduction:d.introduction||''}});
    T.showEdit=false;toast('已保存新版本，需要双方重新审批');}
@@ -156,7 +156,7 @@ document.addEventListener('click',async e=>{
   if(action==='tour-prev'||action==='tour-next'||action==='tour-goto'){
    T.tourIndex=action==='tour-goto'?Number(x.dataset.i):Math.max(0,T.tourIndex+(action==='tour-next'?1:-1));
    await refresh();return}
-  if(action==='close'&&!confirm('结束这座联合展厅？展览及纪念章将不再公开，原始藏品保留。'))return;
+  if(action==='close'&&!confirm('结束这座合作展厅？展览及纪念章将不再公开，原始藏品保留。'))return;
   if(action==='retract'&&!confirm('撤销双方现有批准并暂停公开展示？游客纪念章也会清空。'))return;
   if(action==='remove'&&!confirm('撤下我贡献的这件展品？双方需要重新审批。'))return;
   const route={
@@ -174,7 +174,7 @@ document.addEventListener('click',async e=>{
   await api(call[1],{method:call[0]});
   if(action==='close')T.selected=0;
   T.tourIndex=0;
-  toast({approve:'你的审批已记录',retract:'展览已暂停公开',remove:'已撤下你的展品',close:'联合展厅已结束'}[action]);await refresh();
+  toast({approve:'你的审批已记录',retract:'展览已暂停公开',remove:'已撤下你的展品',close:'合作展厅已结束'}[action]);await refresh();
  }catch(err){T.notice=err.message||'未能完成操作';toast(T.notice);await refresh()}
 },true);
 window.WonderCoExhibitions={render,refresh,open(id){T.selected=Number(id)||0;T.tourIndex=0}};

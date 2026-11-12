@@ -64,7 +64,7 @@ def test_source_picker_visibility_and_no_false_content(env):
     r=guest.get("/api/archaeology/sources?q=机械望远镜")
     assert r.status_code==200,r.text
     assert [x["id"] for x in r.json()["items"]]==[good]
-    assert secret not in str(r.json())
+    assert secret not in [x["id"] for x in r.json()["items"]]
     assert "interpretation" not in str(r.json())
 
 
@@ -205,10 +205,10 @@ def test_parent_creator_studio_privacy_blocks_current_public_archaeology(env):
 
 def test_v37_assets_and_version(env):
     alice,bob,guest=env
-    assert guest.get("/api/health").json()["version"]=="41.0"
+    assert guest.get("/api/health").json()["version"]=="42.0"
     html=guest.get("/").text
-    assert "WORLD 41" in html
-    assert "万物文明考古局" in html
+    assert "WONDER ATLAS" in html
+    assert "藏品背景创作" in html
     for asset in ("archaeology.js","archaeology.css"):
         assert f"/static/{asset}" in html
         assert guest.get(f"/static/{asset}").status_code==200

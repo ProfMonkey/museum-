@@ -142,10 +142,10 @@ def test_studio_private_scope_masks_source_from_other_public_hubs(env):
 
 def test_v41_html_and_js_integration_are_available(env):
     guest = env[2]
-    assert guest.get("/api/health").json()["version"] == "41.0"
+    assert guest.get("/api/health").json()["version"] == "42.0"
     index = guest.get("/")
     assert index.status_code == 200
-    assert "WORLD 41" in index.text
+    assert "WONDER ATLAS" in index.text
     assert "/static/object-hub.js" in index.text
     assert "/static/object-hub.css" in index.text
     js = guest.get("/static/app.js").text

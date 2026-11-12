@@ -1,4 +1,4 @@
-/* V33 · 万物碰撞机 — honest, user-authored, two-source parallel universes. */
+/* V33 · 藏品组合创作 — honest, user-authored, two-source parallel universes. */
 (() => {
 'use strict';
 const C={focus:0,edit:0,remix:0,left:0,right:0,law:'world_merge',search:'',
@@ -27,7 +27,7 @@ function chooser(d){
  '<div class="cx-reactor"><div><div class="cx-slot-name">OBJECT A</div>'+source(C.preview?.left||d.a)+'</div>'+
  '<div class="cx-core"><strong>✧</strong><small>碰撞反应堆</small></div>'+
  '<div><div class="cx-slot-name">OBJECT B</div>'+source(C.preview?.right||d.b)+'</div></div>'+
- '<div class="cx-law-picker"><label>为平行宇宙设定一条不可能的法则<select id="cxLaw">'+
+ '<div class="cx-law-picker"><label>为假设故事设定一条不可能的法则<select id="cxLaw">'+
  (d.laws?.items||[]).map(x=>'<option value="'+h(x.id)+'" '+(C.law===x.id?'selected':'')+'>'+h(x.title)+'</option>').join('')+'</select></label>'+
  act('preview','⚡ 点燃碰撞','class="cx-primary" '+(!left||!right||left===right?'disabled':''))+'</div>'+
  (C.preview?'<div class="cx-result"><div class="cx-eyebrow">DETERMINISTIC FICTION PROMPT / #'+h(C.preview.seed)+'</div>'+
@@ -85,7 +85,7 @@ function echoesPane(d){
  if(!d)return '';
  return '<section class="cx-panel"><div class="cx-eyebrow">05 / MULTIVERSE FAMILY TREE</div>'+
  '<h2>🌌 一对藏品，多少个不同的世界？</h2>'+
- '<p>同一对真实物品可以成为不同馆长的共同创作起点。这里仅展示各作者主动公开、来源仍合法的平行宇宙。</p>'+
+ '<p>同一对真实物品可以成为不同馆长的共同创作起点。这里仅展示各作者主动公开、来源仍合法的假设故事。</p>'+
  '<div class="cx-echo-list">'+(d.items?.length?d.items.map(w=>'<div>'+act('view',h(w.title)+' · '+h(w.law_title)+' · @'+h(w.author),
  'data-id="'+w.id+'" class="cx-outline"')+'</div>').join(''):'<div class="cx-empty">还没有由真实馆长公开的其他平行世界。</div>')+'</div></section>';
 }
@@ -113,9 +113,9 @@ async function render(){
  const start=gallery.items||[];
  return '<div class="cx-root"><section class="cx-hero"><div class="cx-orbit"></div>'+
  '<div class="cx-eyebrow">WONDER ATLAS / WORLD 33 / IMPOSSIBLE EXPERIMENTS</div>'+
- '<h1>让两件万物碰撞，<br><em>诞生一整个不可能的世界。</em></h1>'+
- '<p>现实藏品 × 虚构法则 × 真实馆长的原创故事。选择一个未来，观察故事如何分岔；同一对物件，还能拥有无数个平行宇宙。</p>'+
- '<div class="cx-tags"><span>⚗️ 万物碰撞机</span><span>⚖️ 架空世界法则</span><span>🔀 蝴蝶效应</span><span>🪐 改写历史</span><span>🌌 世界谱系</span></div></section>'+
+ '<h1>藏品组合创作</h1>'+
+ '<p>现实藏品 × 虚构法则 × 真实馆长的原创故事。选择一个未来，观察故事如何分岔；同一对物件，还能拥有无数个假设故事。</p>'+
+ '<div class="cx-tags"><span>⚗️ 藏品组合创作</span><span>⚖️ 架空世界法则</span><span>🔀 蝴蝶效应</span><span>🪐 改写历史</span><span>🌌 世界谱系</span></div></section>'+
  (C.message?'<div class="cx-notice">'+h(C.message)+'</div>':'')+
  '<section class="cx-panel"><div class="cx-heading"><div><div class="cx-eyebrow">01 / DISCOVER IMPOSSIBLE UNIVERSES</div>'+
  '<h2>已经诞生的平行世界</h2><p>仅有真实馆长自愿公开、全部来源仍公开的原创实验才出现在这里。</p></div>'+
@@ -168,7 +168,7 @@ document.addEventListener('click',async e=>{
   if(op==='view'){C.focus=id;C.picked='';C.message='';C.echoes=null;await refresh();
    document.querySelector('.cx-show')?.scrollIntoView({behavior:'smooth',block:'start'});return;}
   if(op==='random'){const d=await api('/collisions');
-   const rows=d.items||[];if(!rows.length){C.message='目前没有真正公开的平行宇宙，不会随机制造虚构馆长。';await refresh();return;}
+   const rows=d.items||[];if(!rows.length){C.message='目前没有真正公开的假设故事，不会随机制造虚构馆长。';await refresh();return;}
    C.focus=rows[Math.floor(Math.random()*rows.length)].id;C.picked='';await refresh();return;}
   if(op==='choose'){
    C.picked=el.dataset.branch||'';
@@ -180,7 +180,7 @@ document.addEventListener('click',async e=>{
    document.querySelector('.cx-echo-list')?.scrollIntoView({behavior:'smooth',block:'center'});return;}
   if(op==='edit'){const w=await api('/collisions/'+id);
    C.edit=id;C.remix=0;C.left=w.left.id;C.right=w.right.id;C.law=w.law;
-   C.message='正在编辑你自己的平行宇宙；保存会撤回原版公开和投票。';await refresh();
+   C.message='正在编辑你自己的假设故事；保存会撤回原版公开和投票。';await refresh();
    document.querySelector('#cxMaker')?.scrollIntoView({behavior:'smooth',block:'start'});return;}
   if(op==='remix'){if(!yes()){document.querySelector('#loginTop')?.click();return;}
    const w=await api('/collisions/'+id);C.remix=id;C.edit=0;
@@ -194,7 +194,7 @@ document.addEventListener('click',async e=>{
                 delete:['DELETE','/collisions/'+id]};
   const route=routes[op];if(!route)return;
   await api(route[1],{method:route[0]});if(op==='delete')C.focus=0;
-  C.message={publish:'✨ 你的原创平行宇宙已经公开！',
+  C.message={publish:'✨ 你的原创假设故事已经公开！',
     unpublish:'世界已恢复私密，原有投票已清除。',
     delete:'原创平行世界已删除，原始两件藏品不受影响。'}[op];
   await refresh();

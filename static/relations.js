@@ -20,7 +20,7 @@
  function choices(){
    const sources=own();const targets=R.directory.filter(c=>!c.mine);
    if(!logged())return '<div class="rl-empty">登录并公开自己的文明后，可以向真实的其他馆长发送交流邀请。</div>';
-   if(!sources.length)return '<div class="rl-empty">你还没有公开的文明。先到「万界会盟」创建文明并公开。</div>';
+   if(!sources.length)return '<div class="rl-empty">你还没有公开的文明。先到「世界合作故事」创建文明并公开。</div>';
    if(!targets.length)return '<div class="rl-empty">还没有其他真实馆长公开文明。这里只显示真实账号，不使用虚构玩家。</div>';
    return '<form id="rl-invite" class="rl-form"><div class="rl-field"><label>派遣使团的文明<select name="source_id">'+
      sources.map(x=>'<option value="'+x.id+'">'+esc(x.name)+' · '+esc(x.world)+'</option>').join('')+'</select></label>'+

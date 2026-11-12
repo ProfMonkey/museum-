@@ -8,7 +8,7 @@ function monkeyAction(m,action){m.state=action;m.frame=0;m.actionUntil=performan
 function renderMonkey(m){m.el.style.left=Math.max(0,Math.min(innerWidth-70,m.x))+'px';m.el.style.top=Math.max(0,Math.min(innerHeight-90,m.y))+'px';m.img.src=monkeyAsset(m.state,m.frame);m.el.style.transform=`scaleX(${m.dir})`}
 function setupMonkeys(){document.querySelectorAll('.wa-monkey').forEach(x=>x.remove());colony=[];cancelAnimationFrame(monkeyLoop);
  const toggle=document.getElementById('monkey-toggle');if(toggle)toggle.textContent=W.monkeyMode==='off'?'🐒 猴子已关闭':`🐒 ${W.monkeyCount} 只 · ${W.monkeyMode==='quiet'?'安静':'猴山'}`;
- if(W.monkeyMode==='off')return;
+ if(toggle)toggle.hidden=W.monkeyMode==='off';if(W.monkeyMode==='off')return;
  let count=innerWidth<620?Math.min(W.monkeyCount,2):W.monkeyCount;
  for(let i=0;i<count;i++){
   const node=document.createElement('div');node.className='wa-monkey';node.title='点击猴子：看看它会干什么（也可以拖动）';node.setAttribute('role','button');node.setAttribute('aria-label','ProfMonkey 网页猴子 '+(i+1));node.tabIndex=0;

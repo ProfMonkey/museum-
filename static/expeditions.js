@@ -29,7 +29,7 @@ window.WonderExpeditions = (() => {
     <div class="ex-searchrow"><div><small>STATION ${String(X.step+1).padStart(2,'0')} / ${rt.steps.length}</small><h3>${E(current.caption)}</h3><p>${E(providerNames[current.provider])} · 检索关键词「${E(current.query)}」</p></div><button class="primary" type="button" data-ex="load" ${X.busy?'disabled':''}>⌕ 查看真实馆藏 ↗</button></div>
     <div class="ex-results" aria-live="polite">${records()}</div>
     <div class="ex-next"><button type="button" data-ex="prev" ${X.step===0?'disabled':''}>← 上一站</button><span>每一条记录都保留原馆链接与媒体权利说明</span><button type="button" data-ex="next" ${X.step>=rt.steps.length-1?'disabled':''}>下一站 →</button></div>`:'<div class="ex-notice">专题路线正在加载…</div>'}
-    <footer class="ex-footer"><div><strong>来源与内容声明</strong><p>已接入：大都会艺术博物馆、伦敦自然历史博物馆、美国国会图书馆、NASA 图片影像库。这里展示的是馆方公开记录索引，不自动转载未经核验的媒体，不把资料编目时间写成化石地质年龄。</p></div><div class="ex-shortcuts"><button type="button" data-ex="cosmos">⏳ 回到世界时间长河</button><button type="button" data-ex="museums">♜ 世界名馆精选</button></div></footer></section>`;
+    <footer class="ex-footer"><div><strong>来源与内容声明</strong><p>已接入：大都会艺术博物馆、伦敦自然历史博物馆、美国国会图书馆、NASA 图片影像库。这里展示的是馆方公开记录索引，不自动转载未经核验的媒体，不把资料编目时间写成化石地质年龄。</p></div><div class="ex-shortcuts"><button type="button" data-ex="cosmos">⏳ 回到按年代浏览</button><button type="button" data-ex="museums">♜ 世界名馆精选</button></div></footer></section>`;
   }
   async function ensure(){if(X.catalog)return;try{X.catalog=await api('/expeditions/catalog');X.error='';}catch(e){X.error=e.message||'探索路线暂时无法加载';}}
   function repaint(){const old=document.querySelector('#ex-panel');if(old){const frag=document.createElement('div');frag.innerHTML=panel();old.replaceWith(frag.firstElementChild);}}

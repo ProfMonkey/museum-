@@ -59,10 +59,10 @@ function studio(civs,objects,roles,editItem){
  const ed=editItem?.surface?editItem:null;
  return '<section class="ar-panel" id="arStudio"><div class="ar-overline">04 / CURATOR ARCHAEOLOGY STUDIO</div>'+
  '<h2>✍️ 我来编写一段异世界考古史</h2>'+
- '<p>先在 V34「文明演化实验室」公开自己创造的文明，再选一件目前确实公开的原始馆藏，写出它在这个架空世界里的三层不同意义。</p>'+
+ '<p>先在 V34「文明模拟实验室」公开自己创造的文明，再选一件目前确实公开的原始馆藏，写出它在这个架空世界里的三层不同意义。</p>'+
  (!user()?'<div class="ar-empty">登录后即可创建原创考古档案。游客可阅读全部当前公开档案，但无法冒充馆长。</div>':
  (!possible.length?'<div class="ar-empty">还没有你本人创建且目前合法公开的 V34 文明。请先从真实藏品开始建造自己的文明并公开至少两轮历史。</div>'+
- btn('goto-civ','🏛️ 去万物文明演化实验室','class="ar-outline"'):
+ btn('goto-civ','🏛️ 去文明模拟','class="ar-outline"'):
  '<form id="arSearch" class="ar-search"><input name="q" value="'+h(A.query)+'" placeholder="搜索真实藏品：标题、标签、分类"><button type="submit">搜寻原物</button></form>'+
  '<div class="ar-picker">'+options.map(x=>'<button type="button" data-arch="pick" data-id="'+x.id+'" class="'+(A.source===x.id?'active':'')+'">'+
  object(x)+'</button>').join('')+(options.length?'':'<div class="ar-empty">没有匹配的公开原始藏品，请换一个关键词。</div>')+'</div>'+
@@ -98,7 +98,7 @@ async function render(){
  try{
   [gallery,roles,sources]=await Promise.all([api('/archaeology/public'),api('/archaeology/roles'),api('/archaeology/sources?q='+encodeURIComponent(A.query))]);
   if(user())[civs,mine]=await Promise.all([api('/archaeology/civilizations'),api('/archaeology/mine')]);
- }catch(e){return '<div class="ar-root ar-panel"><h2>文明考古局暂时不可访问</h2><p>'+h(e.message)+'</p></div>'}
+ }catch(e){return '<div class="ar-root ar-panel"><h2>藏品背景创作暂时不可访问</h2><p>'+h(e.message)+'</p></div>'}
  if(!A.civ)A.civ=civs.items?.[0]?.id||0;
  if(!A.source)A.source=sources.items?.[0]?.id||0;
  if(!A.focus)A.focus=(mine.items||[])[0]?.id||(gallery.items||[])[0]?.id||0;
@@ -122,7 +122,7 @@ async function render(){
  const list=gallery.items||[];
  return '<div class="ar-root"><section class="ar-hero"><div class="ar-ring"></div>'+
  '<div class="ar-overline">WONDER ATLAS · WORLD 37 · ARCHAEOLOGY OF IMPOSSIBLE CIVILIZATIONS</div>'+
- '<h1>一件真实的物品，<br><em>千万种不可能的历史。</em></h1>'+
+ '<h1>藏品背景创作</h1>'+
  '<p>将一件真实公开的藏品放入自己创建的虚构文明中，亲笔写下一段三层考古谜题，再让游客发掘并比较不同文明的解释。</p>'+
  '<div class="ar-tags"><span>⛏ 三层线索发掘</span><span>🏺 架空遗迹档案</span><span>🌌 同源误读图谱</span><span>🧭 文明年代定位</span><span>🔒 实时来源保护</span></div></section>'+
  (A.notice?'<p class="ar-alert">'+h(A.notice)+'</p>':'')+

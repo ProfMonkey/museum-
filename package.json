@@ -1,0 +1,1 @@
+{"name":"wonder-atlas","private":true,"scripts":{"dev":"python scripts/preview.py"}}

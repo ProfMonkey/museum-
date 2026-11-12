@@ -7,11 +7,11 @@ def test_v9_shell_and_new_assets_are_served(env):
     page=client.get('/')
     assert page.status_code==200
     html=page.text
-    assert '当代新奇' in html and '展厅工坊' in html
+    assert '流行文化' in html and '我的展厅' in html
     assert '/static/culture.js' in html
     assert '/static/virtual-gallery.js' in html
     assert '/static/virtual-gallery-3d.js' in html
-    assert re.search(r'WONDER ATLAS · WORLD \d+', html)
+    assert re.search(r'WONDER ATLAS', html)
     assert '/static/evolution.js' in html
     assert '/static/evolution.css' in html
     for path, token in [
@@ -30,4 +30,4 @@ def test_health_version_matches_current_release(env):
     client=env[0]
     data=client.get('/api/health').json()
     assert data['ok'] is True
-    assert data['version']=='41.0'
+    assert data['version']=='42.0'

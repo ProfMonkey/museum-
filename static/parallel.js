@@ -38,10 +38,10 @@ function bridgeItem(x){
  button('close','结束会合','data-id="'+x.id+'" class="pv-minor"')+'</div></article>';
 }
 async function render(){
- if(!window.S?.user)return '<section class="pv-root pv-guest"><div class="pv-kicker">WONDER ATLAS · WORLD 29</div><h1>🌌 万物平行宇宙</h1><p>邀请另一位真正的馆长，让两座博物馆在双方同意之后相遇。私人星图不会自动分享。</p>'+
+ if(!window.S?.user)return '<section class="pv-root pv-guest"><div class="pv-kicker">WONDER ATLAS · WORLD 29</div><h1>假设故事</h1><p>邀请另一位真正的馆长，让两座博物馆在双方同意之后相遇。私人星图不会自动分享。</p>'+
  '<button class="pv-primary" data-action="login">登录 / 注册 · 开启会合</button></section>';
  let o;
- try{o=await api('/parallel');V.message='';}catch(e){return '<section class="pv-root"><h1>平行宇宙暂时无法连接</h1><p>'+esc(e.message)+'</p>'+button('reload','重新连接')+'</section>'}
+ try{o=await api('/parallel');V.message='';}catch(e){return '<section class="pv-root"><h1>假设故事暂时无法连接</h1><p>'+esc(e.message)+'</p>'+button('reload','重新连接')+'</section>'}
  const mine=o.mine||[];
  if(!mine.some(x=>x.id===V.source)){V.source=mine[0]?.id||0;V.suggestions=[];V.loadedSource=0}
  if(V.source && V.loadedSource!==V.source){
@@ -51,7 +51,7 @@ async function render(){
  const sources=mine.map(e=>'<option value="'+e.id+'" '+(e.id===V.source?'selected':'')+'>'+
  esc(e.title)+'</option>').join('');
  return '<div class="pv-root"><section class="pv-hero"><div class="pv-kicker">WONDER ATLAS / V29 / PARALLEL UNIVERSES</div>'+
- '<h1>当两个世界相遇，<br><em>万物便有了新的可能。</em></h1>'+
+ '<h1>假设故事</h1>'+
  '<p>你带来一件公开藏品，对方自由选择是否加入及带来哪件藏品。两人都同意，才会形成一座真正的跨馆桥梁。</p>'+
  '<div class="pv-badges"><span>🔒 私人星图不公开</span><span>🤝 双方自主同意</span><span>✦ 使用真实馆藏</span></div>'+
  '<div class="pv-orbit pv-orbit-a"></div><div class="pv-orbit pv-orbit-b"></div></section>'+
@@ -59,7 +59,7 @@ async function render(){
  '<section class="pv-statline"><div><b>'+o.bridges.length+'</b><span>我的跨馆会合</span></div>'+
  '<div><b>'+o.incoming.length+'</b><span>待回应邀请</span></div><div><b>'+o.outgoing.length+'</b><span>已发送邀请</span></div></section>'+
  '<div class="pv-layout"><div><section class="pv-panel"><div class="pv-kicker">01 · SEND A SIGNAL</div>'+
- '<h2>发出平行宇宙信号</h2><p>先挑一件自己当前公开的藏品，再邀请其他馆长。</p>'+
+ '<h2>发出假设故事信号</h2><p>先挑一件自己当前公开的藏品，再邀请其他馆长。</p>'+
  (mine.length?'<form id="pvInviteForm"><label>从我的哪件展品出发？<select name="exhibit_id" id="pvSource">'+sources+'</select></label>'+
  '<label>邀请哪位馆长？<input id="pvTarget" name="recipient" required minlength="3" maxlength="24" value="'+esc(V.target)+'" placeholder="输入对方准确的用户名"></label>'+
  '<button type="submit" class="pv-primary">✉ 发送私密跨馆邀请</button></form>':

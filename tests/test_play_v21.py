@@ -201,7 +201,7 @@ def test_main_nav_and_release_version(env):
     alice,bob,guest=env
     assert guest.get("/api/health").json()["ok"] is True
     html=guest.get("/").text
-    assert "WONDER ATLAS · WORLD " in html
+    assert "WONDER ATLAS" in html
     assert 'data-view="play"' in html
     for path in ("/static/play.js","/static/play.css"):
         assert path in html

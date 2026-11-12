@@ -18,7 +18,7 @@ window.WonderSearch=(()=>{
   const choices=rows.map(x=>x.value).filter(Boolean);
   if(state[name]!=='全部'&&!choices.includes(state[name]))choices.unshift(state[name]);
   return '<label class="us-field"><span>'+label+'</span><select name="'+name+'"><option value="全部">全部'+label+'</option>'+
-   choices.map(v=>{const match=rows.find(x=>x.value===v);return '<option value="'+E(v)+'" '+(state[name]===v?'selected':'')+'>'+E(v)+' · '+(match?.count??0)+'</option>'}).join('')+
+   choices.map(v=>{const match=rows.find(x=>x.value===v);return '<option value="'+E(v)+'" '+(state[name]===v?'selected':'')+'>'+E(name==='series'?(TAX.seriesLabels?.[v]||v):v)+' · '+(match?.count??0)+'</option>'}).join('')+
    '</select></label>';
  }
  function activeChips(){
@@ -32,18 +32,18 @@ window.WonderSearch=(()=>{
   const data=await api('/search?'+params.toString());
   const currentStart=data.total?(data.page-1)*data.per_page+1:0;
   const filters=activeChips();
-  return '<section class="us-hero"><div class="eyebrow">WONDER ATLAS · SEARCH V42</div>'+
-    '<h1>不必知道分类，<br><span>也能找到万物。</span></h1>'+
-    '<p>一次搜索，跨领域查找真实的社区藏品。标题、标签、领域、类别、简介、正文及馆长均可匹配；多个空格分隔的词需同时出现。</p></section>'+
+  return '<section class="us-hero"><div class="eyebrow">SEARCH THE COLLECTION</div>'+
+    '<h1>搜索藏品</h1>'+
+    '<p>输入名称、标签或感兴趣的主题，再按领域和年代缩小范围。</p></section>'+
     '<form id="unifiedSearchForm" class="us-form" role="search">'+
     '<div class="us-main-input"><input name="q" type="search" value="'+E(state.q)+'" maxlength="80" placeholder="试试：猴子、米线、化石、游戏…" aria-label="搜索所有公开社区藏品">'+
-    '<button class="primary" type="submit">⌕ 搜索万物</button></div>'+
-    '<div class="us-filters">'+selectOptions('domain',data.facets,'领域')+
+    '<button class="primary" type="submit">⌕ 搜索藏品</button></div>'+
+    '<details class="us-filter-panel" '+(matchMedia('(min-width:801px)').matches?'open':'')+'><summary>筛选条件 <span>领域、分类与年代</span></summary><div class="us-filters">'+selectOptions('domain',data.facets,'领域')+
     selectOptions('category',data.facets,'类别')+selectOptions('time_bucket',data.facets,'年代')+
     selectOptions('series',data.facets,'系列')+
     '<label class="us-field"><span>排序方式</span><select name="sort">'+
     [['relevance','最相关'],['latest','最新发布'],['popular','最受欢迎']].map(([v,t])=>'<option value="'+v+'" '+(state.sort===v?'selected':'')+'>'+t+'</option>').join('')+'</select></label>'+
-    '<button type="submit" class="ghost us-apply">应用筛选</button></div></form>'+
+    '<button type="submit" class="ghost us-apply">应用筛选</button></div></details></form>'+
     '<div class="us-quick"><span>试着探索</span>'+
     ['猴子','米线','化石','游戏'].map(v=>'<button data-action="searchPreset" data-value="'+v+'">'+v+'</button>').join('')+
     (filters?'<button data-action="searchReset" class="us-reset">清除全部筛选</button>':'')+'</div>'+
@@ -55,13 +55,13 @@ window.WonderSearch=(()=>{
       '<div class="us-result">'+card(x)+'<p class="us-match">'+(x.matched_in.length?'匹配位置：'+E(x.matched_in.join('、')):'公开藏品 · '+E(x.domain||'尚未分类'))+'</p></div>'
      ).join('')+'</div>':
      '<div class="us-empty"><h2>目前没有找到符合条件的藏品</h2><p>可以减少关键词、清除筛选或试试其他叫法。这里只展示真实且当前公开的内容，不会虚构搜索结果。</p>'+
-     '<button class="ghost" data-action="searchReset">清除筛选</button> <button class="ghost" data-action="navigate" data-view="discover">逛发现广场</button></div>')+
+     '<button class="ghost" data-action="searchReset">清除筛选</button> <button class="ghost" data-action="navigate" data-view="discover">返回首页</button></div>')+
     '<div class="us-pages">'+(data.page>1?'<button class="ghost" data-action="searchPage" data-page="'+(data.page-1)+'">← 上一页</button>':'')+
     (data.total?'<span>第 '+data.page+' 页 · 当前 '+currentStart+'–'+Math.min(data.page*data.per_page,data.total)+' 件</span>':'')+
     (data.has_more?'<button class="ghost" data-action="searchPage" data-page="'+(data.page+1)+'">下一页 →</button>':'')+'</div>'+
     '<section class="us-help"><h2>想继续深入探索？</h2><p>打开任意结果即可进入藏品档案，顺着相似藏品、同年代或馆长关联继续寻找。也可以浏览世界名馆的独立开放馆藏目录。</p>'+
     '<button class="ghost" data-action="navigate" data-view="world-museums">世界名馆 ↗</button>'+
-    '<button class="ghost" data-action="navigate" data-view="catalog">全部功能 ↗</button></section>';
+    '<button class="ghost" data-action="navigate" data-view="catalog">更多探索 ↗</button></section>';
  }
- return {render,setQuery,fromForm,nextPage,reset,select};
+ return {render,setQuery,fromForm,nextPage,reset,select,getQuery:()=>state.q};
 })();

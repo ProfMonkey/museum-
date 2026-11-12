@@ -1,4 +1,4 @@
-/* V36 · 万界遗产交换站：real dual-curator symbolic gifts, never asset transfers. */
+/* V36 · 文化故事交换：real dual-curator symbolic gifts, never asset transfers. */
 (() => {
 'use strict';
 const H={focus:0,embassy:0,notice:'',editTopic:false};
@@ -62,7 +62,7 @@ async function render(){
    if(H.embassy)try{sources=await api('/heritage/sources?embassy_id='+H.embassy)}
       catch(e){H.embassy=embassies.items[0]?.id||0;sources={a:[],b:[]}}
   }
- }catch(err){return '<div class="hg-root hg-panel"><h2>遗产交换站暂时无法连接</h2><p>'+safe(err.message)+'</p></div>'}
+ }catch(err){return '<div class="hg-root hg-panel"><h2>文化故事交换暂时无法连接</h2><p>'+safe(err.message)+'</p></div>'}
  const publicItems=gallery.items||[],mineItems=mine.items||[];
  if(!H.focus)H.focus=mineItems[0]?.id||publicItems[0]?.id||0;
  let detail=null;
@@ -70,7 +70,7 @@ async function render(){
  catch(err){H.focus=0;H.notice='这项合作已撤回公开、终止或无访问权限。'}
  return '<div class="hg-root"><header class="hg-hero"><div class="hg-orbit"></div>'+
  '<div class="hg-eyebrow">WONDER ATLAS · WORLD 36 · CULTURAL HERITAGE EXCHANGE</div>'+
- '<h1>两位馆长，<br><em>交换的不是物品，而是文明的故事。</em></h1>'+
+ '<h1>文化故事交换</h1>'+
  '<p>让 V35 两国真实签署的外交使馆进一步成为「共同遗产」：双方分别拿出自己公开收藏中的一件物品，亲自写下文化意义，双方审阅同一版本后，才对游客开放。</p>'+
  '<div class="hg-badges"><span>🎁 双文明互赠展</span><span>✍️ 独立馆长署名</span><span>🤝 双方公开授权</span>'+
  '<span>🛂 虚拟漫游护照</span><span>🔒 原始产权不变</span></div></header>'+
@@ -97,8 +97,8 @@ async function render(){
  '<label>联合文化遗产展题<input name="title" required minlength="3" maxlength="90" placeholder="例如：一支青铜号角与一张星际地图"></label>'+
  '<label>联合展览背景（20–560字）<textarea name="premise" required minlength="20" maxlength="560" placeholder="在这两个虚构文明之间，为什么决定相互展示这两件真实藏品？"></textarea></label>'+
  '<button class="hg-primary" type="submit" '+(!sources.a?.length||!sources.b?.length?'disabled':'')+'>✦ 创建双方可见的私密文化交流草稿</button></form>':
- '<div class="hg-empty">尚无当前双方均批准公开的 V35 合作使馆。请先在「万界文明大使馆」建立并共同公开外交合作。</div>')+
- action('goto-embassy','🤝 前往万界文明大使馆','class="hg-outline"')+
+ '<div class="hg-empty">尚无当前双方均批准公开的 V35 合作使馆。请先在「合作写故事」建立并共同公开外交合作。</div>')+
+ action('goto-embassy','🤝 前往合作写故事','class="hg-outline"')+
  '<h3 class="hg-mine-heading">我的文化交流项目</h3>'+
  (mineItems.length?'<div class="hg-mine">'+mineItems.map(x=>'<div>'+
  action('view','#'+x.id+' · '+safe(x.title)+' · '+(x.available?safe(word[x.state]||x.state):'🔒 来源失效'),

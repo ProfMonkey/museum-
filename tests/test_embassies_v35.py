@@ -232,10 +232,10 @@ def test_content_validation_and_same_account_pairs(env):
 
 def test_v35_nav_version_and_manual_only_policy(env):
     alice,bob,guest=env
-    assert guest.get("/api/health").json()["version"]=="41.0"
+    assert guest.get("/api/health").json()["version"]=="42.0"
     html=guest.get("/").text
-    assert "WORLD 35" in html
-    assert "万界文明大使馆" in html
+    assert "WONDER ATLAS" in html
+    assert "合作写故事" in html
     for file in ("embassies.js","embassies.css"):
         assert f"/static/{file}" in html
         assert guest.get(f"/static/{file}").status_code==200

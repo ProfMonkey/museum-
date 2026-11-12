@@ -57,7 +57,7 @@
    '<button data-action="cosmosFocus" data-id="'+r.id+'">⏳ 沿时间线看</button>'+
    '<button data-cx="open" data-id="'+r.id+'">⌁ 打开关联网络</button>'+
    (r.is_public?'<button data-action="atlasFrom" data-id="'+r.id+'">✧ 从这里随机探索</button>':'')+
-   '<button data-action="constellationAdd" data-id="'+r.id+'">✦ 加入我的星图</button></div></div>'+
+   '<button data-action="constellationAdd" data-id="'+r.id+'">✦ 加入藏品关系图</button></div></div>'+
    '<p class="oh-warning">真实性说明：'+esc(hub.notice||'关联依据来自真实分类及作者声明，未经平台事实核验。')+'</p>'+
    '</section>';
  }

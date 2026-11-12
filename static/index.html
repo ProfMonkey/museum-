@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="theme-color" content="#090807" />
+<meta name="theme-color" content="#f7f6f2" />
 <title>万物博物馆 · 一个由所有人共同收藏的世界</title>
 <link rel="stylesheet" href="/static/style.css" />
 <link rel="stylesheet" href="/static/features.css" />
@@ -43,78 +43,22 @@
 <link rel="stylesheet" href="/static/unified-search.css" />
 <link rel="stylesheet" href="/static/cosmos.css" />
 <link rel="stylesheet" href="/static/curation.css" />
+<link rel="stylesheet" href="/static/museum.css" />
 </head>
 <body>
+<a class="skip-link" href="#main">跳到主要内容</a>
 <div class="app-shell">
  <aside class="sidebar">
-  <button class="brand" data-action="navigate" data-view="discover" aria-label="回到发现广场"><span class="brandmark">✳</span><span><strong>万物博物馆</strong><small>WONDER ATLAS · WORLD 42</small></span></button>
-  <button class="sidebar-find" data-action="navigate" data-view="search"><span class="sidebar-find-icon">⌕</span><span><strong>搜索万物</strong><small>跨分类找到藏品</small></span><kbd>/</kbd></button>
-  <button class="sidebar-find" data-action="navigate" data-view="catalog"><span class="sidebar-find-icon">⌕</span><span><strong>找功能</strong><small>搜入口，不再迷路</small></span></button>
-  <div class="nav-cap">发现与检索</div>
-  <nav class="nav" aria-label="发现与检索">
-   <button class="active" data-action="navigate" data-view="discover"><span>⌁</span> 发现广场</button>
-   <button data-action="navigate" data-view="search"><span>⌕</span> 搜索万物</button>
-   <button data-action="navigate" data-view="world-museums"><span>♜</span> 世界名馆</button>
-   <button data-action="navigate" data-view="wonder-radar"><span>✧</span> 万物雷达</button>
-   <button data-action="navigate" data-view="culture"><span>♫</span> 当代新奇</button>
-  </nav>
-  <div class="nav-cap">分类与关联探索</div>
-  <nav class="nav" aria-label="分类与关联探索">
-   <button data-action="navigate" data-view="cosmos"><span>⏳</span> 万物时光</button>
-   <button data-action="navigate" data-view="journey"><span>↝</span> 随机奇遇</button>
-   <button data-action="navigate" data-view="constellation"><span>✧</span> 万物星图</button>
-  </nav>
-  <div class="nav-cap">收藏与创作</div>
-  <nav class="nav" aria-label="收藏与创作">
-   <button data-action="navigate" data-view="saved"><span>♡</span> 心动收藏</button>
-   <button data-action="navigate" data-view="museum"><span>▦</span> 我的博物馆</button>
-   <button data-action="navigate" data-view="virtual-gallery"><span>▧</span> 展厅工坊</button>
-  </nav>
-  <div class="nav-cap">互动与体验</div>
-  <nav class="nav" aria-label="互动与体验">
-   <button data-action="navigate" data-view="wheels"><span>🎡</span> 万物转盘</button>
-   <button data-action="navigate" data-view="lab"><span>✶</span> 万物实验室</button>
-   <button data-action="navigate" data-view="play"><span>⚙</span> 互动玩法</button>
-   <button data-action="navigate" data-view="adventure"><span>✨</span> 命运接力</button>
-  </nav>
-  <details class="nav-group">
-   <summary>世界与故事 <span>7 项</span></summary>
-   <nav class="nav" aria-label="世界与故事">
-    <button data-action="navigate" data-view="fantasy"><span>✵</span> 玄幻异界</button>
-    <button data-action="navigate" data-view="parallel"><span>🌌</span> 平行宇宙</button>
-    <button data-action="navigate" data-view="living"><span>🌱</span> 活体博物馆</button>
-    <button data-action="navigate" data-view="mysteries"><span>🗝</span> 谜案馆</button>
-    <button data-action="navigate" data-view="collision"><span>⚗</span> 万物碰撞机</button>
-    <button data-action="navigate" data-view="civilizations"><span>🏛</span> 文明演化</button>
-    <button data-action="navigate" data-view="archaeology"><span>⛏</span> 文明考古局</button>
-   </nav>
-  </details>
-  <details class="nav-group">
-   <summary>合作与交流 <span>3 项</span></summary>
-   <nav class="nav" aria-label="合作与交流">
-    <button data-action="navigate" data-view="coexhibitions"><span>🏛</span> 联合展厅</button>
-    <button data-action="navigate" data-view="embassies"><span>🤝</span> 文明大使馆</button>
-    <button data-action="navigate" data-view="heritage"><span>🎁</span> 遗产交换站</button>
-   </nav>
-  </details>
-  <details class="nav-group">
-   <summary>个人与系统 <span>3 项</span></summary>
-   <nav class="nav" aria-label="个人与系统">
-    <button data-action="navigate" data-view="memories"><span>♫</span> 回忆剧场</button>
-    <button data-action="navigate" data-view="insights"><span>▥</span> 功能热度</button>
-    <button data-action="navigate" data-view="notifications"><span>✉</span> 通知 <em id="navUnread"></em></button>
-   </nav>
-  </details>
-  <div class="side-spacer"></div>
-  <div class="side-user" id="sideUser">未登录 · 游客漫游中</div>
- </aside>
+<button class="brand" data-action="navigate" data-view="discover" aria-label="万物博物馆首页"><span class="brandmark">✳</span><span><strong>万物博物馆</strong><small>WONDER ATLAS</small></span></button>
+<div class="nav-cap">逛博物馆</div><nav class="nav" aria-label="逛博物馆"><button data-action="navigate" data-view="discover"><span aria-hidden="true">⌁</span>发现藏品</button><button data-action="navigate" data-view="search"><span aria-hidden="true">⌕</span>搜索藏品</button><button data-action="navigate" data-view="world-museums"><span aria-hidden="true">▥</span>世界名馆</button><button data-action="navigate" data-view="journey"><span aria-hidden="true">↝</span>随机发现</button></nav><div class="nav-cap">我的收藏</div><nav class="nav" aria-label="我的收藏"><button data-action="navigate" data-view="saved"><span aria-hidden="true">♡</span>我的收藏</button><button data-action="navigate" data-view="museum"><span aria-hidden="true">▦</span>我的博物馆</button><button data-action="navigate" data-view="virtual-gallery"><span aria-hidden="true">▧</span>我的展厅</button><button data-action="navigate" data-view="notifications"><span aria-hidden="true">✉</span>消息通知<em id="navUnread"></em></button></nav><div class="nav-cap">趣味体验</div><nav class="nav" aria-label="趣味体验"><button data-action="navigate" data-view="wheels"><span aria-hidden="true">◉</span>万物转盘</button><button data-action="navigate" data-view="play"><span aria-hidden="true">◇</span>藏品小游戏</button><button data-wa="module" data-value="5"><span aria-hidden="true">⌘</span>互动故事</button><button data-wa="module" data-value="11"><span aria-hidden="true">♧</span>一起参观</button></nav><details class="nav-group"><summary>更多探索</summary><nav class="nav" aria-label="更多探索"><button data-action="navigate" data-view="catalog"><span aria-hidden="true">⌕</span>按用途查看工具</button><button data-action="navigate" data-view="cosmos"><span aria-hidden="true">·</span>按年代浏览</button><button data-action="navigate" data-view="wonder-radar"><span aria-hidden="true">·</span>科技新发现</button><button data-action="navigate" data-view="culture"><span aria-hidden="true">·</span>流行文化</button><button data-action="navigate" data-view="constellation"><span aria-hidden="true">·</span>藏品关系图</button><button data-action="navigate" data-view="lab"><span aria-hidden="true">·</span>互动实验</button><button data-action="navigate" data-view="adventure"><span aria-hidden="true">·</span>探索任务</button><button data-action="navigate" data-view="fantasy"><span aria-hidden="true">·</span>虚构世界创作</button><button data-action="navigate" data-view="parallel"><span aria-hidden="true">·</span>假设故事</button><button data-action="navigate" data-view="living"><span aria-hidden="true">·</span>持续观察</button><button data-action="navigate" data-view="mysteries"><span aria-hidden="true">·</span>藏品解谜</button><button data-action="navigate" data-view="collision"><span aria-hidden="true">·</span>藏品组合创作</button><button data-action="navigate" data-view="civilizations"><span aria-hidden="true">·</span>文明模拟</button><button data-action="navigate" data-view="archaeology"><span aria-hidden="true">·</span>藏品背景创作</button><button data-action="navigate" data-view="coexhibitions"><span aria-hidden="true">·</span>合作展厅</button><button data-action="navigate" data-view="embassies"><span aria-hidden="true">·</span>合作写故事</button><button data-action="navigate" data-view="heritage"><span aria-hidden="true">·</span>文化故事交换</button><button data-action="navigate" data-view="memories"><span aria-hidden="true">·</span>浏览回忆</button><button data-action="navigate" data-view="insights"><span aria-hidden="true">·</span>使用统计</button></nav></details><div class="side-spacer"></div><div class="side-user" id="sideUser">未登录 · 欢迎参观</div></aside>
  <div class="content-shell">
   <header class="topbar">
-   <div class="top-left"><button class="mobile-logo" data-action="navigate" data-view="discover">✳</button><button id="navBack" class="nav-back" data-action="navBack" aria-label="返回上一页" title="返回上一页" hidden>← 返回</button><div class="breadcrumbs"><button class="breadcrumb-home" data-action="navigate" data-view="discover">万物博物馆</button><span id="pageSection" class="breadcrumb-section">发现与检索</span><b id="pageCrumb">发现广场</b></div><span class="live-dot">本机预览 · 暂未公开发布</span></div>
-   <div class="top-right"><button class="top-find" data-action="navigate" data-view="search">⌕ 搜索万物</button><button id="loginTop" class="top-login" data-action="login">登录 / 注册</button><button class="cta" data-action="new">＋ 发布新发现</button></div>
-  </header>
+<div class="top-left"><button class="mobile-logo" data-action="navigate" data-view="discover" aria-label="万物博物馆首页">✳ <span>万物博物馆</span></button><button id="navBack" class="nav-back" data-action="navBack" aria-label="返回上一页" hidden>←</button><div class="breadcrumbs"><button class="breadcrumb-home" data-action="navigate" data-view="discover">万物博物馆</button><span id="pageSection" class="breadcrumb-section">逛博物馆</span><b id="pageCrumb">发现藏品</b></div></div>
+<form id="globalSearchForm" class="global-search" role="search"><span aria-hidden="true">⌕</span><input name="q" type="search" maxlength="80" placeholder="搜索你感兴趣的事物" aria-label="搜索藏品"><button type="submit" aria-label="提交搜索">↵</button></form>
+<div class="top-right"><button id="loginTop" class="top-login" data-action="login">登录 / 注册</button><button class="cta" data-action="new">＋ 发布藏品</button></div>
+</header>
   <main id="main" tabindex="-1"><div class="loading">正在连接万物博物馆…</div></main>
-  <footer class="footer"><span>✳ 万物博物馆 · WONDER ATLAS</span><span>一个由发现与好奇心建成的世界 · V42.0</span></footer>
+  <footer class="footer"><span>✳ 万物博物馆 · WONDER ATLAS</span><span>收藏所爱，发现更多</span></footer>
  </div>
 </div>
 <div id="modal" class="modal-layer hidden" aria-live="polite"></div>

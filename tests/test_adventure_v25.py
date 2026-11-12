@@ -18,7 +18,7 @@ def make_wheel(client,title,topic="food",choices=("米线","菌子火锅","牛�
     return wid
 
 
-def new_card(client,ids,title="今日命运接力"):
+def new_card(client,ids,title="今日探索任务"):
     r=client.post("/api/adventures",json={"title":title,"wheel_ids":ids})
     assert r.status_code==201,r.text
     return r.json()["id"]
@@ -118,7 +118,7 @@ def test_unfinished_cards_cannot_share_and_public_cards_become_immutable(env):
     pub=guest.get("/api/adventures/share/"+path.rsplit("/",1)[-1])
     assert pub.status_code==200 and pub.json()["finished"]
     assert pub.json()["stage_count"]==2
-    assert pub.json()["title"]=="今日命运接力"
+    assert pub.json()["title"]=="今日探索任务"
     assert "owner_id" not in pub.text and "wheel_id" not in pub.text
     assert "chosen_item_id" not in pub.text
     assert advance(a,cid).status_code==409
@@ -272,7 +272,7 @@ def test_real_wheel_source_revalidated_each_stage(env):
 def test_release_assets_and_original_wheel_still_works(env):
     a,b,guest=env
     html=guest.get("/").text
-    assert "WONDER ATLAS · WORLD " in html
+    assert "WONDER ATLAS" in html
     assert guest.get("/api/health").json()["ok"] is True
     assert 'data-view="adventure"' in html
     for asset in ("adventure.css","adventure.js"):

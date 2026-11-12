@@ -56,7 +56,7 @@ function comparison(data){
 async function render(){
  let feed,pulse;
  try{[feed,pulse]=await Promise.all([api('/living/feed'),api('/living/pulse')]);}
- catch(e){return '<div class="lv-root"><h1>活体博物馆暂时无法加载</h1><p>'+esc(e.message)+'</p></div>'}
+ catch(e){return '<div class="lv-root"><h1>持续观察暂时无法加载</h1><p>'+esc(e.message)+'</p></div>'}
  let watches=null,mine=[];
  if(window.S?.user){
   try{[watches,mine]=await Promise.all([api('/living/watchlist'),api('/my/exhibits')])}
@@ -78,14 +78,14 @@ async function render(){
  const chosen=(id)=>choices.find(x=>x.id===id);
  const selectOpts=choices.map(x=>'<option value="'+x.id+'">'+esc(x.title)+' · @'+esc(x.curator)+'</option>').join('');
  return '<div class="lv-root"><section class="lv-hero"><div class="lv-circles"></div><div class="lv-label">WONDER ATLAS · WORLD 31 · LIVING MUSEUM</div>'+
- '<h1>万物不是静止的。<br><em>每一次变化，都值得收藏。</em></h1>'+
+ '<h1>持续观察</h1>'+
  '<p>让真正的藏品拥有不断延伸的时间年轮。真实馆长亲自记录、提供来源；游客追踪变化、并列比较两个世界的观察历史。</p>'+
  '<div class="lv-badges"><span>◎ 可追溯观察年轮</span><span>◈ 公开变化观察室</span><span>♡ 站内关注清单</span><span>⇄ 双时空对照</span></div></section>'+
  (M.msg?'<div class="lv-alert">'+esc(M.msg)+'</div>':'')+
  '<section class="lv-stats"><div><strong>'+pulse.recorded_changes_30d+'</strong><span>近30天馆长公开录入变化</span></div>'+
  '<div><strong>'+pulse.active_exhibits_30d+'</strong><span>近30天有记录的公开藏品</span></div>'+
  '<div><strong>'+Number(watches?.unread||0)+'</strong><span>我的站内待阅更新</span></div></section>'+
- '<div class="lv-two-cols"><div><section class="lv-panel"><div class="lv-label">01 / WORLD PULSE</div><h2>🌍 万物脉搏</h2>'+
+ '<div class="lv-two-cols"><div><section class="lv-panel"><div class="lv-label">01 / WORLD PULSE</div><h2>🌍 最近更新</h2>'+
  '<p>最近 30 天，真实馆长主动记录了什么？这不是自动抓取的新闻数据。</p>'+
  (pulse.domains.length?'<div class="lv-domains">'+pulse.domains.map(x=>'<div><span>'+esc(x.domain)+'</span><meter min="0" max="'+Math.max(...pulse.domains.map(z=>z.count))+'" value="'+x.count+'"></meter><b>'+x.count+'</b></div>').join('')+'</div>':
  '<div class="lv-empty">目前还没有馆长公开记录的变化。没有记录时不生成模拟数据。</div>')+
@@ -106,7 +106,7 @@ async function render(){
  (museum.length?'<div class="lv-mine">'+museum.map(x=>'<div>'+
  button('focus',esc(x.title)+' '+(x.visibility==='private'?'🔒':''),'data-id="'+x.id+'" class="lv-mine-button"')+'</div>').join('')+'</div>':
  '<div class="lv-empty">发布你的第一件藏品后，就能记录属于它的变化年轮。</div>')+
- '</section><section class="lv-panel"><div class="lv-label">05 / TIME COMPARISON</div><h2>⇄ 双时空观察室</h2>'+
+ '</section><section class="lv-panel"><div class="lv-label">05 / TIME COMPARISON</div><h2>⇄ 并排比较记录</h2>'+
  '<p>选择两件当前公开的藏品并排查看馆长记录。系统不会推断历史因果或自动证明来源真实性。</p>'+
  '<form id="lvCompareForm"><label>左侧公开藏品 ID<input name="left_id" type="number" min="1" required value="'+(M.left||'')+'" placeholder="例如：1"></label>'+
  '<label>右侧公开藏品 ID<input name="right_id" type="number" min="1" required value="'+(M.right||'')+'" placeholder="例如：2"></label>'+

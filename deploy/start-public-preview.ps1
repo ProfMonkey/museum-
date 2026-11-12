@@ -1,19 +1,19 @@
 $ErrorActionPreference = "Stop"
 
-$Branch = "feature/v42-unified-exhibit-search-20261029"
+$Branch = "main"
 $RepoZip = "https://codeload.github.com/ProfMonkey/museum-/zip/refs/heads/$Branch"
 $CloudflaredUrl = "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe"
 $Root = Join-Path $env:LOCALAPPDATA "WonderAtlas"
 $Source = Join-Path $Root "source"
 $Tools = Join-Path $Root "tools"
-$Temp = Join-Path $env:TEMP "WonderAtlas-V42"
+$Temp = Join-Path $env:TEMP "WonderAtlas-Preview"
 $PythonEnv = Join-Path $Source ".venv"
 $Port = 8000
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 Write-Host ""
 Write-Host "==============================================" -ForegroundColor DarkYellow
-Write-Host "       万物博物馆 V42.0 公网预览启动器" -ForegroundColor Yellow
+Write-Host "       万物博物馆 公网预览启动器" -ForegroundColor Yellow
 Write-Host "==============================================" -ForegroundColor DarkYellow
 Write-Host "网站在本机电脑运行，再通过 Cloudflare 临时网址访问。"
 Write-Host "数据保存在本机：$Source\data"
@@ -35,11 +35,11 @@ if ($PythonLauncher) {
     throw "没有找到 Python。请先安装 Python 3.12（安装时勾选 Add Python to PATH），然后重新双击启动器。"
 }
 
-# Download V42 source. Keep the data folder so code updates do not delete the database.
+# Download the current main source. Keep the data folder so code updates do not delete the database.
 if (Test-Path $Temp) { Remove-Item $Temp -Recurse -Force }
 New-Item -ItemType Directory -Force -Path $Temp | Out-Null
-$Zip = Join-Path $Temp "museum-v42.zip"
-Write-Host "[1/5] 下载万物博物馆 V42.0 源码……" -ForegroundColor Cyan
+$Zip = Join-Path $Temp "museum-latest.zip"
+Write-Host "[1/5] 下载万物博物馆 源码……" -ForegroundColor Cyan
 Invoke-WebRequest -Uri $RepoZip -OutFile $Zip
 Expand-Archive -Path $Zip -DestinationPath $Temp -Force
 $Extracted = Get-ChildItem -Path $Temp -Directory | Select-Object -First 1

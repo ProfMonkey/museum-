@@ -76,8 +76,8 @@
   }
   function panel() { return C.tab==='memes'?memePanel():C.tab==='digital'?digitalPanel():gamesPanel(); }
   function render() {
-    const html = `<section class="culture-hero"><div class="eyebrow">CONTEMPORARY CULTURE · V9</div><h1>正在流行的，<br><span>也值得被收藏。</span></h1><p>热梗、数码产品、游戏和新奇科技都使用同一套展品系统。收藏之后可以放进自己的展厅、加入回忆剧场，或在跨界探索中与其他领域建立联系。</p><div class="culture-hero-pills"><span>😂 网络文化</span><span>💻 数码产品</span><span>🎮 游戏档案</span><span>⚡ 新奇科技</span></div></section>
-      <nav class="culture-tabs" aria-label="当代新奇分类">${Object.entries(tabLabels).map(([k,v])=>`<button data-action="culture-tab" data-tab="${k}" class="${C.tab===k?'active':''}">${v}</button>`).join('')}</nav>
+    const html = `<section class="culture-hero"><div class="eyebrow">CONTEMPORARY CULTURE · V9</div><h1>流行文化</h1><p>热梗、数码产品、游戏和新奇科技都使用同一套展品系统。收藏之后可以放进自己的展厅、加入浏览回忆，或在随机发现中与其他领域建立联系。</p><div class="culture-hero-pills"><span>😂 网络文化</span><span>💻 数码产品</span><span>🎮 游戏档案</span><span>⚡ 新奇科技</span></div></section>
+      <nav class="culture-tabs" aria-label="流行文化分类">${Object.entries(tabLabels).map(([k,v])=>`<button data-action="culture-tab" data-tab="${k}" class="${C.tab===k?'active':''}">${v}</button>`).join('')}</nav>
       <section id="culturePanel" class="culture-panel">${panel()}</section>
       <div class="culture-footer-note">万物博物馆不把“热门”当成唯一价值：经典、冷门、实验性作品和用户原创也都值得收藏。外部内容的可见性与使用许可以原始来源为准。</div>`;
     setTimeout(()=>{if(C.tab==='memes'&&!C.memes.length&&!C.memeLoading)loadMemes();else if(C.tab==='digital'&&!C.techLoaded&&!C.techLoading)loadTech();},30);

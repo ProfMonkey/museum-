@@ -9,7 +9,7 @@
   {id:'courtyard',name:'中央庭院',type:'庭院',desc:'中庭作为视觉中心，四周分区，适合混合主题收藏。',rooms:6},
   {id:'ring',name:'环形展厅',type:'环廊',desc:'围绕中心连续参观，适合做时间线或系列展。',rooms:4},
   {id:'star',name:'星芒展馆',type:'探索',desc:'多个分区从中心发散，适合跨领域关联探索。',rooms:7},
-  {id:'corridor',name:'沉浸长廊',type:'叙事',desc:'沿一条路线逐步揭示内容，适合回忆剧场与故事展。',rooms:3},
+  {id:'corridor',name:'沉浸长廊',type:'叙事',desc:'沿一条路线逐步揭示内容，适合浏览回忆与故事展。',rooms:3},
   {id:'science',name:'科技实验室',type:'实验',desc:'分成实验台、演示区和资料墙，适合数码与科学展品。',rooms:5},
   {id:'arcade',name:'游戏街机馆',type:'互动',desc:'小型展柜均匀排列，适合游戏、梗图和互动作品。',rooms:8},
   {id:'garden',name:'自然花园馆',type:'自然',desc:'展柜沿花园式空间展开，适合植物、矿物、动物与摄影。',rooms:6},
@@ -85,7 +85,7 @@
  }
  function render(){
   const tabs=[['design','展厅图纸'],['tour','沉浸漫游'],['lab','互动实验'],['assets','免费素材库']];
-  return `<section class="vg-hero"><div class="eyebrow">VIRTUAL MUSEUM STUDIO · V9</div><h1>建造一个可以走进去的世界。</h1><p>选择原创免费图纸，保存自己的展厅布局；沿着藏品逐件漫游，翻看作品背面，或进入互动实验台。外部免费 3D 素材也整理在这里。</p><div class="vg-hero-stats"><span><b>9</b> 套原创平面图</span><span><b>4</b> 个交互模块</span><span><b>0</b> 图纸授权费用</span></div></section><nav class="vg-tabs">${tabs.map(([k,v])=>`<button data-action="vg-tab" data-tab="${k}" class="${G.tab===k?'active':''}">${v}</button>`).join('')}</nav><section id="vgPanel" class="vg-panel">${G.tab==='design'?designPanel():G.tab==='tour'?tourPanel():G.tab==='lab'?labPanel():assetsPanel()}</section>`;
+  return `<section class="vg-hero"><div class="eyebrow">VIRTUAL MUSEUM STUDIO · V9</div><h1>我的展厅</h1><p>选择原创免费图纸，保存自己的展厅布局；沿着藏品逐件漫游，翻看作品背面，或进入互动实验台。外部免费 3D 素材也整理在这里。</p><div class="vg-hero-stats"><span><b>9</b> 套原创平面图</span><span><b>4</b> 个交互模块</span><span><b>0</b> 图纸授权费用</span></div></section><nav class="vg-tabs">${tabs.map(([k,v])=>`<button data-action="vg-tab" data-tab="${k}" class="${G.tab===k?'active':''}">${v}</button>`).join('')}</nav><section id="vgPanel" class="vg-panel">${G.tab==='design'?designPanel():G.tab==='tour'?tourPanel():G.tab==='lab'?labPanel():assetsPanel()}</section>`;
  }
  async function refreshPage(){if(typeof window.render==='function')await window.render();else {const m=$('#main');if(m)m.innerHTML=render();}}
  async function applyBlueprint(){

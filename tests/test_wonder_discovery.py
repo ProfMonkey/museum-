@@ -44,7 +44,7 @@ def test_external_discovery_links_are_private_and_safe(env):
         'description':'来自公开的技术发现入口',
         'source_url':'https://github.com/trending',
         'category':'科技与发明',
-        'tags':['万物雷达','开源'],
+        'tags':['科技新发现','开源'],
     }
     result = a.post('/api/wonder/collect-link', json=payload)
     assert result.status_code == 201, result.text

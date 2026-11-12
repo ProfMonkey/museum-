@@ -54,11 +54,11 @@ async function load(){
    if(!A.cards.some(x=>x.id===A.selected))A.selected=A.cards[0]?.id||0;
    A.detail=A.selected?await api('/adventures/'+A.selected):null;
   }else{A.wheels=[];A.cards=[];A.selected=0;A.detail=null;}
- }catch(err){A.error=err.message||'连接命运接力失败';}
+ }catch(err){A.error=err.message||'连接探索任务失败';}
 }
 function intro(){
  return '<section class="dr-hero"><div class="dr-upper">WONDER ATLAS · V25 · YOUR DAY, YOUR ADVENTURE</div>'+
- '<h1>✨ 今天，<em>来一场万物命运接力。</em></h1>'+
+ '<h1>探索任务</h1>'+
  '<p>先抽吃什么，再抽去哪儿、做什么、探索什么。四次命运选择组成一张奇遇卡。每一个结果都来自你挑选的真实转盘，绝不是随意拼凑的假投稿。</p>'+
  '<div class="dr-pills"><span>🍜 吃什么</span><span>🧭 去哪里</span><span>🎨 做什么</span>'+
  '<span>🌌 探索什么</span><span>🔐 默认私人</span></div></section>';
@@ -227,7 +227,7 @@ document.addEventListener('submit',async e=>{
  try{
   const fd=new FormData(form),ids=A.stageWheelIds.map((_,i)=>Number(fd.get('stage'+i)));
   const r=await api('/adventures',{method:'POST',body:{title:String(fd.get('title')||'').trim(),wheel_ids:ids}});
-  A.selected=r.id;A.notice='🌠 私人命运接力已创建！抽取下一站即可开始。';
+  A.selected=r.id;A.notice='🌠 私人探索任务已创建！抽取下一站即可开始。';
   await rerender();
  }catch(err){friendlyError(err.message||'不能创建奇遇');}
 },true);
