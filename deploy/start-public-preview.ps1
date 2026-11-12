@@ -9,6 +9,7 @@ $Tools = Join-Path $Root "tools"
 $Temp = Join-Path $env:TEMP "WonderAtlas-V42"
 $PythonEnv = Join-Path $Source ".venv"
 $Port = 8000
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 Write-Host ""
 Write-Host "==============================================" -ForegroundColor DarkYellow
@@ -54,7 +55,11 @@ if (-not (Test-Path (Join-Path $PythonEnv "Scripts\python.exe"))) {
     if ($LASTEXITCODE -ne 0) { throw "创建 Python 环境失败。" }
 }
 $VenvPython = Join-Path $PythonEnv "Scripts\python.exe"
-& $VenvPython -m pip install --disable-pip-version-check -r (Join-Path $Source "requirements.txt")
+& $VenvPython -m pip install --disable-pip-version-check -i "https://pypi.tuna.tsinghua.edu.cn/simple" -r (Join-Path $Source "requirements.txt")
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "清华镜像安装失败，尝试官方 PyPI……" -ForegroundColor Yellow
+    & $VenvPython -m pip install --disable-pip-version-check -r (Join-Path $Source "requirements.txt")
+}
 if ($LASTEXITCODE -ne 0) { throw "依赖安装失败。请检查网络后重新运行启动器。" }
 
 $Cloudflared = Join-Path $Tools "cloudflared.exe"
