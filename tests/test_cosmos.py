@@ -127,4 +127,4 @@ def test_ui_resources_and_server_mount(env):
     assert '/static/cosmos.css' in page.text
     assert env[2].get('/static/cosmos.js').status_code==200
     assert env[2].get('/static/cosmos.css').status_code==200
-    assert '世界时间长河' in env[2].get('/static/cosmos.js').text
+    assert '按年代浏览' in env[2].get('/static/cosmos.js').text

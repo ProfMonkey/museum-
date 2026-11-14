@@ -1,4 +1,4 @@
-:root{color-scheme:light;--bg:#f7f6f2;--s:#fff;--s2:#f0eee7;--line:#dedfd6;--txt:#292e29;--muted:#62685f;--gold:#b59a64;--orange:#9a6542;--teal:#5f796a;--radius:10px;--font:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;}
+:root{color-scheme:light;--bg:#faf9f6;--s:#fff;--s2:#f0eee7;--line:#dedfd6;--txt:#292e29;--muted:#62685f;--gold:#b59a64;--orange:#9a6542;--teal:#5f796a;--radius:10px;--font:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;}
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{margin:0;background:var(--bg);font:14px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;color:var(--txt);}
@@ -45,7 +45,7 @@ a{color:var(--gold);}
 .mobile-logo{display:none;}
 #main{padding:36px 44px 72px;min-height:calc(100vh - 145px);}
 .footer{margin:0 40px;padding:25px 0 35px;display:flex;justify-content:space-between;gap:15px;color:var(--muted);border-top:1px solid var(--line);font-size:11px;}
-.loading,.empty{padding:60px 25px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:18px;}
+.loading,.empty{padding:60px 25px;text-align:center;color:var(--muted);border:0;background:var(--s2);border-radius:4px;}
 .empty b{display:block;font:normal 29px var(--font);color:var(--txt);margin-bottom:10px;}
 .empty .primary{margin-top:18px;}
 .eyebrow{font-size:10px;letter-spacing:2px;color:#687560;font-weight:700;}
@@ -234,7 +234,7 @@ a{color:var(--gold);}
 .series-tab{flex:1;padding:9px 8px;}
 .taxonomy-intro{font-size:10px;}
 }
-.sidebar{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;z-index:12;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#6b604a transparent;flex:0 0 232px;width:232px;padding:22px 14px;background:#f7f6f2;border-right:1px solid var(--line);}
+.sidebar{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;z-index:12;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#6b604a transparent;flex:0 0 232px;width:232px;padding:22px 14px;background:#f4f3ed;border-right:1px solid var(--line);}
 .sidebar .brand{padding-bottom:18px;flex:0 0 auto;}
 .sidebar .nav-cap{padding:20px 12px 8px;letter-spacing:1px;font-size:11px;}
 .sidebar .nav{gap:3px;}

@@ -54,8 +54,8 @@ window.WonderSearch=(()=>{
     (data.items.length?'<div class="us-results">'+data.items.map(x=>
       '<div class="us-result">'+card(x)+'<p class="us-match">'+(x.matched_in.length?'匹配位置：'+E(x.matched_in.join('、')):'公开藏品 · '+E(x.domain||'尚未分类'))+'</p></div>'
      ).join('')+'</div>':
-     '<div class="us-empty"><h2>目前没有找到符合条件的藏品</h2><p>可以减少关键词、清除筛选或试试其他叫法。这里只展示真实且当前公开的内容，不会虚构搜索结果。</p>'+
-     '<button class="ghost" data-action="searchReset">清除筛选</button> <button class="ghost" data-action="navigate" data-view="discover">返回首页</button></div>')+
+     '<div class="us-empty"><h2>目前没有找到符合条件的藏品</h2><p>试试更短的关键词，或清除筛选条件。想先看看经典作品？可以前往世界名馆。</p>'+
+     '<button class="ghost" data-action="searchReset">清除筛选</button> <button class="ghost" data-action="navigate" data-view="world-museums">浏览世界名馆 ↗</button></div>')+
     '<div class="us-pages">'+(data.page>1?'<button class="ghost" data-action="searchPage" data-page="'+(data.page-1)+'">← 上一页</button>':'')+
     (data.total?'<span>第 '+data.page+' 页 · 当前 '+currentStart+'–'+Math.min(data.page*data.per_page,data.total)+' 件</span>':'')+
     (data.has_more?'<button class="ghost" data-action="searchPage" data-page="'+(data.page+1)+'">下一页 →</button>':'')+'</div>'+
